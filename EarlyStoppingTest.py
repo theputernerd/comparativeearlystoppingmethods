@@ -174,7 +174,7 @@ class wilsonScore():
 
         n=ngames
         if n == 0:
-            return 0
+            return finished, lowerBound, c
 
         #---------------------  Calculate z score and see if it meets threshold
         z = wilsonScore.zt  # 1.44 = 85%, 1.96 = 95%
@@ -231,7 +231,7 @@ class wilsonScore_PercDif():
 
         n=ngames
         if n == 0:
-            return 0
+            return finished, lowerBound, c
 
         #---------------------  Calculate z score and see if it meets threshold
         z = wilsonScore_PercDif.zt  # 1.44 = 85%, 1.96 = 95%
@@ -322,11 +322,16 @@ def doTests(tests,p1,p2,drawsP,max_ngames,results):
 
     for i in range(1,max_ngames):
         winner= g.playGame()
+        #winner = drawsP #change remove me.
         winner.nWins+=1
 
         for t in tests:  #Do each test
             if not t.finished :
-                finished, z, c_nGames=t.start(p1,p2,drawsP,best_actual)
+                try:
+                    finished, z, c_nGames=t.start(p1,p2,drawsP,best_actual)
+                except:
+                    pass
+                    raise
                 if finished:
                     results[c_nGames.name].append(c_nGames)
 
@@ -334,10 +339,10 @@ def doTests(tests,p1,p2,drawsP,max_ngames,results):
 
 if __name__ == '__main__':
 
-    p1winrate=0.52
-    p2winrate=0.48
+    p1winrate=0.59
+    p2winrate=0.39
     drawRate=1-(p1winrate+p2winrate)
-    assert p1winrate+p2winrate<=1
+    assert (p1winrate+p2winrate)<=1
 
     p1=player(p1winrate)
     p2 = player(p2winrate)
@@ -354,14 +359,14 @@ if __name__ == '__main__':
         trialDict[t.name]=t
 
 
-    trials=100
+    trials=1000
     for j in range(trials):
         results=doTests(tests,p1,p2,drawsP,max_ngames=500,results=results)
     for key in results:
         print("-------------------------------------------------------------------------------------------------------")
-        print(f"______________________:{key}")
+        print(f"                                                  ______{key}______")
         #print(f"{trialDict[key].desc}")
-        print("------------------------")
+        #print("------------------------")
         predictN=0
         falsePredict=0
         nGamesprediction=[]
@@ -377,7 +382,7 @@ if __name__ == '__main__':
 
             #print (c)
         avPrediction=np.average(nGamesprediction)
-        print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalpredictionRatio:{(predictN/trials)*100:.3f}%")
+        print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalFailure:{(1-predictN/trials)*100:.3f}%")
 
 
 
