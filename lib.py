@@ -4,7 +4,7 @@ conf_stopped_struct = namedtuple("conf_struct", "name score p1wins p2wins draws 
 
 import numpy as np
 
-class game(object):
+class game(object):  #just chooses a random winner based on the probabilty distribution.
     def __init__(self, p1, p2, drawsP):
         self.winner = None
         self.p1 = p1
@@ -14,6 +14,7 @@ class game(object):
         pass
 
     def playGame(self):
+
         winner = np.random.choice([self.p1, self.p2, self.drawsP], p=[self.p1.pWin, self.p2.pWin, self.drawsP.pWin])
         return winner
 

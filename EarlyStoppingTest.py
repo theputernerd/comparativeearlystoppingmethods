@@ -67,13 +67,14 @@ import time
 from bayes import bayes
 if __name__ == '__main__':
 
-    p1winrate=0.45
-    p2winrate=0.55
-    trials=100
-    maxNgames=500
-
+    p1winrate=0.45  #probability of p1 winning
+    p2winrate=0.55   #probability of p2 winning
     drawRate=1-(p1winrate+p2winrate)
     assert (p1winrate+p2winrate)<=1
+
+    trials=100    #how many times to run the experiment.
+    maxNgames=500 #if the detector hasn't made its mind up by this many games it becomes a type 2 error.
+
 
     p1=player(p1winrate)
     p2 = player(p2winrate)
