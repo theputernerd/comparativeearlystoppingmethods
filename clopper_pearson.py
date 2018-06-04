@@ -18,6 +18,9 @@ class clopper_pearson_mean_conf():
 
     finished = False
     @staticmethod
+    def reset():
+        clopper_pearson_mean_conf.finished=False
+    @staticmethod
     def start(p1,p2,drawsP,best_actual):
         #https://www.evanmiller.org/how-not-to-sort-by-average-rating.html
         nwins = p1.nWins

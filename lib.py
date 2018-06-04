@@ -1,5 +1,4 @@
 from collections import namedtuple
-g = 300
 
 conf_stopped_struct = namedtuple("conf_struct", "name score p1wins p2wins draws ngames bestPlayerPredict actualBestPlayer predictCorrect time")
 

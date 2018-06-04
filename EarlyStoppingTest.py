@@ -24,8 +24,10 @@ def doTests(tests,p1,p2,drawsP,max_ngames,results):
     p1.reset()
     p2.reset()
     drawsP.reset()
+
     for t in tests:
-        t.finished=False
+        t.reset()
+    #bayes.reset() #it's the only one with reset global variables.
 
     if (p1winrate > p2winrate):
         best_actual = 1
@@ -62,11 +64,11 @@ def doTests(tests,p1,p2,drawsP,max_ngames,results):
     return results
 from lib import *
 import time
-
+from bayes import bayes
 if __name__ == '__main__':
 
-    p1winrate=0.55
-    p2winrate=0.45
+    p1winrate=0.45
+    p2winrate=0.550
     trials=100
     maxNgames=500
 
@@ -78,7 +80,7 @@ if __name__ == '__main__':
     drawsP=player(drawRate)
     #val=wilsonScore.start(p1,p2,drawsP,1)
 
-    tests=[wilson_lcb, clopper_pearson_mean_conf, wilson_conf_delta, wal_conf_delta, ac_z_score_30min,wilson_z_score_30min,wilsonCC_z_score_30min, wal_z_score_30min, ac_z_score_100min,wilson_z_score_100min,wilsonCC_z_score_100min, wal_z_score_100min, perc_after_n_games, n_games]
+    tests=[bayes,wilson_lcb, clopper_pearson_mean_conf, wilson_conf_delta, wal_conf_delta, ac_z_score_30min,wilson_z_score_30min,wilsonCC_z_score_30min, wal_z_score_30min, ac_z_score_100min,wilson_z_score_100min,wilsonCC_z_score_100min, wal_z_score_100min, perc_after_n_games, n_games]
     results=dict()
     trialDict=dict()
     for t in tests:
@@ -89,6 +91,7 @@ if __name__ == '__main__':
     for j in range(trials):
         t0=time.time()
         results=doTests(tests,p1,p2,drawsP,max_ngames=maxNgames,results=results)
+
         t1=time.time()
     str = ""
     maxlenName=0
@@ -124,7 +127,7 @@ if __name__ == '__main__':
 
         str+=f"{key}"+" "*(maxlenName-len(key))+f"|{avPrediction:.1f}\t\t|\t{(falsePredict/trials)*100:.3f}%  \t|\t{(1-len(nGamesprediction)/trials)*100:.3f}%\n"#  \t|\t{len(nGamesprediction)}\t\t\n"
         #print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalFailure:{(1-predictN/trials)*100:.3f}%")
-    strline1 = "Name"+" "*(maxlenName-4)+f"|\tn_games\t| Type 1 E  \t|\tType2 E \t"#  \t| npredict  \t"
+    strline1 = "Name"+" "*(maxlenName-4)+f"|\t n_games \t| Type 1 E  \t|\tType2 E \t"#  \t| npredict  \t"
     print(f"trials{trials}, max_n_games{maxNgames}")
     print(strline1)
     print(str)

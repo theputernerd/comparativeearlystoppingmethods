@@ -23,6 +23,9 @@ class wal_z_score_30min():
     name=f"wal_z_score_30min_zt={zt}"
     finished=False
     @staticmethod
+    def reset():
+        wal_z_score_30min.finished = False
+    @staticmethod
     def start(p1,p2,drawsP,best_actual):
         zt=wal_z_score_30min.zt
         nwins=p1.nWins
@@ -58,6 +61,9 @@ class wal_z_score_100min():
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
     name=f"wal_z_score_100min_zt={zt}"
     finished=False
+    @staticmethod
+    def reset():
+        wal_z_score_100min.finished = False
     @staticmethod
     def start(p1,p2,drawsP,best_actual):
         zt=wal_z_score_100min.zt
@@ -100,6 +106,9 @@ class wal_conf_delta():
            f"Will only predict a winner."
 
     finished = False
+    @staticmethod
+    def reset():
+        wal_conf_delta.finished = False
     @staticmethod
     def start(p1,p2,drawsP,best_actual):
         #https://www.evanmiller.org/how-not-to-sort-by-average-rating.html

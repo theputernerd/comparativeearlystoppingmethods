@@ -48,6 +48,9 @@ class ac_z_score_30min():
     name=f"AC_z_score_30min_zt={zt}"
     finished=False
     @staticmethod
+    def reset():
+        ac_z_score_30min.finished = False
+    @staticmethod
     def start(p1,p2,drawsP,best_actual):
         ac_z_score_30min.finished, z, c = AC_z_min_n(p1, p2, drawsP, best_actual,
                                                            ac_z_score_30min.minGames,
@@ -62,6 +65,9 @@ class ac_z_score_100min():
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
     name=f"AC_z_score_{100}min_zt={zt}"
     finished=False
+    @staticmethod
+    def reset():
+        ac_z_score_100min.finished = False
     @staticmethod
     def start(p1,p2,drawsP,best_actual):
         ac_z_score_100min.finished, z, c = AC_z_min_n(p1, p2, drawsP, best_actual,

@@ -1,5 +1,8 @@
 import math
 from lib import *
+
+g = 300
+
 class n_games:
     #This test plays g games and chooses a winner after those many games are played based solely on the number of wins.
     #p1>p2 or p2>p1 or p1=p2
@@ -8,6 +11,9 @@ class n_games:
     desc=f"plays {g} games and prediction based on max wins. Predicts either" \
          f"player 1, 2 or 0 for draw. It keeps drawn games in the dataset."
     finished=False
+    @staticmethod
+    def reset():
+        n_games.finished = False
     @staticmethod
     def start(p1,p2,drawsP,best_actual):
         #this condition only plays 300 games then decides based on who has won the most games.
@@ -51,6 +57,11 @@ class perc_after_n_games:
     desc = f"plays {g} games and makes a prediction based only if a player has won more than {threshold*100} games. Only records wins or losses in the data " \
            f"so the number of actual games may be more than {g} when draws are taken into account. " \
            f"Will not make a prediction if winrate is not above threshold."
+
+    @staticmethod
+    def reset():
+        perc_after_n_games.finished = False
+
     @staticmethod
     def start( p1,p2,drawsP,best_actual):
         #this condition only plays 300 games then decides only if one agent is 55% better.
@@ -59,14 +70,14 @@ class perc_after_n_games:
         z = None
         if perc_after_n_games.finished:  # Already made a prediction
             return finish, z, c
+        totGames = p1.nWins + p2.nWins +drawsP.nWins
 
-        if (p1.nWins + p2.nWins)<g: #needs 300 wins or losses
+        if (totGames)<g: #needs 300 wins or losses
             return finish, z, c
-        if (p1.nWins + p2.nWins)>g: #needs 300 wins or losses
+        if (totGames)>g: #needs 300 wins or losses
             return finish, z, c
 
         finish=True
-        totGames = p1.nWins + p2.nWins +drawsP.nWins
         nGames=p1.nWins + p2.nWins
         p1winrate=p1.nWins/nGames
         p2winrate=p2.nWins/nGames

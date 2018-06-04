@@ -17,6 +17,10 @@ class wilson_lcb():
            f"Will only predict a winner, not a draw - ignores drawn games."
 
     finished = False
+
+    @staticmethod
+    def reset():
+        wilson_lcb.finished = False
     @staticmethod
     def start(p1,p2,drawsP,best_actual):
         #https://www.evanmiller.org/how-not-to-sort-by-average-rating.html
@@ -75,6 +79,11 @@ class wilson_conf_delta():
            f"Will only predict a winner."
 
     finished = False
+
+    @staticmethod
+    def reset():
+        wilson_conf_delta.finished = False
+
     @staticmethod
     def start(p1,p2,drawsP,best_actual):
         #https://www.evanmiller.org/how-not-to-sort-by-average-rating.html
@@ -208,7 +217,9 @@ class wilsonCC_z_score_30min():
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
     name = f"wilsCC_z_score_{minGames}min_zt={zt}"
     finished = False
-
+    @staticmethod
+    def reset():
+        wilsonCC_z_score_30min.finished = False
     @staticmethod
     def start(p1, p2, drawsP, best_actual):
         if wilsonCC_z_score_30min.finished:
@@ -225,7 +236,9 @@ class wilsonCC_z_score_100min():
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
     name = f"wilsCC_z_score_{minGames}min_zt={zt}"
     finished = False
-
+    @staticmethod
+    def reset():
+        wilsonCC_z_score_100min.finished = False
     @staticmethod
     def start(p1, p2, drawsP, best_actual):
         if wilsonCC_z_score_100min.finished:
@@ -282,7 +295,9 @@ class wilson_z_score_30min():
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
     name = f"wil_z_score_{minGames}min_zt={zt}"
     finished = False
-
+    @staticmethod
+    def reset():
+        wilson_z_score_30min.finished = False
     @staticmethod
     def start(p1, p2, drawsP, best_actual):
         if wilson_z_score_30min.finished:
@@ -301,6 +316,9 @@ class wilson_z_score_100min():
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
     name=f"wil_z_score_{minGames}min_zt={zt}"
     finished=False
+    @staticmethod
+    def reset():
+        wilson_z_score_100min.finished = False
     @staticmethod
     def start(p1,p2,drawsP,best_actual):
         if wilson_z_score_100min.finished:
