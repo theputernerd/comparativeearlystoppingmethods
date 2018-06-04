@@ -20,7 +20,7 @@ class wal_z_score_30min():
     minGames=30
     desc = f"after {minGames} the z-score is calculated; if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name=f"wal_z_score_30min_zt={zt}"
+    name=f"wald_z_score_30min_zt={zt}"
     finished=False
     @staticmethod
     def reset():
@@ -59,7 +59,7 @@ class wal_z_score_100min():
     minGames=100
     desc = f"after {minGames} the z-score is calculated; if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name=f"wal_z_score_100min_zt={zt}"
+    name=f"wald_z_score_100min_zt={zt}"
     finished=False
     @staticmethod
     def reset():
@@ -99,8 +99,8 @@ class wal_z_score_100min():
 class wal_conf_delta():
     zt = 1.96  # 2.576
     minGames=30
-    stoppingPerc=.1 #stops when the delta between upper and low is less than this
-    name = f"wal_conf_delta_z={zt}_conf={stoppingPerc}"
+    stoppingPerc=.2 #stops when the delta between upper and low is less than this
+    name = f"wald_conf_delta_z={zt}_conf={stoppingPerc}"
     desc = f"the wald lower and upper confidence bound is calculated for p1 and if the delta is < {stoppingPerc} " \
            f"a prediction is made based on the average of the two bounds. " \
            f"Will only predict a winner."

@@ -68,7 +68,7 @@ from bayes import bayes
 if __name__ == '__main__':
 
     p1winrate=0.45
-    p2winrate=0.550
+    p2winrate=0.55
     trials=100
     maxNgames=500
 
@@ -121,14 +121,14 @@ if __name__ == '__main__':
             timetaken.append(c.time)
             #print (c)
         avTime = np.average(timetaken)
-        avPrediction=np.average(nGamesprediction)
+        avPrediction=np.round(np.average(nGamesprediction),decimals=2)
         #print("-------------------------------------------------------------------------------------------------------")
         #print(f"                                                  ______{key}______ av_time:{avTime:1.2E}s")
 
-        str+=f"{key}"+" "*(maxlenName-len(key))+f"|{avPrediction:.1f}\t\t|\t{(falsePredict/trials)*100:.3f}%  \t|\t{(1-len(nGamesprediction)/trials)*100:.3f}%\n"#  \t|\t{len(nGamesprediction)}\t\t\n"
+        str+=f"{key}"+" "*(maxlenName-len(key))+f"|{avPrediction:<5}\t\t|\t{np.round((falsePredict/trials)*100,2):<5}%  \t|\t{np.round((1-len(nGamesprediction)/trials)*100,2):<5}%\n"#  \t|\t{len(nGamesprediction)}\t\t\n"
         #print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalFailure:{(1-predictN/trials)*100:.3f}%")
-    strline1 = "Name"+" "*(maxlenName-4)+f"|\t n_games \t| Type 1 E  \t|\tType2 E \t"#  \t| npredict  \t"
-    print(f"trials{trials}, max_n_games{maxNgames}")
+    strline1 = "Name"+" "*(maxlenName-4)+f"|n_games\t\t| Type 1 E\t\t|Type2 E \t"#  \t| npredict  \t"
+    print(f"trials{trials}, max_n_games{maxNgames}. P(p1)={p1winrate} P(p2)={p2winrate} P(draw)={drawRate}")
     print(strline1)
     print(str)
 

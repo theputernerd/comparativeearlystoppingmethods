@@ -10,7 +10,7 @@ However, this procedure is necessarily conservative: Article Approximate Is Bett
 
 class clopper_pearson_mean_conf():
     zt = 1.96  # 2.576
-    stoppingPerc=.1 #stops when the delta between upper and low is less than this
+    stoppingPerc=.2 #stops when the delta between upper and low is less than this
     name = f"CP_mean_conf_z={zt}_conf={stoppingPerc}"
     desc = f"Cp interval found < {stoppingPerc} " \
            f"delta upper and lower is stopping condition. . " \

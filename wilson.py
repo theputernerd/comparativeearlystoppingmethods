@@ -10,7 +10,7 @@ https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
 """
 class wilson_lcb():
     zt = 1.96  # 2.576
-    name = f"wil_lcb_z=={zt}"
+    name = f"wils_lcb_z=={zt}"
     lower_conf_limit=0.50  #this indcates when the test stops and makes a prediction.
     desc = f"the wilson-probability lower confidence bound is calculated for both players and if LCB is > {lower_conf_limit} " \
            f"a prediction is made for the player that exceeded the limit." \
@@ -72,8 +72,8 @@ class wilson_lcb():
 
 class wilson_conf_delta():
     zt = 1.96  # 2.576
-    stoppingPerc=.1 #stops when the delta between upper and low is less than this
-    name = f"wil_conf_delta_z={zt}_conf={stoppingPerc}"
+    stoppingPerc=.2 #stops when the delta between upper and low is less than this
+    name = f"wils_conf_delta_z={zt}_conf={stoppingPerc}"
     desc = f"the wilson-score lower and upper confidence bound is calculated for p1 and if the delta is < {stoppingPerc} " \
            f"a prediction is made based on the average of the two bounds. " \
            f"Will only predict a winner."
@@ -215,7 +215,7 @@ class wilsonCC_z_score_30min():
     desc = f"Wil with continuity correction. after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
            f"if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name = f"wilsCC_z_score_{minGames}min_zt={zt}"
+    name = f"wils_CC_z_score_{minGames}min_zt={zt}"
     finished = False
     @staticmethod
     def reset():
@@ -234,7 +234,7 @@ class wilsonCC_z_score_100min():
     desc = f"Wil with continuity correction. after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
            f"if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name = f"wilsCC_z_score_{minGames}min_zt={zt}"
+    name = f"wils_CC_z_score_{minGames}min_zt={zt}"
     finished = False
     @staticmethod
     def reset():
@@ -293,7 +293,7 @@ class wilson_z_score_30min():
     desc = f"after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
            f"if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name = f"wil_z_score_{minGames}min_zt={zt}"
+    name = f"wils_z_score_{minGames}min_zt={zt}"
     finished = False
     @staticmethod
     def reset():
@@ -314,7 +314,7 @@ class wilson_z_score_100min():
     desc = f"after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
            f"if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name=f"wil_z_score_{minGames}min_zt={zt}"
+    name=f"wils_z_score_{minGames}min_zt={zt}"
     finished=False
     @staticmethod
     def reset():

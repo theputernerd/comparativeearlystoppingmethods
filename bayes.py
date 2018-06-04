@@ -1,7 +1,7 @@
 from lib import *
 
 class bayes():
-    limit=0.70
+    limit=0.65
     minGames=1
 
     name = f"bayes_limit={limit}"
@@ -14,7 +14,7 @@ class bayes():
     D="Event is a draw"
     E="Event is p1 wins."
     #####Priors
-    priorStart=0.5
+    priorStart=0.1
     P_A = priorStart  # probably the hypothesis is true. These are updated.
     P_B = priorStart
     P_C = priorStart
@@ -105,7 +105,7 @@ class bayes():
             bayes.finished=True
             c=conf_stopped_struct(bayes.name, [bayes.P_A, bayes.P_B,bayes.P_C], p1.nWins, p2.nWins, drawsP.nWins, totGames, best_predict, best_actual, best_actual == best_predict, -1.0)
             if best_actual!=best_predict:
-                print(c)
+                #print(c)
                 pass
 
         return finished,lowerBound,c
