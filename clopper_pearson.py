@@ -1,17 +1,47 @@
 import math
 from lib import *
+
 """
 The cost of using exact condence intervals for a binomial proportion Mans Thulin Department of Mathematics, Uppsala University
 Theorum 1.
 However, this procedure is necessarily conservative: Article Approximate Is Better than "Exact" for Interval Estimation of Binomial Proportions Agresti, Alan ; Coull, Brent A. The American Statistician, 1 May 1998, Vol.52(2), pp.119-126
-
+https://www.eecs.qmul.ac.uk/~norman/papers/probability_puzzles/bayes_theorem.html
+http://www.statisticalengineering.com/bayesian.htm
 """
 
+import scipy.stats as stats
+
+import numpy as np
+from scipy import stats
+
+import scipy.stats
+import math
+def clopper_pearson(X,n,alpha=0.05):
+    """
+    NB alpha=1-confidence
+    X successes on n trials
+    http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
+
+    """
+    if X==0:
+        lo=0.0
+        hi=1-math.sqrt(alpha/2.0)
+    elif X==n:
+        lo=math.sqrt(alpha/2.0)
+        hi=1
+    else:
+        lo = scipy.stats.beta.ppf(alpha/2, X, n-X+1)
+        hi = scipy.stats.beta.ppf(1 - alpha/2, X+1, n-X) or 1
+    return lo, hi
 
 class clopper_pearson_mean_conf():
-    zt = 1.96  # 2.576
-    stoppingPerc=.2 #stops when the delta between upper and low is less than this
-    name = f"CP_mean_conf_z={zt}_conf={stoppingPerc}"
+    """Some authors (Agresti & Coull, 1998; Brown et al., 2001) have argued that
+when choosing between condence intervals, it is often preferable to use an interval
+with a simple closed-form formula rather than one that requires numerical
+evaluation, Thullin - the cost of using exact confidence intervals for a binomial proportion.
+"""
+    stoppingPerc=.1 #stops when the delta between upper and low is less than this
+    name = f"CP_mean_conf"
     desc = f"Cp interval found < {stoppingPerc} " \
            f"delta upper and lower is stopping condition. . " \
            f"Will only predict a winner."
@@ -35,14 +65,18 @@ class clopper_pearson_mean_conf():
         n=float(ngames)
         if n == 0:
             return finished, lowerBound, c
-
-        #---------------------  Calculate z score and see if it meets threshold
-        z = clopper_pearson_mean_conf.zt  # 1.44 = 85%, 1.96 = 95%
         p1hat = float(p1.nWins) / n
-        p1L=p1hat-(1.0/math.sqrt(n))*z*math.sqrt(p1hat*(1-p1hat))+((2.0*(0.5-p1hat)*z*z-(1+p1hat)))/(3*n)
-        p1U=p1hat+(1.0/math.sqrt(n))*z*math.sqrt(p1hat*(1-p1hat))+((2.0*(0.5-p1hat)*z*z+(1+p1hat)))/(3*n)
-        #((p1hat + z * z / (2 * n) - z * math.sqrt((p1hat * (1 - p1hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-        #p1U=((p1hat + z * z / (2 * n) + z * math.sqrt((p1hat * (1 - p1hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
+        p1L,p1U=clopper_pearson(p1.nWins,n)
+        if n>40: #closed form formula estimate from theorem 1 The cost of using exact condence intervals for a binomial proportion Mans Thulin 2013
+            #NB this is not in use as the full formula is used.
+            z=1.96
+            #---------------------  Calculate z score and see if it meets threshold.           z = 1.96 #clopper_pearson_mean_conf.zt  # 1.44 = 85%, 1.96 = 95%
+            p1hat = float(p1.nWins) / n
+
+            p1L_est=p1hat-(1.0/math.sqrt(n))*z*math.sqrt(p1hat*(1-p1hat))+((2.0*(0.5-p1hat)*z*z-(1+p1hat)))/(3*n)
+            p1U_est=p1hat+(1.0/math.sqrt(n))*z*math.sqrt(p1hat*(1-p1hat))+((2.0*(0.5-p1hat)*z*z+(1+p1hat)))/(3*n)
+            #((p1hat + z * z / (2 * n) - z * math.sqrt((p1hat * (1 - p1hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
+            #p1U=((p1hat + z * z / (2 * n) + z * math.sqrt((p1hat * (1 - p1hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
 
         deltaP1=p1U-p1L
         #print(str(deltaP1))
@@ -63,41 +97,7 @@ class clopper_pearson_mean_conf():
                 best_predict = 0
                 lowerBound = p1L
                 upperBound = p1U
-        ################ Not neccesary to do the other player but code is here just in case you want to have a look
-        ######
-        """
-        p2hat = float(p2.nWins) / n
-        p2L=((p2hat + z * z / (2 * n) - z * math.sqrt((p2hat * (1 - p2hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-        p2U=((p2hat + z * z / (2 * n) + z * math.sqrt((p2hat * (1 - p2hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-        deltaP2=p2U-p2L
-        if (deltaP2) < wilson_mean_conf.stoppingPerc:
-            print('p2 found solution')
-            #print(deltaP1)
 
-            if ((p2L + p2U) / 2.0) > 0.5:
-                best_predict2 = 2
-                lowerBound = p2L
-                upperBound = p2U
-            if ((p2L + p2U) / 2.0) < 0.5:
-                best_predict2 = 1
-                lowerBound = p2L
-                upperBound = p2U
-            if ((p2L + p2U) / 2.0) == 0.5:
-                best_predict2 = 0
-                lowerBound = p2L
-                upperBound = p2U
-
-            if finished==True:
-                #the other side made a prediction as well.
-                print("Both sides made prediction at same time.")
-                if best_predict!=best_predict2:
-                    print(f"didn't agree. predict p1:{best_predict}, {best_predict2}")
-            else:
-                print(f"p1 didn't give result but p2 did.")
-                best_predict=best_predict2
-
-            finished = True
-        """
 
         if finished:
             #print(f"{p1.nWins},{p2.nWins},{lowerBound},{upperBound}")

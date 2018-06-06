@@ -2,14 +2,20 @@ import math
 from lib import *
 
 """
+
+
+
+n*min{p,1−p}≥10 when can estimate binomial as normal for wald. so if p=0.5 then n=20. 
+
+
 Just as in a criminal trial, we never conclude that the statement is “innocent” – at most, we find it “not guilty.” In other words, our analysis leaves us in one of two camps: We have strong evidence that the original statement is false, or we do not have such evidence. Therefore, if we wish to make an affirmative case for a claim, we are forced to take the opposite of that claim as the statement we put on trial. Only in this way might we conclude, at the end, that the data – if strong evidence against the claim on trial – serves to support the original claim.
 http://www.kellogg.northwestern.edu/faculty/weber/decs-430/decs-430%20session%204/hypothesis_testing.htm
 
 http://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_Confidence_Intervals/BS704_Confidence_Intervals_print.html
 
-If there was a way to make the solution a two population problem (playing a 3rd player?), then wald might be improved upon for games.
 http://www.statisticshowto.com/probability-and-statistics/confidence-interval/#CIpopprop
 It has been known for some time that the Wald interval performs poorly unless n is quite large (e.g., Ghosh 1979, Blyth and Still 1983).
+Wald can be prone to unlucky pairs even at high n
 Ghosh, B. K. (1979), "A Comparison of Some Approximate Confidence Intervals for the Binomial Parameter," Journcal of the Anmericanz Statistical Association, 74, 894-900
 Blyth, C. R., and Still, H. A. (1983), "Binomial Confidence Intervals," Journal of the American Statistical Association, 78, 108-116.
 n . min(p,1 - p) is at least 5 (or 10).
@@ -95,12 +101,23 @@ class wal_z_score_100min():
             wal_z_score_100min.finished=True
         return finish,z,c
 
+import scipy.stats as stats
+
+def wald_int(X,n,alpha=0.05):
+    z=stats.norm.ppf((1-alpha/2.0)) #two tailed.
+
+    p1hat = float(X) / n
+    p1L = p1hat - z * math.sqrt(
+        p1hat * (1 - p1hat) / n)  # see http://www.ucl.ac.uk/english-usage/staff/sean/resources/binomialpoisson.pdf eqn1
+    p1U = p1hat + z * math.sqrt(p1hat * (1 - p1hat) / n)
+    return p1L,p1U
 
 class wal_conf_delta():
     zt = 1.96  # 2.576
+    pscore=0.05
     minGames=30
-    stoppingPerc=.2 #stops when the delta between upper and low is less than this
-    name = f"wald_conf_delta_z={zt}_conf={stoppingPerc}"
+    stoppingPerc=.1 #stops when the delta between upper and low is less than this
+    name = f"wald_conf_delta_p={pscore}_conf={stoppingPerc}"
     desc = f"the wald lower and upper confidence bound is calculated for p1 and if the delta is < {stoppingPerc} " \
            f"a prediction is made based on the average of the two bounds. " \
            f"Will only predict a winner."
@@ -130,10 +147,7 @@ class wal_conf_delta():
 
         #---------------------  Calculate z score and see if it meets threshold
         z = wal_conf_delta.zt  # 1.44 = 85%, 1.96 = 95%
-        p1hat=float(p1.nWins) / n
-        p1L=p1hat-z*math.sqrt(p1hat*(1-p1hat)/n)   #see http://www.ucl.ac.uk/english-usage/staff/sean/resources/binomialpoisson.pdf eqn1
-        p1U = p1hat + z * math.sqrt(p1hat * (1 - p1hat)/n)
-
+        p1L, p1U=wald_int(p1.nWins,n,wal_conf_delta.pscore)
         deltaP1=p1U-p1L
         #print(str(deltaP1))
 

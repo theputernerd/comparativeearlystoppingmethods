@@ -8,6 +8,20 @@ http://www.ucl.ac.uk/english-usage/staff/sean/resources/binomialpoisson.pdf
 "This interval has good properties even for a small number of trials and/or an extreme probability" 
 https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
 """
+import scipy.stats as stats
+def wils_int(X,n,alpha=0.05,cc=True): ##cc==True means with continuity correction.
+    z=stats.norm.ppf((1-alpha/2.0)) #two tailed.
+
+    p_hat = float(X) / n
+    if cc:
+        p1L = (2 * n * p_hat + z * z - (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2)) + 1)) / (2 * (n + z * z))
+        p1U = (2 * n * p_hat + z * z + (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2)) + 1)) / (2 * (n + z * z))
+    else:
+        p1L = ((p_hat + z * z / (2 * n) - z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
+        p1U = ((p_hat + z * z / (2 * n) + z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
+
+    return p1L,p1U
+
 class wilson_lcb():
     zt = 1.96  # 2.576
     name = f"wils_lcb_z=={zt}"
@@ -72,8 +86,8 @@ class wilson_lcb():
 
 class wilson_conf_delta():
     zt = 1.96  # 2.576
-    stoppingPerc=.2 #stops when the delta between upper and low is less than this
-    name = f"wils_conf_delta_z={zt}_conf={stoppingPerc}"
+    stoppingPerc=.1 #stops when the delta between upper and low is less than this
+    name = f"wils_CC_conf_delta_z={zt}_conf={stoppingPerc}"
     desc = f"the wilson-score lower and upper confidence bound is calculated for p1 and if the delta is < {stoppingPerc} " \
            f"a prediction is made based on the average of the two bounds. " \
            f"Will only predict a winner."
@@ -102,9 +116,7 @@ class wilson_conf_delta():
 
         #---------------------  Calculate z score and see if it meets threshold
         z = wilson_conf_delta.zt  # 1.44 = 85%, 1.96 = 95%
-        p1hat = float(p1.nWins) / n
-        p1L=((p1hat + z * z / (2 * n) - z * math.sqrt((p1hat * (1 - p1hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-        p1U=((p1hat + z * z / (2 * n) + z * math.sqrt((p1hat * (1 - p1hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
+        p1L, p1U =wils_int(p1.nWins,n,0.05)
 
         deltaP1=p1U-p1L
         #print(str(deltaP1))
@@ -171,7 +183,7 @@ class wilson_conf_delta():
 
         return finished,lowerBound,c
 
-def wilson_z_score_CC_n_min(p1,p2,drawsP,best_actual,minGames,name):
+def wilson_z_score_No_CC_n_min(p1,p2,drawsP,best_actual,minGames,name):
         zt = 1.96
 
 
@@ -190,8 +202,11 @@ def wilson_z_score_CC_n_min(p1,p2,drawsP,best_actual,minGames,name):
             return finish, 0, c
 
         p_hat = float(p1.nWins) / n
-        p1L = (2*n*p_hat+zt*zt-(zt*math.sqrt(zt*zt-1/n+4*n*p_hat*(1-p_hat)+(4*p_hat-2))+1))/(2*(n+zt*zt))
-        p1U = (2*n*p_hat+zt*zt+(zt*math.sqrt(zt*zt-1/n+4*n*p_hat*(1-p_hat)+(4*p_hat-2))+1))/(2*(n+zt*zt))
+        #p1L,p1U=wils_int(p1.nWins,n,0.5,cc=True)
+        p1L,p1U=wils_int(p1.nWins,n,0.05,cc=False)
+
+        #p1L = (2*n*p_hat+zt*zt-(zt*math.sqrt(zt*zt-1/n+4*n*p_hat*(1-p_hat)+(4*p_hat-2))+1))/(2*(n+zt*zt))
+        #p1U = (2*n*p_hat+zt*zt+(zt*math.sqrt(zt*zt-1/n+4*n*p_hat*(1-p_hat)+(4*p_hat-2))+1))/(2*(n+zt*zt))
 
         p0 = 0.5
         p_hat_new = (p1L + p1U) / 2.0
@@ -209,44 +224,44 @@ def wilson_z_score_CC_n_min(p1,p2,drawsP,best_actual,minGames,name):
                                     best_predict, best_actual, best_actual == best_predict, -1.0)
         return finish, z, c
 
-class wilsonCC_z_score_30min():
+class wilsonNOCC_z_score_30min():
     zt = 1.96  # 2.576 #1.96 #2.576
     minGames = 30
-    desc = f"Wil with continuity correction. after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
+    desc = f"Wil without cont correction. after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
            f"if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name = f"wils_CC_z_score_{minGames}min_zt={zt}"
+    name = f"wils_NO_CC_z_score_{minGames}min_zt={zt}"
     finished = False
     @staticmethod
     def reset():
-        wilsonCC_z_score_30min.finished = False
+        wilsonNOCC_z_score_30min.finished = False
     @staticmethod
     def start(p1, p2, drawsP, best_actual):
-        if wilsonCC_z_score_30min.finished:
+        if wilsonNOCC_z_score_30min.finished:
             return True, 0, None
 
-        wilsonCC_z_score_30min.finished,z,c= wilson_z_score_CC_n_min(p1,p2,drawsP,best_actual,wilsonCC_z_score_30min.minGames,wilsonCC_z_score_30min.name)
+        wilsonNOCC_z_score_30min.finished, z, c= wilson_z_score_No_CC_n_min(p1, p2, drawsP, best_actual, wilsonNOCC_z_score_30min.minGames, wilsonNOCC_z_score_30min.name)
 
-        return wilsonCC_z_score_30min.finished,z,c
-class wilsonCC_z_score_100min():
+        return wilsonNOCC_z_score_30min.finished, z, c
+class wilsonNOCC_z_score_100min():
     zt = 1.96  # 2.576 #1.96 #2.576
     minGames = 100
     desc = f"Wil with continuity correction. after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
            f"if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name = f"wils_CC_z_score_{minGames}min_zt={zt}"
+    name = f"wils_NO_CC_z_score_{minGames}min_zt={zt}"
     finished = False
     @staticmethod
     def reset():
-        wilsonCC_z_score_100min.finished = False
+        wilsonNOCC_z_score_100min.finished = False
     @staticmethod
     def start(p1, p2, drawsP, best_actual):
-        if wilsonCC_z_score_100min.finished:
+        if wilsonNOCC_z_score_100min.finished:
             return True, 0, None
 
-        wilsonCC_z_score_100min.finished,z,c= wilson_z_score_CC_n_min(p1,p2,drawsP,best_actual,wilsonCC_z_score_100min.minGames,wilsonCC_z_score_100min.name)
+        wilsonNOCC_z_score_100min.finished, z, c= wilson_z_score_No_CC_n_min(p1, p2, drawsP, best_actual, wilsonNOCC_z_score_100min.minGames, wilsonNOCC_z_score_100min.name)
 
-        return wilsonCC_z_score_100min.finished,z,c
+        return wilsonNOCC_z_score_100min.finished, z, c
 
 
 def wilson_z_score_n_min(p1, p2, drawsP, best_actual, minGames, name):
@@ -266,6 +281,7 @@ def wilson_z_score_n_min(p1, p2, drawsP, best_actual, minGames, name):
         return finish, 0, c
 
     p_hat = float(p1.nWins) / n
+    p1L,p1U=wils_int(p1.nWins,n,0.05)
     p1L = ((p_hat + zt * zt / (2 * n) - zt * math.sqrt((p_hat * (1 - p_hat) + zt * zt / (4 * n)) / n)) / (
             1 + zt * zt / n))
     p1U = ((p_hat + zt * zt / (2 * n) + zt * math.sqrt((p_hat * (1 - p_hat) + zt * zt / (4 * n)) / n)) / (
@@ -293,7 +309,7 @@ class wilson_z_score_30min():
     desc = f"after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
            f"if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name = f"wils_z_score_{minGames}min_zt={zt}"
+    name = f"wils_z_scoreCC_{minGames}min_zt={zt}"
     finished = False
     @staticmethod
     def reset():
@@ -314,7 +330,7 @@ class wilson_z_score_100min():
     desc = f"after {minGames} the z-score is calculated using the mean of the wilson confidence bounds and the mean of the hypothesis; " \
            f"if abs(z) > {zt} then a prediction is made based on" \
            f"whichever player has won the most games. Will only predict a winner, not a draw - ignores drawn games."
-    name=f"wils_z_score_{minGames}min_zt={zt}"
+    name=f"wils_z_scoreCC_{minGames}min_zt={zt}"
     finished=False
     @staticmethod
     def reset():

@@ -1,5 +1,16 @@
 import math
 from lib import *
+import scipy.stats as stats
+def ag_coul_int(X,n,alpha=0.05):
+    zt=stats.norm.ppf(alpha/2) #two tailed.
+    n_hat = n + zt * zt
+
+    p_hat = 1 / n_hat * (X + zt * zt / 2)
+
+    p1L = p_hat - zt * math.sqrt((p_hat / n_hat) * (1 - p_hat))
+    p1U = p_hat + zt * math.sqrt((p_hat / n_hat) * (1 - p_hat))
+    return p1L,p1U
+
 def AC_z_min_n(p1,p2,drawsP,best_actual,minGames,name):
     zt = ac_z_score_30min.zt
     nwins = p1.nWins
@@ -16,12 +27,9 @@ def AC_z_min_n(p1,p2,drawsP,best_actual,minGames,name):
     n = float(ngames)
     if n == 0:  # presumably need this.
         return finish, 0, c
-    n_hat = n + zt * zt
 
-    p_hat = 1 / n_hat * (nwins + zt * zt / 2)
+    p1L,p1U=ag_coul_int(p1.nWins,n,0.5)
 
-    p1L = p_hat - zt * math.sqrt((p_hat / n_hat) * (1 - p_hat))
-    p1U = p_hat + zt * math.sqrt((p_hat / n_hat) * (1 - p_hat))
     p0 = 0.5
     p_hat_new = (p1L + p1U) / 2.0
     z = (p_hat_new - p0) / math.sqrt(p0 * (1 - p0) / n)
