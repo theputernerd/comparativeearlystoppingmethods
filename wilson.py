@@ -10,8 +10,8 @@ https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
 """
 import scipy.stats as stats
 def wils_int(X,n,alpha=0.05,cc=True): ##cc==True means with continuity correction.
-    z=stats.norm.ppf((1-alpha/2.0)) #two tailed.
-
+    z=abs(stats.norm.ppf((1-alpha/2.0))) #two tailed.
+    z=1.96
     p_hat = float(X) / n
     if cc:
         p1L = (2 * n * p_hat + z * z - (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2)) + 1)) / (2 * (n + z * z))
@@ -86,7 +86,7 @@ class wilson_lcb():
 
 class wilson_conf_delta():
     zt = 1.96  # 2.576
-    stoppingPerc=.1 #stops when the delta between upper and low is less than this
+    stoppingPerc=.15 #stops when the delta between upper and low is less than this
     name = f"wils_CC_conf_delta_z={zt}_conf={stoppingPerc}"
     desc = f"the wilson-score lower and upper confidence bound is calculated for p1 and if the delta is < {stoppingPerc} " \
            f"a prediction is made based on the average of the two bounds. " \
@@ -118,9 +118,9 @@ class wilson_conf_delta():
         z = wilson_conf_delta.zt  # 1.44 = 85%, 1.96 = 95%
         p1L, p1U =wils_int(p1.nWins,n,0.05)
 
-        deltaP1=p1U-p1L
+        deltaP1=abs(p1U-p1L)
         #print(str(deltaP1))
-
+        #print(deltaP1)
         if (deltaP1)<wilson_conf_delta.stoppingPerc: #it could converge to a solution lower than 50%
             #print('p1 found solution')
             #print(deltaP1)
@@ -139,39 +139,7 @@ class wilson_conf_delta():
                 upperBound = p1U
         ################ Not neccesary to do the other player but code is here just in case you want to have a look
         ######
-        """
-        p2hat = float(p2.nWins) / n
-        p2L=((p2hat + z * z / (2 * n) - z * math.sqrt((p2hat * (1 - p2hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-        p2U=((p2hat + z * z / (2 * n) + z * math.sqrt((p2hat * (1 - p2hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-        deltaP2=p2U-p2L
-        if (deltaP2) < wilson_mean_conf.stoppingPerc:
-            print('p2 found solution')
-            #print(deltaP1)
 
-            if ((p2L + p2U) / 2.0) > 0.5:
-                best_predict2 = 2
-                lowerBound = p2L
-                upperBound = p2U
-            if ((p2L + p2U) / 2.0) < 0.5:
-                best_predict2 = 1
-                lowerBound = p2L
-                upperBound = p2U
-            if ((p2L + p2U) / 2.0) == 0.5:
-                best_predict2 = 0
-                lowerBound = p2L
-                upperBound = p2U
-
-            if finished==True:
-                #the other side made a prediction as well.
-                print("Both sides made prediction at same time.")
-                if best_predict!=best_predict2:
-                    print(f"didn't agree. predict p1:{best_predict}, {best_predict2}")
-            else:
-                print(f"p1 didn't give result but p2 did.")
-                best_predict=best_predict2
-
-            finished = True
-        """
 
         if finished:
             #print(f"{p1.nWins},{p2.nWins},{lowerBound},{upperBound}")

@@ -35,7 +35,6 @@ def plotBeta(X,n,alpha=0.05):
     b1 = n - X + 1
 
     mean, var, skew, kurt = stats.beta.stats(X, b1, moments='mvsk')
-    al=.001
     x1 = np.linspace(0,1, 100)
     ax.plot(x1, stats.beta.pdf(x1, a1, b1),
             'r-', lw=5, alpha=0.6, label='p1betaL pdf')
@@ -118,7 +117,7 @@ class bayes_U():
 
 class bayesTheorum(): #this updates iteratively
     #limit=0.65
-    delta=0.5
+    delta=0.3
     minGames=1
 
     name = f"bayesTheorum_delta={delta}"
@@ -194,24 +193,11 @@ class bayesTheorum(): #this updates iteratively
             if bayesTheorum.P_A>0.50:
                 best_predict = 1
             elif bayesTheorum.P_B>0.50:
-                best_predict = 1
+                best_predict = 2
             else:
                 best_predict=0
                 print("Predicted a draw")
 
-        """if bayes.P_A>bayes.limit:
-            best_predict=1
-            finished=True
-        elif bayes.P_B>bayes.limit:
-            best_predict=2
-            finished=True
-
-        elif bayes.P_C>bayes.limit:
-            best_predict=0
-            print("Predicted a draw")
-
-            finished=True
-        """
 
         if finished:
             #print(f"{p1.nWins},{p2.nWins},{lowerBound},{upperBound}")

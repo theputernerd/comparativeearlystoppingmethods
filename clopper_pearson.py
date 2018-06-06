@@ -40,7 +40,7 @@ when choosing between condence intervals, it is often preferable to use an inte
 with a simple closed-form formula rather than one that requires numerical
 evaluation, Thullin - the cost of using exact confidence intervals for a binomial proportion.
 """
-    stoppingPerc=.1 #stops when the delta between upper and low is less than this
+    stoppingPerc=.15 #stops when the delta between upper and low is less than this
     name = f"CP_mean_conf"
     desc = f"Cp interval found < {stoppingPerc} " \
            f"delta upper and lower is stopping condition. . " \

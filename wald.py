@@ -116,7 +116,7 @@ class wal_conf_delta():
     zt = 1.96  # 2.576
     pscore=0.05
     minGames=30
-    stoppingPerc=.1 #stops when the delta between upper and low is less than this
+    stoppingPerc=.15 #stops when the delta between upper and low is less than this
     name = f"wald_conf_delta_p={pscore}_conf={stoppingPerc}"
     desc = f"the wald lower and upper confidence bound is calculated for p1 and if the delta is < {stoppingPerc} " \
            f"a prediction is made based on the average of the two bounds. " \
