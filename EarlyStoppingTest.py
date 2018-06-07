@@ -19,6 +19,18 @@ from timeit import default_timer as timer
 from clopper_pearson import clopper_pearson_mean_conf
 from agresti_coull import ac_z_score_30min,ac_z_score_100min
 from lib import *
+from lib import *
+import time
+from binomial import binomial_mean_conf
+from bayes import bayesTheorum,bayes_U
+import csv
+trials = 1000  # how many times to run the experiment.
+maxNgames = 500  # if the detector hasn't made its mind up by this many games it becomes a type 2 error.
+tests = [bayes_U, binomial_mean_conf, bayesTheorum, wilson_lcb, clopper_pearson_mean_conf, wilson_conf_delta,
+         wal_conf_delta, ac_z_score_30min, wilson_z_score_30min, wilsonNOCC_z_score_30min, wal_z_score_30min,
+         ac_z_score_100min, wilson_z_score_100min, wilsonNOCC_z_score_100min, wal_z_score_100min, perc_after_n_games,
+         n_games]
+
 
 def doTests(tests,p1,p2,drawsP,max_ngames,results):
     p1.reset()
@@ -29,9 +41,9 @@ def doTests(tests,p1,p2,drawsP,max_ngames,results):
         t.reset()
     #bayes.reset() #it's the only one with reset global variables.
 
-    if (p1winrate > p2winrate):
+    if (p1.pWin > p2.pWin):
         best_actual = 1
-    elif (p1winrate < p2winrate):
+    elif (p1.pWin < p2.pWin):
         best_actual = 2
     else:
         best_actual = 0  # No player is better.
@@ -62,91 +74,107 @@ def doTests(tests,p1,p2,drawsP,max_ngames,results):
                     results[c_nGames.name].append(c_nGames)
 
     return results
-from lib import *
-import time
-from binomial import binomial_mean_conf
-from bayes import bayesTheorum,bayes_U
-import csv
-if __name__ == '__main__':
 
 
-    trials=1000    #how many times to run the experiment.
-    maxNgames=500 #if the detector hasn't made its mind up by this many games it becomes a type 2 error.
 
-    tests=[bayes_U, binomial_mean_conf, bayesTheorum, wilson_lcb, clopper_pearson_mean_conf, wilson_conf_delta, wal_conf_delta, ac_z_score_30min, wilson_z_score_30min, wilsonNOCC_z_score_30min, wal_z_score_30min, ac_z_score_100min, wilson_z_score_100min, wilsonNOCC_z_score_100min, wal_z_score_100min, perc_after_n_games, n_games]
+from random import randint
+def playGames(p1winrate,p2winrate=None,drawRate=None):
     results=dict()
-    fullResult=dict()
-
-    for i in np.arange(0.01,.99,.07):
-        p1winrate = i  # probability of p1 winning
-        p2winrate = 1-i  # probability of p2 winning
+    if p2winrate==None:
+        p2winrate = 1 - p1winrate  # probability of p2 winning
+    if drawRate==None:
         drawRate = 1 - (p1winrate + p2winrate)
 
-        assert (p1winrate + p2winrate) <= 1
-        p1 = player(p1winrate)
-        p2 = player(p2winrate)
-        drawsP = player(drawRate)
-        trialDict=dict()
+    assert (p1winrate + p2winrate) <= 1
+    p1 = player(p1winrate)
+    p2 = player(p2winrate)
+    drawsP = player(drawRate)
+    trialDict = dict()
 
-        for t in tests:
-            results[t.name]=[]
-            trialDict[t.name]=t
+    for t in tests:
+        results[t.name] = []
+        trialDict[t.name] = t
 
-        times={}
-        for j in range(trials):
-            t0=time.time()
-            results=doTests(tests,p1,p2,drawsP,max_ngames=maxNgames,results=results)
+    times = {}
+    for j in range(trials):
+        t0 = time.time()
+        results = doTests(tests, p1, p2, drawsP, max_ngames=maxNgames, results=results)
 
-            t1=time.time()
-        strng = ""
-        maxlenName=0
-        for key in results: #This get the max so the columns are aligned.
+        t1 = time.time()
+    strng = ""
+    maxlenName = 0
+    for key in results:  # This get the max so the columns are aligned.
 
-            if len(key)>maxlenName:
-                maxlenName=len(key)
-        lines=[]
-        lines.append(["Name","Av_games_to_predict","Type 1 E%","Type2E%"])
+        if len(key) > maxlenName:
+            maxlenName = len(key)
+    lines = []
+    lines.append(["Name", "Av_games_to_predict", "Type 1 E%", "Type2E%"])
 
-        for key in results:
-            #print(f"{trialDict[key].desc}")
-            #print("------------------------")
-            predictN=0
-            falsePredict=0
-            nGamesprediction=[]
-            timetaken=[]
-            if len(key)>maxlenName:
-                maxlenName=len(key)
-            for c in results[key]:
+    for key in results:
+        # print(f"{trialDict[key].desc}")
+        # print("------------------------")
+        predictN = 0
+        falsePredict = 0
+        nGamesprediction = []
+        timetaken = []
+        if len(key) > maxlenName:
+            maxlenName = len(key)
+        for c in results[key]:
 
-                #now get the percentage of correct predictions
-                if c.predictCorrect:
-                    predictN +=1
-                else:
-                    falsePredict+=1
-                nGamesprediction.append(c.ngames)
-                #avPrediction = np.average(nGamesprediction)
-                timetaken.append(c.time)
-                #print (c)
-            avTime = np.average(timetaken)
-            avPrediction=np.round(np.average(nGamesprediction),decimals=2)
-            #print("-------------------------------------------------------------------------------------------------------")
-            print(f"______{key}______ av_time:{avTime:1.2E}s")
-            #strng+=str(key)+" \t\t\t\t"+"|"+str(avPrediction)+"\t\t|\t"+str(np.round((falsePredict/trials)*100,2))+"%  \t|\t "+str(np.round((1-len(nGamesprediction)/trials)*100,2))+"%\n"#  \t|\t{len(nGamesprediction)}\t\t\n"
-            line=[key,p1winrate,p2winrate,drawRate,avPrediction,np.round((falsePredict/trials)*100,2),np.round((1-len(nGamesprediction)/trials)*100,2)]
-            lines.append(line)
-            strng+=f"{key}"+" "*(maxlenName-len(key))+f"|{avPrediction:<5}\t\t|\t{np.round((falsePredict/trials)*100,2):<5}%  \t|\t{np.round((1-len(nGamesprediction)/trials)*100,2):<5}%\n"#  \t|\t{len(nGamesprediction)}\t\t\n"
-            #print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalFailure:{(1-predictN/trials)*100:.3f}%")
+            # now get the percentage of correct predictions
+            if c.predictCorrect:
+                predictN += 1
+            else:
+                falsePredict += 1
+            nGamesprediction.append(c.ngames)
+            # avPrediction = np.average(nGamesprediction)
+            timetaken.append(c.time)
+            # print (c)
+        avTime = np.average(timetaken)
+        avPrediction = np.round(np.average(nGamesprediction), decimals=2)
+        # print("-------------------------------------------------------------------------------------------------------")
+        print(f"______{key}______ av_time:{avTime:1.2E}s")
+        # strng+=str(key)+" \t\t\t\t"+"|"+str(avPrediction)+"\t\t|\t"+str(np.round((falsePredict/trials)*100,2))+"%  \t|\t "+str(np.round((1-len(nGamesprediction)/trials)*100,2))+"%\n"#  \t|\t{len(nGamesprediction)}\t\t\n"
+        line = [key, p1winrate, p2winrate, drawRate, avPrediction, np.round((falsePredict / trials) * 100, 2),
+                np.round((1 - len(nGamesprediction) / trials) * 100, 2)]
+        lines.append(line)
+        strng += f"{key}" + " " * (maxlenName - len(
+            key)) + f"|{avPrediction:<5}\t\t|\t{np.round((falsePredict/trials)*100,2):<5}%  \t|\t{np.round((1-len(nGamesprediction)/trials)*100,2):<5}%\n"  # \t|\t{len(nGamesprediction)}\t\t\n"
+        # print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalFailure:{(1-predictN/trials)*100:.3f}%")
+        try:
             with open(f"{key}.csv", "a") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(line)
+        except:
+            #raise
+            sleepTime=randint(1, 20)
+            print(f"Got an error writing to csv. Waiting {sleepTime}s and will try again.")
+            time.sleep(sleepTime)
+            with open(f"{key}.csv", "a") as f:
+                wr = csv.writer(f, delimiter=",", newline='')
+                wr.write(line)
 
-        strline1 = "Name"+" "*(maxlenName-4)+f"|n_games\t\t| Type 1 E\t\t|Type2 E \t"#  \t| npredict  \t"
-        print(f"trials{trials}, max_n_games{maxNgames}. P(p1)={p1winrate} P(p2)={p2winrate} P(draw)={drawRate}")
-        #print(lines)
+    strline1 = "Name" + " " * (maxlenName - 4) + f"|n_games\t\t| Type 1 E\t\t|Type2 E \t"  # \t| npredict  \t"
+    print(f"trials{trials}, max_n_games{maxNgames}. P(p1)={p1winrate} P(p2)={p2winrate} P(draw)={drawRate}")
+    # print(lines)
 
-        print(strline1)
-        print(strng)
+    print(strline1)
+    print(strng)
+from multiprocessing import Pool
+if __name__ == '__main__':
 
+
+
+    fullResult=dict()
+    p=Pool(8)
+    p1Prob=np.arange(0.01,.99,.005)
+    p.map(playGames,p1Prob)
+    assert False #finished
+    for i in np.arange(0.01,.99,.005):
+        p1winrate = i  # probability of p1 winning
+        p2winrate = 1 - i  # probability of p2 winning
+        drawRate = 1 - (p1winrate + p2winrate)
+        playGames(results,p1winrate,p2winrate,drawRate)
     #np.savetxt(f"{p1winrate}_{p2winrate}_{drawRate}_{maxNgames}.csv", lines, delimiter=",", fmt='%s')
 
 
