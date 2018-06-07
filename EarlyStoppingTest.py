@@ -77,8 +77,10 @@ def doTests(tests,p1,p2,drawsP,max_ngames,results):
 
 
 
-from random import randint
+from random import randint,seed
 def playGames(p1winrate,p2winrate=None,drawRate=None):
+    np.random.seed(None)  # changed Put Outside the loop.
+    seed()
     results=dict()
     if p2winrate==None:
         p2winrate = 1 - p1winrate  # probability of p2 winning
@@ -166,8 +168,8 @@ if __name__ == '__main__':
 
 
     fullResult=dict()
-    p=Pool(8)
-    p1Prob=np.arange(0.01,.99,.005)
+    p=Pool(16)
+    p1Prob=np.arange(0.35,.65,.005)
     p.map(playGames,p1Prob)
     assert False #finished
     for i in np.arange(0.01,.99,.005):
