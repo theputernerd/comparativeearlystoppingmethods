@@ -8,6 +8,9 @@ def bayesian_U(X,n,alpha=0.05):
         X successes on n trials
         http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
         """
+
+        a=X+1
+        b=n - X + 1
         if X == 0:
             p1L = 0.0
             p1H = 1 - math.pow(alpha,1.0/(n+1))
@@ -16,40 +19,51 @@ def bayesian_U(X,n,alpha=0.05):
             p1L = math.pow(alpha,1.0/(n+1))
             p1H = 1
         else:
-            p1L = stats.beta.ppf(alpha / 2.0, X+1, n - X + 1)
-            p1H = stats.beta.ppf(1 - alpha / 2.0, X + 1, n - X+1)
+            p1L = stats.beta.ppf(alpha / 2.0, a, b)
+            p1H = stats.beta.ppf(1 - alpha / 2.0, a, b)
             if p1L>p1H:
                 pass
 
-        #if (n-1)%5==0:
-        #    print(f"{p1L},{p1H}")
-        #    plotBeta(X,n,alpha)
+        if (n-1)%5==0:
+            print(f"X:{X},n:{n},L:{p1L},U:{p1H}")
+            plotBeta(X,n)
+            a=5
+        mean, var, skew, kurt = stats.beta.stats(a, b, moments='mvsk')
 
-        return p1L, p1H
+        return p1L, p1H,mean,var
 
-
-def plotBeta(X,n,alpha=0.05):
+import time
+def plotBeta(X,n):
     ##############PLOTTING ONE
     fig, ax = plt.subplots(1, 1)
+
     a1 = X + 1
     b1 = n - X + 1
 
-    mean, var, skew, kurt = stats.beta.stats(X, b1, moments='mvsk')
     x1 = np.linspace(0,1, 100)
-    ax.plot(x1, stats.beta.pdf(x1, a1, b1),
-            'r-', lw=5, alpha=0.6, label='p1betaL pdf')
+    #ex=stats.beta(stats.beta,a=a1, b=b1)
+    p1Plot,=ax.plot(x1, stats.beta.pdf(x1, a1, b1),
+            'r-', lw=5, alpha=0.6, label='p1beta pdf')
+
     p2w=n-X
     a = p2w + 1
     b = n - p2w + 1
-    ax.plot(x1, stats.beta.pdf(x1, a, b),
-            'g-', lw=5, alpha=0.6, label='p2betaU pdf')
+    p2Plot,=ax.plot(x1, stats.beta.pdf(x1, a, b),
+            'g-', lw=5, alpha=0.6, label='p2beta pdf')
+    mean, var, skew, kurt = stats.beta.stats(a1, b1, moments='mvsk')
+    meanT=f"p1Mean={float(mean):.2f}."
+    varT=f"\nvar={float(var):.2E}"
+    ax.text(0.05, 0.75, meanT+varT, style='italic',
+            bbox={'facecolor': 'red', 'alpha': 0.5, 'pad': 10})
     X2 = n-X
     a = X2 + 1
     b = n - X2 + 1
     x2 = np.linspace(0,1, 100)
+    plt.legend(handles=[p1Plot, p2Plot])
 
     #ax.plot(x2, stats.beta.pdf(x2, a, b),'g-', lw=5, alpha=0.6, label='p2beta pdf')
     plt.show()
+    time.sleep(5) #just becase sciview in pycharm goes through the images v quickly.
     pass
 import matplotlib.pyplot as plt
 class bayes_U():
@@ -79,7 +93,7 @@ class bayes_U():
         n=float(ngames)
         if n == 0:
             return finished, lowerBound, c
-        p1L,p1U=bayesian_U(p1.nWins,n)
+        p1L,p1U,mean,var=bayesian_U(p1.nWins,n)
 
         deltaP1=p1U-p1L
         #print(str(deltaP1))
@@ -88,15 +102,15 @@ class bayes_U():
             #print('p1 found solution')
             #print(deltaP1)
             finished = True
-            if ((p1L+p1U)/2.0)>0.5:
+            if mean>0.5:
                 best_predict = 1
                 lowerBound = p1L
                 upperBound = p1U
-            if ((p1L + p1U) / 2.0) < 0.5:
+            if mean < 0.5:
                 best_predict = 2
                 lowerBound = p1L
                 upperBound = p1U
-            if ((p1L + p1U) / 2.0) == 0.5:
+            if mean == 0.5:
                 best_predict = 0
                 lowerBound = p1L
                 upperBound = p1U

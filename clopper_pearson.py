@@ -30,8 +30,8 @@ def clopper_pearson(X,n,alpha=0.05):
         lo=math.sqrt(alpha/2.0)
         hi=1
     else:
-        lo = scipy.stats.beta.ppf(alpha/2, X, n-X+1)
-        hi = scipy.stats.beta.ppf(1 - alpha/2, X+1, n-X) or 1
+        lo = scipy.stats.beta.ppf(alpha/2.0, X, n-X+1)
+        hi = scipy.stats.beta.ppf(1 - alpha/2.0, X+1, n-X) or 1
     return lo, hi
 
 class clopper_pearson_mean_conf():

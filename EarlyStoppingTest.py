@@ -168,8 +168,11 @@ if __name__ == '__main__':
 
 
     fullResult=dict()
-    p=Pool(16)
+    playGames(0.45)
+    p=Pool(16)  ###16 CHANGE BACK TO PARRALLEL PROCESS
+
     p1Prob=np.arange(0.35,.65,.005)
+
     p.map(playGames,p1Prob)
     assert False #finished
     for i in np.arange(0.01,.99,.005):
