@@ -1,16 +1,37 @@
 from lib import *
 import scipy.stats as stats
 import math
+from scipy.misc import comb
+
+#https://github.com/fonnesbeck/scipy2014_tutorial/blob/master/1_Introduction-to-Bayes.ipynb
+P_binom = lambda y, n, p: comb(n, y) * p**y * (1-p)**(n-y) #This function returns the probability of observing $y$ events from $n$ trials, where events occur independently with probability $p$.
+
+
+
+print(P_binom(3,10,0.5))
 
 def bayesian_U(X,n,alpha=0.05):
         """
         NB alpha=1-confidence
         X successes on n trials
-        http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
-        """
+        Sample Size for Estimating a Binomial Proportion comparison of different methods Table 1 Gonçalves 2012
 
-        a=X+1
-        b=n - X + 1
+        Eq 4 from The cost of using exact confidence intervals for a binomial proportion... Thulin 2013
+        http://statweb.stanford.edu/~serban/116/bayes.pdf
+        https://alexanderetz.com/2015/07/25/understanding-bayes-updating-priors-via-the-likelihood/
+        http://patricklam.org/teaching/bayesianhour_print.pdf p13 and 14
+        http://patricklam.org/teaching/conjugacy_print.pdf pp0-13
+        https://stats.stackexchange.com/questions/181934/sequential-update-of-bayesian
+        NB that a batch update of the posterior is equivalent to a sequential update.
+        In reality with this method I am just restarting from the uninformed flat prior each time
+        I call this. Posterior is Beta(α+X,β+n−X)
+        NB Highest density point (MAX) is (α+X-1)/(α+β+n-2)
+        """
+        priora=1 #α
+        priorb = 1 #β
+
+        a=X+priora
+        b=n - X + priorb
         if X == 0:
             p1L = 0.0
             p1H = 1 - math.pow(alpha,1.0/(n+1))
