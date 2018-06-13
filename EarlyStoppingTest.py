@@ -12,7 +12,7 @@ Article Approximate Is Better than "Exact" for Interval Estimation of Binomial P
 
 Sample size for estimating a binomial proportion: comparison of different methods Luzia Gonçalves , M. Rosário de Oliveira , Cláudia Pascoal  & Ana Pires
 """
-from wilson import wilson_lcb,wilson_conf_delta,wilson_z_score_100min,wilson_z_score_30min,wilsonNOCC_z_score_30min,wilsonNOCC_z_score_100min
+from wilson import wilson_z_score_0min,wilson_lcb,wilson_conf_delta,wilson_z_score_100min,wilson_z_score_30min,wilsonNOCC_z_score_30min,wilsonNOCC_z_score_100min
 from wald import wal_z_score_30min,wal_z_score_100min, wal_conf_delta
 from naiveMethods import perc_after_n_games,n_games
 from timeit import default_timer as timer
@@ -22,15 +22,16 @@ from lib import *
 from lib import *
 import time
 from binomial import binomial_mean_conf
-from bayes import bayesTheorum,bayes_U
+from bayes import bayesTheorum,bayes_U,bayes_MulStop
 import csv
-trials = 1000  # how many times to run the experiment.
+trials = 100 # how many times to run the experiment.
 maxNgames = 500  # if the detector hasn't made its mind up by this many games it becomes a type 2 error.
 tests = [bayes_U, binomial_mean_conf, bayesTheorum, wilson_lcb, clopper_pearson_mean_conf, wilson_conf_delta,
          wal_conf_delta, ac_z_score_30min, wilson_z_score_30min, wilsonNOCC_z_score_30min, wal_z_score_30min,
          ac_z_score_100min, wilson_z_score_100min, wilsonNOCC_z_score_100min, wal_z_score_100min, perc_after_n_games,
          n_games]
-
+tests = [bayes_MulStop,  wilson_z_score_0min, bayes_U, perc_after_n_games,
+         n_games]
 
 def doTests(tests,p1,p2,drawsP,max_ngames,results):
     p1.reset()
@@ -79,8 +80,8 @@ def doTests(tests,p1,p2,drawsP,max_ngames,results):
 
 from random import randint,seed
 def playGames(p1winrate,p2winrate=None,drawRate=None):
-    np.random.seed(None)  # changed Put Outside the loop.
-    seed()
+    #np.random.seed(None)  # changed Put Outside the loop.
+    #seed()
     results=dict()
     if p2winrate==None:
         p2winrate = 1 - p1winrate  # probability of p2 winning
@@ -156,7 +157,7 @@ def playGames(p1winrate,p2winrate=None,drawRate=None):
                 wr = csv.writer(f, delimiter=",", newline='')
                 wr.write(line)
 
-    strline1 = "Name" + " " * (maxlenName - 4) + f"|n_games\t\t| Type 1 E\t\t|Type2 E \t"  # \t| npredict  \t"
+    strline1 = "Name" + " " * (maxlenName - 4) + f"|n_games\t\t| Incorrect\t\t|No predict({maxNgames}) \t"  # \t| npredict  \t"
     print(f"trials{trials}, max_n_games{maxNgames}. P(p1)={p1winrate} P(p2)={p2winrate} P(draw)={drawRate}")
     # print(lines)
 
@@ -164,11 +165,12 @@ def playGames(p1winrate,p2winrate=None,drawRate=None):
     print(strng)
 from multiprocessing import Pool
 if __name__ == '__main__':
-
-
-
+    np.random.seed(None)  # changed Put Outside the loop.
+    seed()
     fullResult=dict()
     playGames(0.45)
+
+    assert False #This is the full test across all p
     p=Pool(16)  ###16 CHANGE BACK TO PARRALLEL PROCESS
 
     p1Prob=np.arange(0.35,.65,.005)
