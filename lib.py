@@ -5,24 +5,41 @@ from scipy import stats
 import numpy as np
 alpha=0.05
 z=abs(stats.norm.ppf((1-alpha/2.0))) #1.96 for alpha=0.5
-def predict1(lc,uc):
-    if lc>=0.52 :
 
-        return True
-    elif uc<=0.48:
-        return True
+
+def getLimits(p1w, p2w, fn):
+    n = p1w + p2w
+
+    p1L, p1U, mean = fn(p1w, n)
+
+    return p1L, p1U, mean
+
+
+def LCBTest(lc, uc):
+    if lc>=0.50 :
+        return 1
+    elif uc<=0.50:
+        return 2
     else:
-        return False
+        return 0
 
-def predict2(lc, uc):
+def DeltaTest(lc, uc):
     delta=uc-lc
     diff=0.10 #5% diff between upper and lower confidence.
-    percDiff=delta/(abs(uc+lc)/2.0)
+    mean=(uc+lc)/2.0
 
     if delta<diff:
-        return True
+        if abs(mean - 0.5) <= 0.025:  # this is classed as a draw
+            return 3
+        if mean > 0.5:
+            return 1
+        elif mean<0.5:
+            return 2
+        else:
+            assert False #Wierd result.
+
     else:
-        return False
+        return 0
     if percDiff <diff : ##percentage difference. NB Returns different results for lower and upper confidence because of %diff not absolute
         return True #remove for lc>uc
 

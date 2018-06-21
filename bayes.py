@@ -39,13 +39,13 @@ def bayesian_U(X,n):
         global alpha
         a, b = getBetaParams(X, n)
 
-        #if X == 0:
-        #    p1L = 0.0
-        #    p1H = 1 - math.pow(alpha,1.0/(n+1))
+        if X == 0:
+            p1L = 0.0
+            p1H = 1 - math.pow(alpha,1.0/(n+1))
 
-        #elif X == n:
-        #    p1L = math.pow(alpha,1.0/(n+1))
-        #    p1H = 1
+        elif X == n:
+            p1L = math.pow(alpha,1.0/(n+1))
+            p1H = 1
         #else:
         #p1LManual=B_pdf(alpha / 2.0, a, b)
 
@@ -132,8 +132,8 @@ class bayes_MulStop():
         ucp2 = 1 - p1L
         p2L,p2U,mean=bayesian_U(n-p1.nWins,n)
 
-        pred1 = predict1(p1L, p1U)
-        pred2 = predict2(p1L, p1U)
+        pred1 = LCBTest(p1L, p1U)
+        pred2 = DeltaTest(p1L, p1U)
 
         if pred1:  # then LCB>0.5
             finished = True

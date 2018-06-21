@@ -104,13 +104,15 @@ class wal_z_score_100min():
 import scipy.stats as stats
 
 def wald_int(X,n,alpha=0.05):
-    z=stats.norm.ppf((1-alpha/2.0)) #two tailed.
+    global z
+    if n==0:
+        return 0,1,0.5
 
     p1hat = float(X) / n
-    p1L = p1hat - z * math.sqrt(
-        p1hat * (1 - p1hat) / n)  # see http://www.ucl.ac.uk/english-usage/staff/sean/resources/binomialpoisson.pdf eqn1
-    p1U = p1hat + z * math.sqrt(p1hat * (1 - p1hat) / n)
-    return p1L,p1U
+    p1L = max(0,p1hat - z * math.sqrt(
+        p1hat * (1 - p1hat) / n))  # see http://www.ucl.ac.uk/english-usage/staff/sean/resources/binomialpoisson.pdf eqn1
+    p1U = min(1,p1hat + z * math.sqrt(p1hat * (1 - p1hat) / n))
+    return p1L,p1U,n*p1hat
 
 class wal_conf_delta():
     zt = 1.96  # 2.576

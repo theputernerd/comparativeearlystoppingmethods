@@ -12,64 +12,110 @@ from binomial import binomial_mean_conf
 from bayes import bayesTheorum,bayes_U,bayes_MulStop,bayesian_U
 import csv
 maxNgames = 100  # if the detector hasn't made its mind up by this many games it becomes a type 2 error.
+ngames = 350
 
-
-def getLimits(p1w,p2w,fn):
-    n=p1w+p2w
-    p1L, p1U, mean = fn(p1w, n)
-    return p1L, p1U, mean
-ngames = 500
-
-def createCoveragePlots(fn,test1=True,test2=True,test3=True):
-    x = []
-    y = []
+def coveragePlotData(fn, test1=True, test2=True):
     doPred1 = test1
     doPred2 = test2
-    doPred3 = test3
+    p1_Lx=[] #the lower bound of p1 winning
+    p1_Ly=[] #the lower bound of p1 winning
+    p1_Ux = []  # the lower bound of p1 winning
+    p1_Uy = []  # the lower bound of p1 winning
+    d_Ux = []  # the lower bound of p1 winning
+    d_Uy = []  # the lower bound of p1 winning
     for p2W in range(0, ngames):
+        predicted = False
+        for p1W in range(0, ngames):
+            p1L, p1U, mean = getLimits(p1W, p2W, fn)
+            pred2 = DeltaTest(p1L, p1U) if doPred2 else False
+            pred1 = LCBTest(p1L, p1U) if doPred1 else False
+            if pred1 == 1 or pred2 == 1:
+                # predicted player 1 won.
+                predicted = True
+                p1_Lx.append(p1W)
+                p1_Ly.append(p2W)
+                #p1_Ux.append(p1W)
+                #p1_Uy.append(0)
+
+            elif pred1 == 2 or pred2 == 2:
+                predicted = True
+                p1_Lx.append(p1W)
+                p1_Ly.append(p2W)
+                #xp2w.append(p1W)
+                #yp2w.append(p2W)
+                #p1_L.append((p1W,p1W))
+
+            elif pred1 == 3 or pred2 == 3:
+                predicted = True
+                d_Ux.append(p1W)
+                d_Uy.append(p2W)
+
+                #xdraw.append(p1W)
+                #ydraw.append(p2W)
+                #p1_L.append((p1W,p1W))
+
+    return p1_Lx,p1_Ly,p1_Ux,p1_Uy,d_Ux,d_Uy
+def getCoverageData(fn, test1=True, test2=True):
+    xp1w = []
+    yp1w = []
+    xp2w = []
+    yp2w = []
+    xdraw = []
+    ydraw = []
+
+    doPred1 = test1
+    doPred2 = test2
+    line1=[]
+    line2=[]
+    for p2W in range(0, ngames):
+        predicted = False
         for p1W in range(0, ngames):
             if p2W > p1W:
                 continue  # do the other side of the graph later.
-            if p2W == 101 and p1W == 153:
-                sdfsdf = 44
-            p1L, p1U, mean = getLimits(p1W, p2W, fn)
-            pred1 = predict1(p1L, p1U) if doPred1 else False
-            pred2 = predict2(p1L, p1U) if doPred2 else False
-            pred3 = predict3(p1L, p1U) if doPred3 else False
 
-            if pred1 or pred2 or pred3:
-                countPredictions += 1
-                # predictionMade=True
-                x.append(p1W)
-                y.append(p2W)
+            p1L, p1U, mean = getLimits(p1W, p2W, fn)
+            pred1 = LCBTest(p1L, p1U) if doPred1 else False
+            pred2 = DeltaTest(p1L, p1U) if doPred2 else False
+
+            if pred1==1 or pred2==1:
+                #predicted player 1 won.
+
+                predicted=True
+
+                xp1w.append(p1W)
+                yp1w.append(p2W)
                 break
-            else:
-                # didn't predict so save current data and reset count ready for next check.
-                # if predictionMade:
-                # need to save the count.
-                #    x.append(p1W)
-                #    y.append(p2W)
-                predictionMade = False
-                countPredictions = 0
-    x1 = []
-    y1 = []
-    for p1W in range(0, ngames):
+            elif pred1==2 or pred2==2:
+                xp2w.append(p1W)
+                yp2w.append(p2W)
+                break
+            elif pred1 == 3 or pred2==3:
+                xdraw.append(p1W)
+                ydraw.append(p2W)
+                break
+
+    for p1W in range(0, ngames): #ngames
         for p2W in range(0, ngames):
             if p1W > p2W:
                 continue  # do the other side of the graph later.
             if p2W > 152 and p1W > 100:
                 sdfsdf = 44
             p1L, p1U, mean = getLimits(p1W, p2W, fn)
-            pred1 = predict1(p1L, p1U) if doPred1 else False
-            pred2 = predict2(p1L, p1U) if doPred2 else False
-            pred3 = predict3(p1L, p1U) if doPred3 else False
+            pred1 = LCBTest(p1L, p1U) if doPred1 else False
+            pred2 = DeltaTest(p1L, p1U) if doPred2 else False
 
-            if pred1 or pred2:
-                countPredictions += 1
-                # predictionMade=True
-                x.append(p1W)
-                y.append(p2W)
-
+            if pred1==1 or pred2==1:
+                #predicted player 1 won.
+                xp1w.append(p1W)
+                yp1w.append(p2W)
+                break
+            elif pred1==2 or pred2==2:
+                xp2w.append(p1W)
+                yp2w.append(p2W)
+                break
+            elif pred1 == 3 or pred2==3:
+                xdraw.append(p1W)
+                ydraw.append(p2W)
                 break
             else:
                 # didn't predict so save current data and reset count ready for next check.
@@ -79,25 +125,104 @@ def createCoveragePlots(fn,test1=True,test2=True,test3=True):
                 #    y.append(p2W)
                 predictionMade = False
                 countPredictions = 0
-    return x,y
+
+    return xp1w,yp1w,xp2w,yp2w,xdraw,ydraw
+import numpy as np
+import random
+
+
+def coveragePlot(t1,t2,markersize,name,sampleEvery=2):
+    ###############
+    fig, ax = plt.subplots(1, 1, figsize=(19.20, 10.8))
+    gcolor = '#b7b7bc'
+
+    ax.grid(color=gcolor, linestyle='-', linewidth=1)
+    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
+    plt.minorticks_on()
+
+    p1_Lx, p1_Ly, p1_Ux, p1_Uy, d_Ux, d_Uy = coveragePlotData(wils_int, t1, t2)
+    if len(p1_Lx)>0:
+
+        p1_Lx, p1_Ly = zip(*random.sample(list(zip(p1_Lx, p1_Ly)), int(len(p1_Lx)/sampleEvery)))
+
+    #p1_Ly = p1_Ly[1::sampleEvery]
+    #d_Ux = d_Ux[1::sampleEvery]
+    #d_Uy = d_Uy[1::sampleEvery]
+    if len(d_Ux)>0:
+        d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux)/sampleEvery)))
+
+    WPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="wilson", markersize=1)
+    wDraws, = ax.plot(d_Ux, d_Uy, 'go', label="wilson_Draws", markersize=1)
+
+    #####################################################
+    p1_Lx, p1_Ly, p1_Ux, p1_Uy, d_Ux, d_Uy = coveragePlotData(bayesian_U, t1, t2)
+    p1_Lx, p1_Ly = zip(*random.sample(list(zip(p1_Lx, p1_Ly)), int(len(p1_Lx)/sampleEvery)))
+    if len(d_Ux)>0:
+        d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux)/sampleEvery)))
+
+    BPlot, = ax.plot(p1_Lx, p1_Ly, 'ro', label="bayesian", markersize=markersize)
+    bDraws, = ax.plot(d_Ux, d_Uy, 'mo', label="bayesian_Draws", markersize=markersize)
+
+    ############################################
+    linPlot, = ax.plot(range(0, ngames), range(0, ngames),
+                       'k-', label='Linear', markersize=markersize)
+
+    plt.legend(handles=[WPlot, BPlot, linPlot, wDraws, bDraws])
+    ax.set_ylim(ymin=0)
+    ax.set_xlim(xmin=0)
+    plt.xlabel("Player 1 wins")
+    plt.ylabel("Player 2 wins")
+    plt.title(f"{name}")
+    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
+    plt.savefig(f"{name}.eps", format='eps')
+    plt.show()
+    fig.canvas.draw()
+    fig.canvas.flush_events()
 
 import matplotlib.pyplot as plt
-if __name__ == '__main__':
-    countPredictions=0
-    predictionMade=False
-    t1=True
+
+def LCBTestPlots(name="LCBTestCoverage"):
+    countPredictions = 0
+    predictionMade = False
+    t1 = True
+    t2 = False
+    markersize = 1
+    coveragePlot(t1,t2,markersize,name)
+
+
+def both_TestsTestPlots(name="both__TestCoverage"):
+    countPredictions = 0
+    predictionMade = False
+    t1 = True
     t2 = True
-    t3 = False
-
-    x1,y1=createCoveragePlots(wils_int,t1,t2,t3)
-    x,y=createCoveragePlots(bayesian_U,t1,t2,t3)
-    x=np.array(x)
-    y = np.array(y)
-    x1 = np.array(x1)
-    y1 = np.array(y1)
+    markersize = 1
+    ###############
+    coveragePlot(t1,t2,markersize,name)
 
 
-    markersize=1
+
+def Delta_CBTestPlots(name="delta_CB_TestCoverage"):
+    countPredictions = 0
+    predictionMade = False
+    t1 = False
+    t2 = True
+    markersize = 1
+    coveragePlot(t1,t2,markersize,name)
+
+if __name__ == '__main__':
+    Delta_CBTestPlots()
+    both_TestsTestPlots()
+    Delta_CBTestPlots()
+    LCBTestPlots()
+
+
+    assert False
+    ########################################################
+    x1w,y1w,x2w,y2w,xdraw,ydraw=createCoveragePlots(wils_int,t1,t2)
+    b_x1w, b_y1w, b_x2w, b_y2w, b_xdraw, b_ydraw=createCoveragePlots(bayesian_U,t1,t2)
+
+
+
     fig, ax = plt.subplots(1, 2, figsize=(19.20, 10.8))
     gcolor = '#b7b7bc'
 
@@ -105,15 +230,20 @@ if __name__ == '__main__':
     plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
     plt.minorticks_on()
 
-    BPlot, = ax[0].plot(x, y,'go', label="bayes", markersize=markersize)
-    WPlot, = ax[0].plot(x1, y1,'bo', label="wilson", markersize=markersize)
+    BPlot, = ax[0].plot(b_x1w, b_y1w,'bo', label="bayes_p1Wins", markersize=markersize)
+    BPlot2, = ax[0].plot(b_x2w, b_y2w,'go', label="bayes_p2Wins", markersize=markersize)
+    BPlot3, = ax[0].plot(b_xdraw, b_ydraw,'co', label="bayes_Draws", markersize=markersize)
+
+    WPlot, = ax[0].plot(x1w, y1w, 'mo', label="Wils_p1Wins", markersize=markersize)
+    WPlot2, = ax[0].plot(x2w, y2w, 'yo', label="Wils_p2Wins", markersize=markersize)
+    WPlot3, = ax[0].plot(xdraw, ydraw, 'ko', label="Wils_Draws", markersize=markersize)
 
     # p2Plot, = ax.plot(x1, y1,
     #                  'b-', label='BayesianP2',markersize =1)
     linPlot, = ax[0].plot(range(0,ngames), range(0,ngames),
                        'k-', label='Linear', markersize=markersize)
 
-    plt.legend(handles=[WPlot, BPlot])
+    plt.legend(handles=[WPlot, BPlot,BPlot2,BPlot3])
     ax[0].set_ylim(ymin=0)
     ax[0].set_xlim(xmin=0)
     #plt.savefig('destination_path.eps', format='eps')
@@ -123,8 +253,8 @@ if __name__ == '__main__':
 
     gcolor = '#b7b7bc'
     ax[1].grid(color=gcolor, linestyle='-', linewidth=1)
-    WPlotngames, = ax[1].plot(x1/(y1+x1), y1+x1,'bo', label="WPlotngames", markersize=markersize)
-    BPlotngames, = ax[1].plot(x/(y+x), y+x,'go', label="BPlotngames", markersize=markersize)
+    #WPlotngames, = ax[1].plot(x1/(y1+x1), y1+x1,'bo', label="WPlotngames", markersize=markersize)
+    #BPlotngames, = ax[1].plot(x/(y+x), y+x,'go', label="BPlotngames", markersize=markersize)
     plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
     plt.savefig('fig2.eps', format='eps')
     plt.show()

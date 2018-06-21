@@ -262,9 +262,9 @@ def wilson_z_score_n_min(p1, p2, drawsP, best_actual, minGames, name):
     p1L,p1U,mean=wils_int(p1.nWins,n,cc=True)
     p2L,p2U,mean2=wils_int(p2.nWins,n,cc=True)
 
-    pred1=predict1(p1L,p1U)
+    pred1=LCBTest(p1L, p1U)
 
-    pred2=predict2(p1L, p1U)
+    pred2=DeltaTest(p1L, p1U)
 
     if pred1: #then LCB>0.5
         finish=True
