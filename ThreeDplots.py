@@ -46,7 +46,7 @@ def threeD(fn,name):
     fig = plt.figure(figsize=plt.figaspect(0.5))
     from matplotlib import cm
     del_data, lcb_data=get3dData(fn)
-
+    alpha=0.4
     color='k'#'#87adde'
     #####################################LCB
     X = []
@@ -69,8 +69,8 @@ def threeD(fn,name):
     ax = fig.add_subplot(1, 2, 1, projection='3d')
     # ax = fig.gca(projection='3d')
     cs1 = ax.contourf(xi, yi, zi, 500, linewidths=1,cmap=cm.jet)
-    cset = ax.contourf(xi, yi, zi, 100, zdir='z', offset=f, linewidths=1,colors=color)
-    cset = ax.contourf(xi, yi, zi, 100, zdir='z', offset=-.1, linewidths=.25,cmap=cm.jet)
+    cset = ax.contourf(xi, yi, zi, 100,alpha=alpha, zdir='z', offset=f, linewidths=1,colors=color)
+    #cset = ax.contourf(xi, yi, zi, 100, zdir='z', offset=-.1, linewidths=.25,cmap=cm.jet)
     #cset = ax.contour(xi, yi, zi, 100, zdir='z', offset=0.5, linewidths=0.5)
     ax.invert_yaxis()
     #plt.colorbar(cs, ax=ax)
@@ -98,16 +98,16 @@ def threeD(fn,name):
 
     ax = fig.add_subplot(1, 2, 2, projection='3d')
     #ax = fig.gca(projection='3d')
-    cs=ax.contourf(xi, yi, zi,500,linewidths=1,cmap=cm.jet)
-    cset = ax.contourf(xi, yi, zi,100, zdir='z', offset=0.1,linewidths=1,colors=color)
-    cset = ax.contour(xi, yi, zi,100, zdir='z', offset=0.4,linewidths=.25,cmap=cm.jet)
+    cs=ax.contourf(xi, yi, zi,1000,linewidths=1,cmap=cm.jet)
+    cset = ax.contourf(xi, yi, zi,100,alpha=alpha, zdir='z', offset=0.1,linewidths=1,colors=color)
+    #cset = ax.contour(xi, yi, zi,100, zdir='z', offset=0.4,linewidths=.25,cmap=cm.jet)
     plt.colorbar(cs1,ax=ax)
     ax.set_xlabel('p1Wins')
     #ax.set_xlim(0, maxNgames)
     ax.set_ylabel('p2Wins')
     #ax.set_ylim(0, maxNgames)
     ax.set_zlabel('|UCB-LCB|')
-    ax.set_zlim(0.4, 0)
+    ax.set_zlim(0,0.2)
     ax.set_title(f"(Test 2) Difference between upper and lower limits")
     ax.invert_yaxis()
 
