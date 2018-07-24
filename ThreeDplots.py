@@ -44,9 +44,12 @@ import matplotlib.pyplot as plt
 
 def threeD(fn,name):
     fig = plt.figure(figsize=plt.figaspect(0.5))
+    fig1 = plt.figure(figsize=plt.figaspect(0.5))
+    elev=44
+    az=36
     from matplotlib import cm
     del_data, lcb_data=get3dData(fn)
-    alpha=0.4
+    alpha=0.7
     color='k'#'#87adde'
     #####################################LCB
     X = []
@@ -66,12 +69,13 @@ def threeD(fn,name):
     zF=np.array(zFloor)
     xi, yi, zi = interpretXYZ(x, y, z,100)
     xfi, yfi, zfi = interpretXYZ(x, y, zF,100)
-    ax = fig.add_subplot(1, 2, 1, projection='3d')
+    ax = fig.add_subplot(1, 1, 1, projection='3d')
     # ax = fig.gca(projection='3d')
     cs1 = ax.contourf(xi, yi, zi, 500, linewidths=1,cmap=cm.jet)
     cset = ax.contourf(xi, yi, zi, 100,alpha=alpha, zdir='z', offset=f, linewidths=1,colors=color)
     #cset = ax.contourf(xi, yi, zi, 100, zdir='z', offset=-.1, linewidths=.25,cmap=cm.jet)
     #cset = ax.contour(xi, yi, zi, 100, zdir='z', offset=0.5, linewidths=0.5)
+    plt.colorbar(cs1,ax=ax)
     ax.invert_yaxis()
     #plt.colorbar(cs, ax=ax)
     ax.set_xlabel('p1Wins')
@@ -80,8 +84,16 @@ def threeD(fn,name):
     # ax.set_ylim(0, maxNgames)
     ax.set_zlabel('LCB Value')
     #ax.set_zlim(0, 1)
-    ax.set_title(f"(Test 1) - Lower confidence value")
+    #ax.set_title(f"(Test 1) - Lower confidence value")
+
+    ax.set_title(f"")
+    ax.view_init(elev=elev, azim=az)
+    fig.savefig(f"{name}LCB3d.pdf", format='pdf')
+    fig.savefig(f"{name}LCB3d.png", format='png')
+
     #####################################Delta UCB-LCB
+    elev = -30
+    az = -73
     X=[]
     Y=[]
     Z=[]
@@ -96,28 +108,33 @@ def threeD(fn,name):
 
     xi, yi, zi=interpretXYZ(x,y,z)
 
-    ax = fig.add_subplot(1, 2, 2, projection='3d')
+    ax = fig1.add_subplot(1, 1, 1, projection='3d')
     #ax = fig.gca(projection='3d')
     cs=ax.contourf(xi, yi, zi,1000,linewidths=1,cmap=cm.jet)
     cset = ax.contourf(xi, yi, zi,100,alpha=alpha, zdir='z', offset=0.1,linewidths=1,colors=color)
     #cset = ax.contour(xi, yi, zi,100, zdir='z', offset=0.4,linewidths=.25,cmap=cm.jet)
-    plt.colorbar(cs1,ax=ax)
+    plt.colorbar(cs,ax=ax)
     ax.set_xlabel('p1Wins')
     #ax.set_xlim(0, maxNgames)
     ax.set_ylabel('p2Wins')
     #ax.set_ylim(0, maxNgames)
     ax.set_zlabel('|UCB-LCB|')
     ax.set_zlim(0,0.2)
-    ax.set_title(f"(Test 2) Difference between upper and lower limits")
+    #ax.set_title(f"(Test 2) Difference between upper and lower limits")
+    ax.set_title(f"")
     ax.invert_yaxis()
+    ax.view_init(elev=elev, azim=az)
+
 
     ###################################################################
-    fig.suptitle(f"{name} ")
-    plt.savefig(f"{name}3d.eps", format='eps')
+    #fig.suptitle(f"{name} ")
+    fig1.savefig(f"{name}DelCB3d.pdf", format='pdf')
+    fig1.savefig(f"{name}DelCB3d.png", format='png')
+
     plt.show(block=False)
 
 
-threeD(bayesian_U,"Bayesian Updating")
+threeD(bayesian_U,"BayesianUpdating")
 print("Next Graph")
 threeD(wils_int,"Wilson")
 print("Next Graph")

@@ -38,7 +38,13 @@ def bayesian_U(X,n):
         priorb = 1 #β
         global alpha
         a, b = getBetaParams(X, n)
-
+        """
+                priora=10.0
+                priorb=10.0
+                a = wins + priora
+                b = n - wins + priorb
+                return a,b
+        """
         if X == 0:
             p1L = 0.0
             p1H = 1 - math.pow(alpha,1.0/(n+1))
