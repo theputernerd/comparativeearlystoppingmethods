@@ -36,7 +36,9 @@ def bayesian_U(X,n):
         """
         priora=1 #α
         priorb = 1 #β
-        global alpha
+        #global alpha
+        alpha=0.05
+
         a, b = getBetaParams(X, n)
         """
                 priora=10.0

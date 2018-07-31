@@ -12,6 +12,8 @@ import scipy.stats as stats
 def wils_int(X,n,cc=True): ##cc==True means with continuity correction.
     #z_calced=abs(stats.norm.ppf((1-alpha/2.0))) #two tailed.
     global z
+    #z = abs(stats.norm.ppf((1 - alpha / 2.0)))  # 1.96 for alpha=0.5
+
     if n==0:
         return 0,1,0.5
     p_hat = float(X) / n
