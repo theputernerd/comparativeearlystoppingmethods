@@ -17,7 +17,7 @@ def getBetaParams(wins,n):
     a = wins + priora
     b = n - wins + priorb
     return a,b
-def bayesian_U(X,n):
+def bayesian_U(X,n,alpha):
         """
         NB alpha=1-confidence
         X successes on n trials
@@ -36,8 +36,6 @@ def bayesian_U(X,n):
         """
         priora=1 #α
         priorb = 1 #β
-        #global alpha
-        alpha=0.05
 
         a, b = getBetaParams(X, n)
         """
@@ -57,8 +55,8 @@ def bayesian_U(X,n):
         #else:
         #p1LManual=B_pdf(alpha / 2.0, a, b)
 
-        p1L = stats.beta.ppf(alpha / 2.0, a, b) #Percent point function (inverse of cdf — percentiles).
-        p1H = stats.beta.ppf(1 - alpha / 2.0, a, b)
+        p1L = stats.beta.ppf(alpha, a, b) #Percent point function (inverse of cdf — percentiles).
+        p1H = stats.beta.ppf(1 - alpha, a, b)
         if p1L>p1H:
             pass
 

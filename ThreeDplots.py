@@ -13,14 +13,14 @@ from mpl_toolkits.mplot3d import axes3d
 
 
 
-def get3dData(fn):
+def get3dData(fn,alpha):
     del_data=[]
     lcb_data=[]
     ucb_data=[]
     for p2W in range(ngames,0,-1):
         predicted = False
         for p1W in range(0, ngames):
-            p1L, p1U, mean = getLimits(p1W, p2W, fn)
+            p1L, p1U, mean = getLimits(p1W, p2W, fn,alpha)
             del_data.append([p1W, p2W, p1U - p1L])
             lcb_data.append([p1W, p2W, p1L])
             ucb_data.append([p1W, p2W, 1-p1U])
@@ -54,10 +54,15 @@ def threeD(fn,name):
     az = 127
 
     from matplotlib import cm
-    del_data, lcb_data,ucb_data=get3dData(fn)
-    alpha=0.7
+    transp=0.7
     color='k'#'#87adde'
     #####################################LCB
+
+    alpha=0.05
+    z = abs(stats.norm.ppf((1 - alpha)))
+    #z=1.65 #one sided.
+    del_data, lcb_data,ucb_data=get3dData(fn,alpha)
+
     X = []
     Y = []
     Z = []
@@ -92,17 +97,17 @@ def threeD(fn,name):
     cs1 = ax.contourf(xi, yi, zi, 500, linewidths=1,cmap=cm.jet)
     cs1u = ax.contourf(xiu, yiu, ziu, 500, linewidths=1,cmap=cm.jet)
 
-    cset = ax.contourf(xi, yi, zi, 100,alpha=alpha, zdir='z', offset=f, linewidths=1,colors=color)
+    cset = ax.contourf(xi, yi, zi, 100,alpha=transp, zdir='z', offset=f, linewidths=1,colors=color)
     #cset = ax.contourf(xi, yi, zi, 100, zdir='z', offset=-.1, linewidths=.25,cmap=cm.jet)
     #cset = ax.contour(xi, yi, zi, 100, zdir='z', offset=0.5, linewidths=0.5)
     plt.colorbar(cs1,ax=ax)
     ax.invert_yaxis()
     #plt.colorbar(cs, ax=ax)
-    ax.set_xlabel('p1Wins')
+    ax.set_xlabel('p1 n Wins')
     # ax.set_xlim(0, maxNgames)
-    ax.set_ylabel('p2Wins')
+    ax.set_ylabel('p2 n Wins')
     # ax.set_ylim(0, maxNgames)
-    ax.set_zlabel('Win rate')
+    ax.set_zlabel('LCB estimate of p ')
     #ax.set_zlim(0, 1)
     #ax.set_title(f"(Test 1) - Lower confidence value")
 
@@ -112,6 +117,12 @@ def threeD(fn,name):
     fig.savefig(f"{name}LCB3d.png", format='png')
 
     #####################################Delta UCB-LCB
+    alpha = 0.025
+    z = abs(stats.norm.ppf((1 - alpha)))
+
+    #z = 1.95  # two sided.
+    del_data, lcb_data,ucb_data=get3dData(fn,alpha)
+
     elev = -30
     az = -73
     X=[]
@@ -131,12 +142,12 @@ def threeD(fn,name):
     ax = fig1.add_subplot(1, 1, 1, projection='3d')
     #ax = fig.gca(projection='3d')
     cs=ax.contourf(xi, yi, zi,1000,linewidths=1,cmap=cm.jet)
-    cset = ax.contourf(xi, yi, zi,100,alpha=alpha, zdir='z', offset=0.1,linewidths=1,colors=color)
+    cset = ax.contourf(xi, yi, zi,100,alpha=transp, zdir='z', offset=0.1,linewidths=1,colors=color)
     #cset = ax.contour(xi, yi, zi,100, zdir='z', offset=0.4,linewidths=.25,cmap=cm.jet)
     plt.colorbar(cs,ax=ax)
-    ax.set_xlabel('p1Wins')
+    ax.set_xlabel('p1 n Wins')
     #ax.set_xlim(0, maxNgames)
-    ax.set_ylabel('p2Wins')
+    ax.set_ylabel('p2 n Wins')
     #ax.set_ylim(0, maxNgames)
     ax.set_zlabel('|UCB-LCB|')
     ax.set_zlim(0,0.2)

@@ -9,22 +9,34 @@ http://www.ucl.ac.uk/english-usage/staff/sean/resources/binomialpoisson.pdf
 https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
 """
 import scipy.stats as stats
-def wils_int(X,n,cc=True): ##cc==True means with continuity correction.
-    #z_calced=abs(stats.norm.ppf((1-alpha/2.0))) #two tailed.
-    global z
-    #z = abs(stats.norm.ppf((1 - alpha / 2.0)))  # 1.96 for alpha=0.5
+def wils_int(X,n,alpha,cc=True): ##cc==True means with continuity correction.
+        #z_calced=abs(stats.norm.ppf((1-alpha/2.0))) #two tailed.
+        #global z
+        #z = abs(stats.norm.ppf((1 - alpha / 2.0)))  # 1.96 for alpha=0.5
+        z = abs(stats.norm.ppf((1 - alpha)))
 
-    if n==0:
-        return 0,1,0.5
-    p_hat = float(X) / n
-    if cc:
-        p1L = max(0,(2 * n * p_hat + z * z - (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
-        p1U = min(1,(2 * n * p_hat + z * z + (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
-    else:
-        p1L = ((p_hat + z * z / (2 * n) - z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-        p1U = ((p_hat + z * z / (2 * n) + z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-    mean=n*p_hat
-    return p1L,p1U,mean
+        if n==0:
+            return 0,1,0.5
+        p_hat = float(X) / n
+        q=1-p_hat
+
+        if cc:
+            try:
+                if p_hat == 0:
+                    p1L=0
+                else:
+                    p1L = max(0,(2 * n * p_hat + z * z - (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
+
+                p1U = min(1,(2 * n * p_hat + z * z + (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) - (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
+
+            except ValueError:
+                print(f"X:{X},n:{n},p_hat:{p_hat},z:{z}")
+                raise
+        else:
+            p1L = ((p_hat + z * z / (2 * n) - z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
+            p1U = ((p_hat + z * z / (2 * n) + z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
+        mean=n*p_hat
+        return p1L,p1U,mean
 
 class wilson_lcb():
     global z

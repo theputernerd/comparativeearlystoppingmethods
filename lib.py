@@ -4,13 +4,13 @@ conf_stopped_struct = namedtuple("conf_struct", "name score p1wins p2wins draws 
 from scipy import stats
 import numpy as np
 alpha=0.05
-z=abs(stats.norm.ppf((1-alpha/2.0))) #1.96 for alpha=0.5
+z=1.96 #abs(stats.norm.ppf((1-alpha/2.0))) #1.96 for alpha=0.5
 
 
-def getLimits(p1w, p2w, fn):
+def getLimits(p1w, p2w, fn,alpha):
     n = p1w + p2w
 
-    p1L, p1U, mean = fn(p1w, n)
+    p1L, p1U, mean = fn(p1w, n,alpha)
 
     return p1L, p1U, mean
 
