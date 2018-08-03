@@ -6,8 +6,6 @@ from lib import *
 from bayes import bayesian_U
 maxNgames = 100  # if the detector hasn't made its mind up by this many games it becomes a type 2 error.
 
-
-
 ngames = 350
 from mpl_toolkits.mplot3d import axes3d
 

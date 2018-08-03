@@ -12,8 +12,8 @@ def B_pdf(theta,a,b):
 
 #print(P_binom(3,10,0.5))
 def getBetaParams(wins,n):
-    priora=10.0
-    priorb=10.0
+    priora=1 # 1#10.0
+    priorb=1 #1#10.0
     a = wins + priora
     b = n - wins + priorb
     return a,b
@@ -34,8 +34,7 @@ def bayesian_U(X,n,alpha):
         I call this. Posterior is Beta(α+X,β+n−X)
         NB Highest density point (MAX) is (α+X-1)/(α+β+n-2)
         """
-        priora=1 #α
-        priorb = 1 #β
+
 
         a, b = getBetaParams(X, n)
         """
@@ -353,3 +352,11 @@ class bayesTheorum(): #this updates iteratively
                 pass
 
         return finished,lowerBound,c
+if __name__ == '__main__':
+    n=4
+    w=1.0*n
+
+    from wilson import *
+    print(getBetaParams(w,n))
+    print(wils_int(w,n,0.05))
+    print(bayesian_U(w,n,0.05))
