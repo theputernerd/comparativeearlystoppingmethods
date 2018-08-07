@@ -86,8 +86,13 @@ class game(object):  #just chooses a random winner based on the probabilty distr
 import math
 def shouldIStop(method,lc,uc,mean,epsilon=0.01): #first number is winner, second number stopping condition.
     #method is needed cause lc and uc should be either 0.025 or 0.05
-    ut=0.5+epsilon #upperthreshold
-    lt=0.5-epsilon #lower threshold
+    ut=np.round(0.5+epsilon,3) #upperthreshold
+    lt=np.round(0.5-epsilon,3) #lower threshold
+    lc=int(lc*1000)/1000.0#round down. #covers for when python has rounding errors. Floats cause issues at the boundaries.
+
+    uc = np.round(uc, 3)
+    mean=np.round(mean,3)
+
     if method==1:
         if lc>ut:
             return 1,1.1  #player wins from condition 1
@@ -99,7 +104,7 @@ def shouldIStop(method,lc,uc,mean,epsilon=0.01): #first number is winner, second
                 return 1, 2.1  # player wins from condition 2.1
             if mean<lt:
                 return 2, 2.2  # player loses from condition 2.2
-            if mean>=lt and mean<=ut:
+            if mean>lt and mean<ut:
                 return 3, 2.3 #it was a draw
     return 0,0
 
