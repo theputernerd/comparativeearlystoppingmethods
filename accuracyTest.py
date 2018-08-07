@@ -1,5 +1,6 @@
 
-
+import matplotlib as mpl
+mpl.use('Agg')
 import numpy as np
 import random
 from lib import player
@@ -9,8 +10,7 @@ from lib import shouldIStop,game
 from bayes import bayesian_U
 tests = [bayesian_U, wils_int]
 import time
-import matplotlib as mpl
-mpl.use('Agg')
+
 import matplotlib.pyplot as plt
 
 def doTests(tests,p1,p2,drawsP,max_ngames,results,epsilon=0.01):
