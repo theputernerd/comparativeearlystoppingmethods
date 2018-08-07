@@ -620,7 +620,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
         wthisbin=None
         bthisbin=None
 
-        pab=p1.pWin
+        pab=p1.pWin  #TODO: Implement this in the other test
         p5minep=np.floor(float(0.5-epsilon)*1000)/1000.0 #python rounding causes problems on the edges
         p5plusep=np.ceil(0.5+epsilon*1000)/1000.0
         if pab<p5minep:
@@ -1011,13 +1011,13 @@ if __name__ == '__main__':
     random.seed()
 
     fullResult=dict()
-    coverageTest(ngames=500,drawThreshold=0.01)
+    coverageTest(ngames=1000,drawThreshold=0.01)
     choosefromPoolTest(ngames=10000)
 
     assert False
-    for pab in np.arange(0.45,.55,0.001) :
+    for pab in np.arange(0.45,.55,0.1) :
 
-        playGames(p1winrate=pab,epsilon=0.05)
+        playGames(p1winrate=pab,epsilon=0.025)
 
 
     pass
