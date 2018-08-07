@@ -209,6 +209,7 @@ def playGames(p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01):
 
     print(f"Wilson {wilsonresults}")
     print(f"Bayes{bayesresults}")
+
 def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01):
     #np.random.seed(None)  # changed Put Outside the loop.
     #seed()
@@ -606,8 +607,8 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
         except:
             raise
 
-        print(f"Wilson {wilsonresults}")
-        print(f"Bayes{bayesresults}")
+        #print(f"Wilson {wilsonresults}")
+        #print(f"Bayes{bayesresults}")
         #####NOW save data for selectiong table
 
         #Plessthanpoint5minusepsilon = []
