@@ -26,8 +26,10 @@ def wils_int(X,n,alpha,cc=True): ##cc==True means with continuity correction.
                     p1L=0
                 else:
                     p1L = max(0,(2 * n * p_hat + z * z - (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
-
-                p1U = min(1,(2 * n * p_hat + z * z + (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) - (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
+                if p_hat==1:
+                    p1U=1
+                else:
+                    p1U = min(1,(2 * n * p_hat + z * z + (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) - (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
 
             except ValueError:
                 print(f"X:{X},n:{n},p_hat:{p_hat},z:{z}")
@@ -35,7 +37,8 @@ def wils_int(X,n,alpha,cc=True): ##cc==True means with continuity correction.
         else:
             p1L = ((p_hat + z * z / (2 * n) - z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
             p1U = ((p_hat + z * z / (2 * n) + z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))
-        mean=n*p_hat
+        E=n*p_hat
+        mean=(p1U+p1L)/2.0
         return p1L,p1U,mean
 
 class wilson_lcb():

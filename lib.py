@@ -83,6 +83,25 @@ class game(object):  #just chooses a random winner based on the probabilty distr
         winner = np.random.choice([self.p1, self.p2, self.drawsP], p=[self.p1.pWin, self.p2.pWin, self.drawsP.pWin])
         return winner
 
+import math
+def shouldIStop(method,lc,uc,mean,epsilon=0.01): #first number is winner, second number stopping condition.
+    #method is needed cause lc and uc should be either 0.025 or 0.05
+    ut=0.5+epsilon #upperthreshold
+    lt=0.5-epsilon #lower threshold
+    if method==1:
+        if lc>ut:
+            return 1,1.1  #player wins from condition 1
+        elif uc<lt:
+            return 2,1.2 #player loses from condition 1.1
+    elif method==2:
+        if math.fabs(uc-lc)<epsilon:
+            if mean>ut:
+                return 1, 2.1  # player wins from condition 2.1
+            if mean<lt:
+                return 2, 2.2  # player loses from condition 2.2
+            if mean>=lt and mean<=ut:
+                return 3, 2.3 #it was a draw
+    return 0,0
 
 class player(object):
     def __init__(self, pWin):
@@ -92,6 +111,7 @@ class player(object):
 
     def reset(self):
         self.nWins = 0
+
 
 if __name__ == '__main__':
 

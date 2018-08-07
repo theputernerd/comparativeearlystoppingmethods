@@ -12,8 +12,8 @@ def B_pdf(theta,a,b):
 
 #print(P_binom(3,10,0.5))
 def getBetaParams(wins,n):
-    priora=1 # 1#10.0
-    priorb=1 #1#10.0
+    priora=5 # 1#10.0
+    priorb=5 #1#10.0
     a = wins + priora
     b = n - wins + priorb
     return a,b
