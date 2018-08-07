@@ -9,6 +9,9 @@ from lib import shouldIStop,game
 from bayes import bayesian_U
 tests = [bayesian_U, wils_int]
 import time
+import matplotlib as mpl
+mpl.use('Agg')
+
 def doTests(tests,p1,p2,drawsP,max_ngames,results,epsilon=0.01):
     p1.reset()
     p2.reset()
