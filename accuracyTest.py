@@ -375,6 +375,9 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
     ##This test will select from a pool of players normally distributed around 0.5
     count, bins, ignored = plt.hist(s, 100, normed=False)
     #plt.plot(bins, 1 / (sigma * np.sqrt(2 * np.pi)) *np.exp( - (bins - mu)**2 / (2 * sigma**2) ),linewidth=2, color='r')
+    plt.title("Population distribution for testing prediction")
+    plt.ylabel("Quantity")
+    plt.xlabel("Probability player A is better than player B")
     plt.savefig("populationHist.png", format='png')
 
     plt.show()
