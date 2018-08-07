@@ -11,6 +11,7 @@ tests = [bayesian_U, wils_int]
 import time
 import matplotlib as mpl
 mpl.use('Agg')
+import matplotlib.pyplot as plt
 
 def doTests(tests,p1,p2,drawsP,max_ngames,results,epsilon=0.01):
     p1.reset()
@@ -363,7 +364,6 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
     print(f"Bayes{bayesresults}")
 
 import random
-import matplotlib.pyplot as plt
 from scipy.stats import truncnorm
 
 def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
