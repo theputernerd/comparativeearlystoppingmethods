@@ -655,21 +655,21 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
             width = 30
             lw=6
             line='{0: <{width}}'.format("actual   \predicted ->", width=width)
-            line += "|{0:<6}|{1:<6}|{2:<6}".format("B", "Draw", "A")
+            line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
             print(line)
 
             for key,v in wpredictiongrid.items():
                 line='{0: <{width}}'.format(key, width=width)
-                line+="|{:<6}|{:<6}|{:<6}".format(int(v[0]),int(v[1]),int(v[2]))
+                line+="|{:<7}|{:<7}|{:<7}".format(int(v[0]),int(v[1]),int(v[2]))
                 print(line)
             #print(wpredictiongrid)
             print("Bayes____________________________________________")
             line='{0: <{width}}'.format("actual   \predicted ->", width=width)
-            line += "|{0:<6}|{1:<6}|{2:<6}".format("B", "Draw", "A")
+            line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
             print(line)
             for key, v in bpredictiongrid.items():
                 line='{0: <{width}}'.format(key, width=width)
-                line+="|{:<6}|{:<6}|{:<6}".format(int(v[0]),int(v[1]),int(v[2]))
+                line+="|{:<7}|{:<7}|{:<7}".format(int(v[0]),int(v[1]),int(v[2]))
                 print(line)
 
             #print(bpredictiongrid)
@@ -684,21 +684,21 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
     width = 30
     lw = 6
     line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
-    line += "|{0:<6}|{1:<6}|{2:<6}".format("B", "Draw", "A")
+    line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
     print(line)
 
     for key, v in wpredictiongrid.items():
         line = '{0: <{width}}'.format(key, width=width)
-        line += "|{:<6}|{:<6}|{:<6}".format(int(v[0]), int(v[1]), int(v[2]))
+        line += "|{:<7}|{:<7}|{:<7}".format(int(v[0]), int(v[1]), int(v[2]))
         print(line)
     # print(wpredictiongrid)
     print("Bayes____________________________________________")
     line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
-    line += "|{0:<6}|{1:<6}|{2:<6}".format("B", "Draw", "A")
+    line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
     print(line)
     for key, v in bpredictiongrid.items():
         line = '{0: <{width}}'.format(key, width=width)
-        line += "|{:<6}|{:<6}|{:<6}".format(int(v[0]), int(v[1]), int(v[2]))
+        line += "|{:<7}|{:<7}|{:<7}".format(int(v[0]), int(v[1]), int(v[2]))
         print(line)
 if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
