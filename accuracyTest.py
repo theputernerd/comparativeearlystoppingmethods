@@ -656,9 +656,9 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
 
         if nplayed%100==0:
             print("****************************************************************************")
-            print(f"Type\tAv Games\tnCorrect\t%")
-            print(f"Wils\t{np.round(np.mean(wAvGamesToPredic),2)}\t\t{Wcorrect}\t\t{Wcorrect/nplayed}")
-            print(f"bayes\t{np.round(np.mean(bAvGamesToPredic),2)}\t\t{Bcorrect}\t\t{Bcorrect/nplayed}")
+            print(f"Type\tAv Games\tnCorrect\tnplayed\t%")
+            print(f"Wils\t{np.round(np.mean(wAvGamesToPredic),2)}\t\t{Wcorrect}\t\t{nplayed}\t\t{Wcorrect/nplayed}")
+            print(f"bayes\t{np.round(np.mean(bAvGamesToPredic),2)}\t\t{Bcorrect}\t\t{nplayed}\t\t{Bcorrect/nplayed}")
 
             print("wilson___________________________________________")
             width = 30
