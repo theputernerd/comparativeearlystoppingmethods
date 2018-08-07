@@ -671,6 +671,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
                 line='{0: <{width}}'.format(key, width=width)
                 line+="|{:<7}|{:<7}|{:<7}".format(int(v[0]),int(v[1]),int(v[2]))
                 print(line)
+            print("________________________________________________________________________________________")
             #print(wpredictiongrid)
             print("Bayes____________________________________________")
             line='{0: <{width}}'.format("actual   \predicted ->", width=width)
