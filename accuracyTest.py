@@ -1029,8 +1029,8 @@ if __name__ == '__main__':
 
     fullResult=dict()
     alpha=0.05
-    coverageTest(ngames=100,drawThreshold=0.05,alpha=alpha)
-    choosefromPoolTest(ngames=100,drawThreshold=0.05,alpha=alpha)
+    coverageTest(ngames=5000,drawThreshold=0.05,alpha=alpha)
+    choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=alpha)
 
 
 
