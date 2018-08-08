@@ -384,7 +384,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
     plt.title("Population distribution for testing prediction")
     plt.ylabel("Quantity")
     plt.xlabel("Probability player A is better than player B")
-    plt.savefig("populationHist.png", format='png')
+    plt.savefig(f"failureTest/populationHist_eps:{epsilon}_alpha:{alpha}.png", format='png')
 
     plt.show()
 
@@ -427,7 +427,9 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
         #p=0.46193
         #p1 = player(p)
         #p2 = player(1 - p)
-        if p1.pWin<=0.5+epsilon and p1.pWin>=0.5-epsilon:
+        p5minep = np.floor(float(0.5 - epsilon) * 1000) / 1000.0  # python rounding causes problems on the edges
+        p5plusep = np.ceil(0.5 + epsilon * 1000) / 1000.0
+        if p1.pWin<=p5plusep and p1.pWin>=p5minep:
             drawOK=True
         else:
             drawOK=False
@@ -622,7 +624,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
 
         pab=p1.pWin  #TODO: Implement this in the other test
         p5minep=np.floor(float(0.5-epsilon)*1000)/1000.0 #python rounding causes problems on the edges
-        p5plusep=np.ceil(0.5+epsilon*1000)/1000.0
+        p5plusep=np.ceil(float(0.5+epsilon)*1000)/1000.0
         if pab<p5minep:
             wthisbin=wpredictiongrid['pab<0.5-epsilon']
             bthisbin=bpredictiongrid['pab<0.5-epsilon']
@@ -690,30 +692,45 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
             #print(bpredictiongrid)
             print("**********************************************************************************************")
 
+    import csv
 
+    with open(f"failureTest/accuracyTest_eps{epsilon}_alpha_{alpha}.txt", "w") as f:
 
-    print(f"Type\t{ngames}\tAv Games\tnCorrect\t%")
-    print(f"Wils\t{ngames}\t{np.round(np.mean(wAvGamesToPredic),2)}\t\t{Wcorrect}\t\t{Wcorrect/nplayed}")
-    print(f"bayes\t{ngames}\t{np.round(np.mean(bAvGamesToPredic),2)}\t\t{Bcorrect}\t\t{Bcorrect/nplayed}")
-    print(f"wilson_____epsilon={epsilon}______________________________________")
-    width = 30
-    lw = 6
-    line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
-    line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
-    print(line)
-    for key, v in wpredictiongrid.items():
-        line = '{0: <{width}}'.format(key, width=width)
-        line += "|{:<7}|{:<7}|{:<7}".format(int(v[0]), int(v[1]), int(v[2]))
+        line=f"Type\tngames\tAv Games\tnCorrect\t% "
+        f.write(line+"\n")
         print(line)
-    # print(wpredictiongrid)
-    print(f"Bayes_______epsilon={epsilon}_____________________________________")
-    line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
-    line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
-    print(line)
-    for key, v in bpredictiongrid.items():
-        line = '{0: <{width}}'.format(key, width=width)
-        line += "|{:<7}|{:<7}|{:<7}".format(int(v[0]), int(v[1]), int(v[2]))
+        line=f"Wils\t{ngames}\t{np.round(np.mean(wAvGamesToPredic),2)}\t\t{Wcorrect}\t\t{Wcorrect/nplayed}"
+        f.write(line+"\n")
         print(line)
+        line=f"bayes\t{ngames}\t{np.round(np.mean(bAvGamesToPredic),2)}\t\t{Bcorrect}\t\t{Bcorrect/nplayed}"
+        f.write(line+"\n")
+        print(line)
+        line=f"wilson_____epsilon={epsilon}______________________________________"
+        f.write(line+"\n")
+        width = 30
+        lw = 6
+        line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
+        line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
+        f.write(line+"\n")
+        print(line)
+        for key, v in wpredictiongrid.items():
+            line = '{0: <{width}}'.format(key, width=width)
+            line += "|{:<7}|{:<7}|{:<7}".format(int(v[0]), int(v[1]), int(v[2]))
+            f.write(line+"\n")
+            print(line)
+        # print(wpredictiongrid)
+        line=f"Bayes_______epsilon={epsilon}_____________________________________"
+        f.write(line+"\n")
+        print(line)
+        line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
+        line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
+        f.write(line+"\n")
+        print(line)
+        for key, v in bpredictiongrid.items():
+            line = '{0: <{width}}'.format(key, width=width)
+            line += "|{:<7}|{:<7}|{:<7}".format(int(v[0]), int(v[1]), int(v[2]))
+            f.writelines(line+"\n")
+            print(line)
 
 def coverageTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
     #Iterates over a series of p values and records the coverage for that value.
@@ -741,7 +758,7 @@ def coverageTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
     bpredictiongrid['0.5-epsilon<pab and pab<0.5'] = np.zeros(3)
     bpredictiongrid['0.5<pab and pab<=0.5+epsilon'] = np.zeros(3)
     bpredictiongrid['pab>0.5+epsilon'] = np.zeros(3)
-    s=np.arange(0.11,0.9,0.037)
+    s=np.arange(0.11,0.9,0.027)
     #s=[0.5]
     for p in s:
         p=np.round(p,3) #without this python stores p=0.45 as 0.4499999999 which is not a draw value!!!!. unfair.
@@ -996,14 +1013,14 @@ def coverageTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
     ax = fig1.add_subplot(1, 1, 1)
 
     ax.plot(wilX,wilY)
-    ax.set_title(f"95% coverage using Wilson. epsilon={epsilon}")
-    fig1.savefig("wilsoncoverage.png",format="png")
+    ax.set_title(f"Coverage using Wilson.alpha={alpha}  epsilon={epsilon}")
+    fig1.savefig(f"failureTest/wilsoncoverage_alpha={alpha}_epsilon={epsilon}.png",format="png")
     fig2 = plt.figure(figsize=plt.figaspect(0.5))
     ax2 = fig2.add_subplot(1, 1, 1)
-    ax2.set_title(f"95% coverage using Bayesian-U. epsilon={epsilon}")
+    ax2.set_title(f"Coverage using Bayesian-U. alpha={alpha} epsilon={epsilon}")
 
     ax2.plot(bayX, bayY)
-    fig2.savefig("bayescoverage.png",format="png")
+    fig2.savefig(f"failureTest/bayescoverage_alpha={alpha}_epsilon={epsilon}.png",format="png")
     plt.show()
 
 if __name__ == '__main__':
@@ -1011,13 +1028,10 @@ if __name__ == '__main__':
     random.seed()
 
     fullResult=dict()
-    coverageTest(ngames=1000,drawThreshold=0.01)
-    choosefromPoolTest(ngames=10000)
+    alpha=0.05
+    choosefromPoolTest(ngames=10000,drawThreshold=0.05,alpha=alpha)
+    coverageTest(ngames=10000,drawThreshold=0.05,alpha=alpha)
 
-    assert False
-    for pab in np.arange(0.45,.55,0.1) :
-
-        playGames(p1winrate=pab,epsilon=0.025)
 
 
     pass

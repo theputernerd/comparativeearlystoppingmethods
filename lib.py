@@ -99,7 +99,7 @@ def shouldIStop(method,lc,uc,mean,epsilon=0.01): #first number is winner, second
         elif uc<lt:
             return 2,1.2 #player loses from condition 1.1
     elif method==2:
-        if math.fabs(uc-lc)<epsilon:
+        if math.fabs(uc-lc)<epsilon*0.8:#NB that predict some # inside the threshold to account for errors on the edge
             if mean>ut:
                 return 1, 2.1  # player wins from condition 2.1
             if mean<lt:
