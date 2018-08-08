@@ -125,7 +125,7 @@ def playGames(p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01,pmarg
                         Wcondition1 = storedResult
             p1L, p1U, mean = wils_int(p1.nWins, n, 0.025)
             winner,method=shouldIStop(2,p1L, p1U, mean,epsilon=epsilon,pmargin=pmargin)
-            if winner!=0:
+            if winner!=0 and not wilsPredicted:
                 wilsPredicted=True
                 # now to see if prediction is correct.
                 if int(method) != int(2):
@@ -165,7 +165,7 @@ def playGames(p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01,pmarg
 
             p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.025)
             winner,method=shouldIStop(2,p1L, p1U, mean,epsilon=epsilon,pmargin=pmargin)
-            if winner != 0:
+            if winner != 0 and not baysPredicted:
                 baysPredicted = True
                 if int(method)!=int(2):
                     assert False
@@ -280,7 +280,7 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
                             Wcondition1.append(storedResult)
                 p1L, p1U, mean = wils_int(p1.nWins, n, 0.025)
                 winner,method=shouldIStop(2,p1L, p1U, mean,epsilon=epsilon,pmargin=pmargin)
-                if winner!=0:
+                if winner!=0 and not wilsPredicted:
                     wilsPredicted=True
                     # now to see if prediction is correct.
                     if int(method) != int(2):
@@ -320,7 +320,7 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
 
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.025)
                 winner,method=shouldIStop(2,p1L, p1U, mean,epsilon=epsilon,pmargin=pmargin)
-                if winner != 0:
+                if winner != 0 and not baysPredicted:
                     baysPredicted = True
                     if int(method)!=int(2):
                         assert False
@@ -488,7 +488,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
                 #n=1573
                 p1L, p1U, mean = wils_int(p1.nWins, n, alpha/2)
                 winner, method = shouldIStop(2, p1L, p1U, mean, epsilon=epsilon,pmargin=pmargin)
-                if winner != 0:
+                if winner != 0 and not wilsPredicted:
                     wilsPredicted = True
                     # now to see if prediction is correct.
                     if int(method) != int(2):
@@ -551,7 +551,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
                 #########################BAYES CONDITION 2
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha/2)
                 winner, method = shouldIStop(2, p1L, p1U, mean, epsilon=epsilon,pmargin=pmargin)
-                if winner != 0:
+                if winner != 0 and not baysPredicted:
                     baysPredicted = True
                     if int(method) != int(2):
                         assert False
