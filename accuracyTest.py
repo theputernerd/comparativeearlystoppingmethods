@@ -105,7 +105,7 @@ def playGames(p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01,pmarg
 
         if not wilsPredicted:
             p1L, p1U,mean =wils_int(p1.nWins,n,0.05)
-            winner,method=shouldIStop(1,p1L, p1U, mean,epsilon=epsilon,pmargin=pmargin)
+            winner,method=shouldIStop(1,p1L, p1U, mean,epsilon=epsilon,pmargin=0)
             if winner!=0:  ##condition1
                 wilsPredicted=True
                 # now to see if prediction is correct.
@@ -144,7 +144,7 @@ def playGames(p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01,pmarg
                         Wcondition1 = storedResult
         if not baysPredicted:
             p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.05)
-            winner,method=shouldIStop(1,p1L, p1U, mean,epsilon=epsilon,pmargin=pmargin)
+            winner,method=shouldIStop(1,p1L, p1U, mean,epsilon=epsilon,pmargin=0)
             if winner != 0:
                 baysPredicted = True
                 # now to see if prediction is correct.
@@ -260,7 +260,7 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
 
             if not wilsPredicted:
                 p1L, p1U,mean =wils_int(p1.nWins,n,0.05)
-                winner,method=shouldIStop(1,p1L, p1U, mean,epsilon=epsilon,pmargin=pmargin)
+                winner,method=shouldIStop(1,p1L, p1U, mean,epsilon=epsilon,pmargin=0)
                 if winner!=0:  ##condition1
                     wilsPredicted=True
                     # now to see if prediction is correct.
@@ -299,7 +299,7 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
                             Wcondition1.append(storedResult)
             if not baysPredicted:
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.05)
-                winner,method=shouldIStop(1,p1L, p1U, mean,epsilon=epsilon,pmargin=pmargin)
+                winner,method=shouldIStop(1,p1L, p1U, mean,epsilon=epsilon,pmargin=0)
                 if winner != 0:
                     baysPredicted = True
                     # now to see if prediction is correct.
@@ -384,7 +384,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
     plt.title("Population distribution for testing prediction")
     plt.ylabel("Quantity")
     plt.xlabel("Probability player A is better than player B")
-    plt.savefig(f"failureTest/populationHist_eps:{drawThreshold}_alpha:{alpha}.png", format='png')
+    plt.savefig(f"failureTest/populationHist_eps{drawThreshold}_alpha{alpha}.png", format='png')
 
     plt.show()
 
@@ -455,7 +455,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
             if not wilsPredicted:
                 #########################WILSON CONDITION 1
                 p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=0,pmargin=pmargin) #no threshold for lcb only
+                winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=0,pmargin=0) #no threshold for lcb only
                 if winner != 0:  #condition1
                     wilsPredicted = True
                     # now to see if prediction is correct.
@@ -522,7 +522,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
                 #########################BAYES CONDITION 1
 
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=0,pmargin=pmargin)
+                winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=0,pmargin=0)
                 if winner != 0:
                     baysPredicted = True
                     # now to see if prediction is correct.
@@ -813,7 +813,7 @@ def coverageTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
                     #p1U = np.round(p1U  , 3)
                     #mean = np.round(mean, 3)
 
-                    winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,pmargin=pmargin) #no threshold for lcb only
+                    winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,pmargin=0) #no threshold for lcb only
                     if winner != 0:  #condition1
                         wilsPredicted = True
                         # now to see if prediction is correct.
@@ -893,7 +893,7 @@ def coverageTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
                     p1L = np.round(p1L, 3)
                     p1U = np.round(p1U, 3)
                     mean = np.round(mean, 3)
-                    winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,pmargin=pmargin)
+                    winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,pmargin=0)
                     if winner != 0:
                         baysPredicted = True
                         # now to see if prediction is correct.
@@ -1029,8 +1029,8 @@ if __name__ == '__main__':
 
     fullResult=dict()
     alpha=0.05
-    coverageTest(ngames=5000,drawThreshold=0.05,alpha=alpha,pmargin=0.5)
-    choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=alpha,pmargin=0.5)
+    choosefromPoolTest(ngames=1000,drawThreshold=0.05,alpha=alpha,pmargin=0.5)
+    coverageTest(ngames=1000,drawThreshold=0.05,alpha=alpha,pmargin=0.5)
 
 
 
