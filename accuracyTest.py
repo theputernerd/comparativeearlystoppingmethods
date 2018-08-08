@@ -384,7 +384,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05):
     plt.title("Population distribution for testing prediction")
     plt.ylabel("Quantity")
     plt.xlabel("Probability player A is better than player B")
-    plt.savefig(f"failureTest/populationHist_eps:{epsilon}_alpha:{alpha}.png", format='png')
+    plt.savefig(f"failureTest/populationHist_eps:{drawThreshold}_alpha:{alpha}.png", format='png')
 
     plt.show()
 
