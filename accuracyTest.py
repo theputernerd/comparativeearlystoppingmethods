@@ -101,6 +101,9 @@ def playGames(p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01,pmarg
     while not(wilsPredicted and baysPredicted): # keep going until both methods made a prediction
         #play one game
         results=playOneGame(g,results) #NB results not used
+        #p1.nWins=2871  #remove
+        #p2.nWins = 6364-p1.nWins
+
         n=p1.nWins+p2.nWins+drawsP.nWins
 
         if not wilsPredicted:
@@ -436,6 +439,7 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
 
         wilsPredicted = False
         baysPredicted = False
+
         g = game(p1, p2, player(0))
         wilsonresults = []
         bayesresults = []
@@ -449,7 +453,13 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
 
         while not (wilsPredicted and baysPredicted):  # keep going until both methods made a prediction
             # play one game
+
             results = playOneGame(g, results)  # NB results not used
+            #p1.nWins = 2871
+            #p2.nWins = 6364 - 2871
+            #p1.pWin = 0.434
+            #p2.pWin = 1 - 0.434
+            #best_actual=2
             n = p1.nWins + p2.nWins + drawsP.nWins
 
             if not wilsPredicted:
