@@ -765,7 +765,7 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, pmargin=0.5):
     bpredictiongrid['0.5-epsilon<pab and pab<0.5'] = np.zeros(3)
     bpredictiongrid['0.5<pab and pab<=0.5+epsilon'] = np.zeros(3)
     bpredictiongrid['pab>0.5+epsilon'] = np.zeros(3)
-    s=np.arange(0.43,0.57,0.01)
+    s=np.arange(0.43,0.57,0.017)
     #s=[0.5]
     for p in s:
         p=np.round(p,3) #without this python stores p=0.45 as 0.4499999999 which is not a draw value!!!!. unfair.
@@ -810,7 +810,7 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, pmargin=0.5):
                 results = playOneGame(g, results)  # NB results not used
                 n = p1.nWins + p2.nWins + drawsP.nWins
 
-                if not wilsPredicted:
+                if not wilsPredicted and n>7:
                     #########################WILSON CONDITION 1
                     #p1.pWin = 0.57
                     #p1.nWins = 823
@@ -1017,14 +1017,14 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, pmargin=0.5):
     fig1 = plt.figure(figsize=plt.figaspect(0.5))
     ax = fig1.add_subplot(1, 1, 1)
 
-    ax.plot(wilX,wilY)
+    ax.plot(wilX,wilY,'x')
     ax.set_title(f"Coverage using Wilson.alpha={alpha}  epsilon={epsilon} predictmargin={pmargin}")
     fig1.savefig(f"failureTest/wilsoncoverage_alpha={alpha}_epsilon={epsilon}_predicMargin={pmargin}.png",format="png")
     fig2 = plt.figure(figsize=plt.figaspect(0.5))
     ax2 = fig2.add_subplot(1, 1, 1)
     ax2.set_title(f"Coverage using Bayesian-U. alpha={alpha} epsilon={epsilon} predictmargin={pmargin}")
 
-    ax2.plot(bayX, bayY)
+    ax2.plot(bayX, bayY,'x')
     fig2.savefig(f"failureTest/bayescoverage_alpha={alpha}_epsilon={epsilon}_predicMargin={pmargin}.png",format="png")
     plt.show()
 
@@ -1036,7 +1036,7 @@ if __name__ == '__main__':
     alpha=0.05
     epsilon=0.05
     coverageTest(ngames=100, epsilon=epsilon, alpha=alpha, pmargin=0.5)
-    choosefromPoolTest(ngames=2000, epsilon=epsilon, alpha=alpha, pmargin=0.5)
+    choosefromPoolTest(ngames=5000, epsilon=epsilon, alpha=alpha, pmargin=0.5)
 
 
 
