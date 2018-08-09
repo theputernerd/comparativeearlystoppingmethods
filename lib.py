@@ -88,10 +88,10 @@ def shouldIStop(method,lc,uc,mean,epsilon=0.01,pmargin=0.5): #first number is wi
     #method is needed cause lc and uc should be either 0.025 or 0.05
     ut=0.5+epsilon #upperthreshold
     lt=0.5-epsilon #lower threshold
-    #lc=int(lc*1000)/1000.0#round down. #covers for when python has rounding errors. Floats cause issues at the boundaries.
+    lc=int(lc*1000)/1000.0#round down. #covers for when python has rounding errors. Floats cause issues at the boundaries.
 
-    #uc = np.round(uc, 3)
-    #mean=np.round(mean,3)
+    uc = np.round(uc, 3)
+    mean=np.round(mean,3)
 
     if method==1:
         #ut = 0.5 # upperthreshold
