@@ -1035,8 +1035,8 @@ if __name__ == '__main__':
     fullResult=dict()
     alpha=0.05
     epsilon=0.05
-    coverageTest(ngames=100, epsilon=epsilon, alpha=alpha, pmargin=0.7)
-    choosefromPoolTest(ngames=1000, epsilon=epsilon, alpha=alpha, pmargin=0.7)
+    coverageTest(ngames=100, epsilon=epsilon, alpha=alpha, pmargin=0.6)
+    choosefromPoolTest(ngames=1000, epsilon=epsilon, alpha=alpha, pmargin=0.6)
 
 
 
