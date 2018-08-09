@@ -84,7 +84,7 @@ class game(object):  #just chooses a random winner based on the probabilty distr
         return winner
 
 import math
-def shouldIStop(method,lc,uc,mean,epsilon=0.01,pmargin=0.5): #first number is winner, second number stopping condition.
+def shouldIStop(method, lc, uc, mean, epsilon=0.05, delta=0.025): #first number is winner, second number stopping condition.
     #method is needed cause lc and uc should be either 0.025 or 0.05
     ut=0.5+epsilon #upperthreshold
     lt=0.5-epsilon #lower threshold
@@ -100,7 +100,7 @@ def shouldIStop(method,lc,uc,mean,epsilon=0.01,pmargin=0.5): #first number is wi
         elif uc<lt:
             return 2,1.2 #player loses from condition 1.1
     elif method==2:
-        if math.fabs(uc-lc)<epsilon*pmargin:#NB that predict some # inside the threshold to account for errors on the edge
+        if math.fabs(uc-lc)<delta:#NB that predict some # inside the threshold to account for errors on the edge
             if mean>ut:
                 return 1, 2.1  # player wins from condition 2.1
             if mean<lt:
