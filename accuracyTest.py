@@ -13,47 +13,6 @@ import time
 
 import matplotlib.pyplot as plt
 
-def doTests(tests,p1,p2,drawsP,max_ngames,results,epsilon=0.01):
-    p1.reset()
-    p2.reset()
-    drawsP.reset()
-
-    for t in tests:
-        t.reset()
-    #bayes.reset() #it's the only one with reset global variables.
-    ut=0.5+epsilon #upperthreshold
-    lt=0.5-epsilon #lower threshold
-    if (p1.pWin > ut): #determine the actual winner
-        best_actual = 1
-    elif (p1.pWin < lt):
-        best_actual = 2
-    else:
-        best_actual = 3  # No player is better.
-
-    g=game(p1,p2,drawsP)
-
-    for i in range(1,max_ngames):
-        winner= g.playGame()
-        #winner = drawsP #change remove me.
-        winner.nWins+=1
-
-        for t in tests:  #Do each test
-
-            if not t.finished :
-                try:
-                    t0=timer()
-                    finished, z, c_nGames=t.start(p1,p2,drawsP,best_actual)
-                    t1=timer()
-                except:
-                    pass
-                    raise
-                if finished:
-                    timetaken=t1-t0
-
-                    c_nGames=c_nGames._replace(time=timetaken)
-                    results[c_nGames.name].append(c_nGames)
-
-    return results
 
 def playOneGame(g, results):
     winner = g.playGame()
@@ -61,157 +20,6 @@ def playOneGame(g, results):
     winner.nWins += 1
     return results
 
-import copy
-def playGames(p1winrate, p2winrate=None, drawRate=None, trials=1, epsilon=0.01, delta=0.025):
-
-    results=dict()
-    if p2winrate==None:
-        p2winrate = 1 - p1winrate  # probability of p2 winning
-    if drawRate==None:
-        drawRate = 1 - (p1winrate + p2winrate)
-    assert (p1winrate + p2winrate) <= 1
-    p1 = player(p1winrate)
-    p2 = player(p2winrate)
-    drawsP = player(drawRate)
-
-    ut=0.5+epsilon #upperthreshold
-    lt=0.5-epsilon #lower threshold
-    if (p1.pWin > ut): #determine the actual better player
-        best_actual = 1
-    elif (p1.pWin < lt):
-        best_actual = 2
-    else:
-        best_actual = 3
-
-
-    wilsPredicted=False
-    baysPredicted=False
-    g = game(p1, p2, drawsP)
-
-    wilsonresults = []
-    bayesresults=[]
-    p1.reset()
-    p2.reset()
-    drawsP.reset()
-    Wcondition1=[]
-    Wcondition2 = []
-    Bcondition1=[]
-    Bcondition2 = []
-
-    while not(wilsPredicted and baysPredicted): # keep going until both methods made a prediction
-        #play one game
-        results=playOneGame(g,results) #NB results not used
-        #p1.nWins=2871  #remove
-        #p2.nWins = 6364-p1.nWins
-
-        n=p1.nWins+p2.nWins+drawsP.nWins
-
-        if not wilsPredicted:
-            p1L, p1U,mean =wils_int(p1.nWins,n,0.05)
-            winner,method= shouldIStop(1, p1L, p1U, mean, epsilon=epsilon, delta=0)
-            if winner!=0:  ##condition1
-                wilsPredicted=True
-                # now to see if prediction is correct.
-                if int(method) != int(1):
-                    assert False
-                if winner == 0:
-                    assert False  # should have made a prediction.
-                else:
-                    if winner == best_actual:
-                        # corrrect
-                        storedResult = [p1.pWin, n, True, method, p1L, p1U,mean,winner,best_actual]
-                        wilsonresults=storedResult
-                        Wcondition1=storedResult
-                    else:
-                        storedResult = [p1.pWin, n, False, method, p1L, p1U, mean, winner,best_actual]
-                        wilsonresults = storedResult
-                        Wcondition1 = storedResult
-            p1L, p1U, mean = wils_int(p1.nWins, n, 0.025)
-            winner,method= shouldIStop(2, p1L, p1U, mean, epsilon=epsilon, delta=delta)
-            if winner!=0 and not wilsPredicted:
-                wilsPredicted=True
-                # now to see if prediction is correct.
-                if int(method) != int(2):
-                    assert False
-                if winner == 0:
-                    assert False  # should have made a prediction.
-                else:
-                    if winner == best_actual:
-                        # corrrect
-                        storedResult = (p1.pWin, n, True, method, p1L, p1U,mean,winner,best_actual)
-                        wilsonresults=storedResult
-                        Wcondition2=storedResult
-                    else:
-                        storedResult = [p1.pWin, n, False, method, p1L, p1U, mean, winner,best_actual]
-                        wilsonresults = storedResult
-                        Wcondition1 = storedResult
-        if not baysPredicted:
-            p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.05)
-            winner,method= shouldIStop(1, p1L, p1U, mean, epsilon=epsilon, delta=0)
-            if winner != 0:
-                baysPredicted = True
-                # now to see if prediction is correct.
-                if int(method) != int(1):
-                    assert False
-                if winner == 0:
-                    assert False  # should have made a prediction.
-                else:
-                    if winner == best_actual:
-                        # corrrect
-                        storedResult = [p1.pWin, n, True, method, p1L, p1U, mean,winner,best_actual]
-                        bayesresults=storedResult
-                        Bcondition1=storedResult
-                    else:
-                        storedResult = [p1.pWin, n, False, method, p1L, p1U, mean, winner,best_actual]
-                        bayesresults = storedResult
-                        Bcondition1 = storedResult
-
-            p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.025)
-            winner,method= shouldIStop(2, p1L, p1U, mean, epsilon=epsilon, delta=delta)
-            if winner != 0 and not baysPredicted:
-                baysPredicted = True
-                if int(method)!=int(2):
-                    assert False
-                # now to see if prediction is correct.
-                if winner == 0:
-                    assert False  # should have made a prediction.
-                else:
-                    if winner == best_actual:
-                        # corrrect
-                        storedResult = [p1.pWin, n, True, method, p1L, p1U, mean,winner,best_actual]
-                        bayesresults=storedResult
-                        Bcondition2=storedResult
-                    else:
-                        storedResult = [p1.pWin, n, False, method, p1L, p1U, mean, winner,best_actual]
-                        bayesresults = storedResult
-                        Bcondition2 = storedResult
-        # print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalFailure:{(1-predictN/trials)*100:.3f}%")
-    import csv
-    try:
-        with open(f"failureTest/wilson.csv", "a") as f:
-            wr = csv.writer(f, delimiter=",")
-            wr.writerow(wilsonresults)
-        with open(f"failureTest/wilsonC1.csv", "a") as f:
-            wr = csv.writer(f, delimiter=",")
-            wr.writerow(Wcondition1)
-        with open(f"failureTest/wilsonC2.csv", "a") as f:
-            wr = csv.writer(f, delimiter=",")
-            wr.writerow(Wcondition2)
-
-        with open(f"failureTest/bayes.csv", "a") as f:
-            wr = csv.writer(f, delimiter=",")
-            wr.writerow(bayesresults)
-        with open(f"failureTest/bayesC1.csv", "a") as f:
-            wr = csv.writer(f, delimiter=",")
-            wr.writerow(Bcondition1)
-        with open(f"failureTest/bayesC2.csv", "a") as f:
-            wr = csv.writer(f, delimiter=",")
-            wr.writerow(Bcondition2)
-    except:
-        raise
-
-    print(f"Wilson {wilsonresults}")
-    print(f"Bayes{bayesresults}")
 
 def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01,delta=0.5):
     #np.random.seed(None)  # changed Put Outside the loop.
@@ -399,17 +207,18 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     wAvGamesToPredic=[]
     bAvGamesToPredic=[]
 
-
-    wpredictiongrid={}
-    wpredictiongrid['pab<0.5-epsilon']=np.zeros(3)
-    wpredictiongrid['0.5-epsilon<pab and pab<0.5']=np.zeros(3)
-    wpredictiongrid['0.5<pab and pab<=0.5+epsilon']=np.zeros(3)
-    wpredictiongrid['pab>0.5+epsilon']=np.zeros(3)
+    wpredictiongrid = {}
+    wpredictiongrid['pab<0.5'] = np.zeros(3)
+    wpredictiongrid['0.5-delta<=pab and pab<0.5'] = np.zeros(3)
+    wpredictiongrid['0.5<pab and pab<=0.5+delta'] = np.zeros(3)
+    wpredictiongrid['pab>0.5'] = np.zeros(3)
+    wpredictiongrid['pab==0.5'] = np.zeros(3)
     bpredictiongrid = {}
-    bpredictiongrid['pab<0.5-epsilon'] = np.zeros(3)
-    bpredictiongrid['0.5-epsilon<pab and pab<0.5'] = np.zeros(3)
-    bpredictiongrid['0.5<pab and pab<=0.5+epsilon'] = np.zeros(3)
-    bpredictiongrid['pab>0.5+epsilon'] = np.zeros(3)
+    bpredictiongrid['pab<0.5'] = np.zeros(3)
+    bpredictiongrid['0.5-delta<=pab and pab<0.5'] = np.zeros(3)
+    bpredictiongrid['0.5<pab and pab<=0.5+delta'] = np.zeros(3)
+    bpredictiongrid['pab>0.5'] = np.zeros(3)
+    bpredictiongrid['pab==0.5'] = np.zeros(3)
 
     for p in s:
         p1 = player(p)
@@ -632,21 +441,24 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
         pab=p1.pWin  #TODO: Implement this in the other test
         p5minep=np.floor(float(0.5-epsilon)*1000)/1000.0 #python rounding causes problems on the edges
         p5plusep=np.ceil(float(0.5+epsilon)*1000)/1000.0
-        if pab<p5minep:
-            wthisbin=wpredictiongrid['pab<0.5-epsilon']
-            bthisbin=bpredictiongrid['pab<0.5-epsilon']
+        if pab<0.5-delta:
+            wthisbin=wpredictiongrid['pab<0.5']
+            bthisbin=bpredictiongrid['pab<0.5']
 
-        elif p5minep<pab and pab<0.5:
-            wthisbin=wpredictiongrid['0.5-epsilon<pab and pab<0.5']
-            bthisbin=bpredictiongrid['0.5-epsilon<pab and pab<0.5']
+        elif 0.5-delta<=pab and pab<0.5:
+            wthisbin=wpredictiongrid['0.5-delta<=pab and pab<0.5']
+            bthisbin=bpredictiongrid['0.5-delta<=pab and pab<0.5']
 
-        elif 0.5<pab and pab<=p5plusep:
-            wthisbin=wpredictiongrid['0.5<pab and pab<=0.5+epsilon']
-            bthisbin=bpredictiongrid['0.5<pab and pab<=0.5+epsilon']
+        elif 0.5<pab and pab<=0.5+delta:
+            wthisbin=wpredictiongrid['0.5<pab and pab<=0.5+delta']
+            bthisbin=bpredictiongrid['0.5<pab and pab<=0.5+delta']
+        elif pab==0.5:
+            wthisbin=wpredictiongrid['pab==0.5']
+            bthisbin=bpredictiongrid['pab==0.5']
 
-        elif pab>p5plusep:
-            wthisbin=wpredictiongrid['pab>0.5+epsilon']
-            bthisbin=bpredictiongrid['pab>0.5+epsilon']
+        elif pab>0.5+delta:
+            wthisbin=wpredictiongrid['pab>0.5']
+            bthisbin=bpredictiongrid['pab>0.5']
         else:
             assert False
 
@@ -668,38 +480,58 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
             assert False
 
         if nplayed%100==0:
+            bins=[wpredictiongrid, bpredictiongrid]
+            for bin in bins:
+                combinedDrawsA=bin['0.5<pab and pab<=0.5+delta'][0]+bin['0.5-delta<=pab and pab<0.5'][0]+bin['pab==0.5'][0]
+                combinedDrawsB = bin['0.5<pab and pab<=0.5+delta'][1] + bin['0.5-delta<=pab and pab<0.5'][1] + \
+                                 bin['pab==0.5'][1]
+                combinedDrawsC = bin['0.5<pab and pab<=0.5+delta'][2] + bin['0.5-delta<=pab and pab<0.5'][2] + \
+                                 bin['pab==0.5'][2]
+                bin['Similar']=[combinedDrawsA,combinedDrawsB,combinedDrawsC]
+
             print("**********************************************************************************************")
             print(f"Type\tAv Games\tnCorrect\tnplayed\t\taccuracy")
             print(f"Wils\t{np.round(np.mean(wAvGamesToPredic),2)}\t\t{Wcorrect}\t\t{nplayed}\t\t{Wcorrect/nplayed}")
             print(f"bayes\t{np.round(np.mean(bAvGamesToPredic),2)}\t\t{Bcorrect}\t\t{nplayed}\t\t{Bcorrect/nplayed}")
 
             print("________________________________________________________________________________________")
-            print(f"wilson___epsilon={epsilon}________________________________________")
+            print(f"wilson___alpha:{alpha}________________________________________")
             width = 30
             lw=6
             line='{0: <{width}}'.format("actual   \predicted ->", width=width)
-            line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
+            line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Draw", "A", "Ngames")
             print(line)
 
             for key,v in wpredictiongrid.items():
                 line='{0: <{width}}'.format(key, width=width)
-                line+="|{:<7}|{:<7}|{:<7}".format(int(v[0]),int(v[1]),int(v[2]))
+                line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v), 2), np.round(v[1] / np.sum(v), 2),
+                                                          np.round(v[2] / np.sum(v), 2), int(np.sum(v)))
                 print(line)
             print("________________________________________________________________________________________")
             #print(wpredictiongrid)
             print(f"Bayes_______epsilon={epsilon}_____________________________________")
             line='{0: <{width}}'.format("actual   \predicted ->", width=width)
-            line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
+            line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Similar", "A", "Ngames")
             print(line)
             for key, v in bpredictiongrid.items():
                 line='{0: <{width}}'.format(key, width=width)
-                line+="|{:<7}|{:<7}|{:<7}".format(int(v[0]),int(v[1]),int(v[2]))
+                line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v), 2), np.round(v[1] / np.sum(v), 2),
+                                                          np.round(v[2] / np.sum(v), 2), int(np.sum(v)))
                 print(line)
 
             #print(bpredictiongrid)
             print("**********************************************************************************************")
 
     import csv
+    bins = [wpredictiongrid, bpredictiongrid]
+    for bin in bins:
+        combinedDrawsA = bin['0.5<pab and pab<=0.5+delta'][0] + bin['0.5-delta<=pab and pab<0.5'][0] + bin['pab==0.5'][
+            0]
+        combinedDrawsB = bin['0.5<pab and pab<=0.5+delta'][1] + bin['0.5-delta<=pab and pab<0.5'][1] + \
+                         bin['pab==0.5'][1]
+        combinedDrawsC = bin['0.5<pab and pab<=0.5+delta'][2] + bin['0.5-delta<=pab and pab<0.5'][2] + \
+                         bin['pab==0.5'][2]
+        bin['Similar'] = combinedDrawsA + combinedDrawsB + combinedDrawsC
 
     with open(f"failureTest/accuracyTest_eps{epsilon}_alpha_{alpha}_predicMargin={delta}.txt", "w") as f:
 
@@ -717,25 +549,25 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
         width = 30
         lw = 6
         line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
-        line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
+        line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Draw", "A", "Ngames")
         f.write(line+"\n")
         print(line)
         for key, v in wpredictiongrid.items():
             line = '{0: <{width}}'.format(key, width=width)
-            line += "|{:<7}|{:<7}|{:<7}".format(int(v[0]), int(v[1]), int(v[2]))
+            line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v),2), np.round(v[1] / np.sum(v),2), np.round(v[2] / np.sum(v),2),int(np.sum(v)))
             f.write(line+"\n")
             print(line)
         # print(wpredictiongrid)
-        line=f"Bayes_______epsilon={epsilon}_____________________________________"
+        line=f"Bayes_______alpha={alpha} ngames={np.sum(v)}_____________________________________"
         f.write(line+"\n")
         print(line)
         line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
-        line += "|{0:<7}|{1:<7}|{2:<7}".format("B", "Draw", "A")
+        line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Draw", "A", "Ngames")
         f.write(line+"\n")
         print(line)
         for key, v in bpredictiongrid.items():
             line = '{0: <{width}}'.format(key, width=width)
-            line += "|{:<7}|{:<7}|{:<7}".format(int(v[0]), int(v[1]), int(v[2]))
+            line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v),2), np.round(v[1] / np.sum(v),2), np.round(v[2] / np.sum(v),2),int(np.sum(v)))
             f.writelines(line+"\n")
             print(line)
 
@@ -756,16 +588,19 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     bayX=[]
     bayY=[]
     wpredictiongrid={}
-    wpredictiongrid['pab<0.5-epsilon']=np.zeros(3)
-    wpredictiongrid['0.5-epsilon<pab and pab<0.5']=np.zeros(3)
-    wpredictiongrid['0.5<pab and pab<=0.5+epsilon']=np.zeros(3)
-    wpredictiongrid['pab>0.5+epsilon']=np.zeros(3)
+    wpredictiongrid['pab<0.5']=np.zeros(3)
+    wpredictiongrid['0.5-delta<=pab and pab<0.5']=np.zeros(3)
+    wpredictiongrid['0.5<pab and pab<=0.5+delta']=np.zeros(3)
+    wpredictiongrid['pab>0.5']=np.zeros(3)
+    wpredictiongrid['pab==0.5'] = np.zeros(3)
     bpredictiongrid = {}
-    bpredictiongrid['pab<0.5-epsilonepsilon'] = np.zeros(3)
-    bpredictiongrid['0.5-epsilon<pab and pab<0.5'] = np.zeros(3)
-    bpredictiongrid['0.5<pab and pab<=0.5+epsilon'] = np.zeros(3)
-    bpredictiongrid['pab>0.5+epsilon'] = np.zeros(3)
-    s=np.arange(0.43,0.57,0.017)
+    bpredictiongrid['pab<0.5'] = np.zeros(3)
+    bpredictiongrid['0.5-delta<=pab and pab<0.5'] = np.zeros(3)
+    bpredictiongrid['0.5<pab and pab<=0.5+delta'] = np.zeros(3)
+    bpredictiongrid['pab>0.5']=np.zeros(3)
+    bpredictiongrid['pab==0.5'] = np.zeros(3)
+
+    s=np.arange(0.40,0.6,0.02)
     #s=[0.5]
     for p in s:
         p=np.round(p,3) #without this python stores p=0.45 as 0.4499999999 which is not a draw value!!!!. unfair.
@@ -1035,9 +870,9 @@ if __name__ == '__main__':
 
     fullResult=dict()
     alpha=0.05
-    epsilon=0.05
-    delta=epsilon/2.0
-    coverageTest(ngames=100, epsilon=epsilon, alpha=alpha, delta=delta)
+    epsilon=0.0
+    delta=0.05
+    coverageTest(ngames=1000, epsilon=epsilon, alpha=alpha, delta=delta)
     choosefromPoolTest(ngames=5000, epsilon=epsilon, alpha=alpha, delta=delta)
 
 
