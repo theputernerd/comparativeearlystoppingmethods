@@ -94,6 +94,8 @@ def shouldIStop(method,lc,uc,mean,epsilon=0.01,pmargin=0.5): #first number is wi
     #mean=np.round(mean,3)
 
     if method==1:
+        ut = 0.5 # upperthreshold
+        lt = 0.5
         if lc>ut:
             return 1,1.1  #player wins from condition 1
         elif uc<lt:
