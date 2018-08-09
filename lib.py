@@ -94,9 +94,9 @@ def shouldIStop(method,lc,uc,mean,epsilon=0.01,pmargin=0.5): #first number is wi
     #mean=np.round(mean,3)
 
     if method==1:
-        if lc>0.5: #ut:
+        if lc>ut:
             return 1,1.1  #player wins from condition 1
-        elif uc<0.5: #lt:  #Do I want the threshold here?
+        elif uc<lt:
             return 2,1.2 #player loses from condition 1.1
     elif method==2:
         if math.fabs(uc-lc)<epsilon*pmargin:#NB that predict some # inside the threshold to account for errors on the edge

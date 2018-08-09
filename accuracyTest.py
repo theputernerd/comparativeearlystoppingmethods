@@ -377,7 +377,7 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 
-def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
+def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, pmargin=0.5):
     mu, sigma = 0.5, .2  # mean and standard deviation
     trucN = get_truncated_normal(mu, sigma, 0,1)
     s=trucN.rvs(ngames)
@@ -387,21 +387,18 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
     plt.title("Population distribution for testing prediction")
     plt.ylabel("Quantity")
     plt.xlabel("Probability player A is better than player B")
-    plt.savefig(f"failureTest/populationHist_eps{drawThreshold}_alpha{alpha}.png", format='png')
+    plt.savefig(f"failureTest/populationHist_eps{epsilon}_alpha{alpha}.png", format='png')
 
     plt.show()
 
-    epsilon=drawThreshold #draw threshold
+    epsilon=epsilon #draw threshold
     Bcorrect=0
     Wcorrect=0
     nplayed=0
     results=dict()
     wAvGamesToPredic=[]
     bAvGamesToPredic=[]
-    Plessthanpoint5minusepsilon=[]
-    Plessthanpoint5andpmorethanpoint5plisepsilon=[]
-    Pmorethanpoint5andplessthanpoint5plisepsilon=[]
-    Pmorethanpoint5plusepsilon=[]
+
 
     wpredictiongrid={}
     wpredictiongrid['pab<0.5-epsilon']=np.zeros(3)
@@ -742,11 +739,11 @@ def choosefromPoolTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
             f.writelines(line+"\n")
             print(line)
 
-def coverageTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
+def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, pmargin=0.5):
     #Iterates over a series of p values and records the coverage for that value.
 
 
-    epsilon=drawThreshold #draw threshold
+    epsilon=epsilon #draw threshold
     Bcorrect=0
     Wcorrect=0
     nplayed=0
@@ -900,9 +897,7 @@ def coverageTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
                     #########################BAYES CONDITION 1
 
                     p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                    p1L = np.round(p1L, 3)
-                    p1U = np.round(p1U, 3)
-                    mean = np.round(mean, 3)
+
                     winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,pmargin=0)
                     if winner != 0:
                         baysPredicted = True
@@ -1039,8 +1034,9 @@ if __name__ == '__main__':
 
     fullResult=dict()
     alpha=0.05
-    coverageTest(ngames=100,drawThreshold=0.05,alpha=alpha,pmargin=0.7)
-    choosefromPoolTest(ngames=3000,drawThreshold=0.05,alpha=alpha,pmargin=0.7)
+    epsilon=0.025
+    coverageTest(ngames=100, epsilon=epsilon, alpha=alpha, pmargin=0.7)
+    choosefromPoolTest(ngames=3000, epsilon=epsilon, alpha=alpha, pmargin=0.7)
 
 
 
