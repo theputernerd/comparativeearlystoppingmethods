@@ -189,13 +189,15 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     mu, sigma = 0.5, .2  # mean and standard deviation
     trucN = get_truncated_normal(mu, sigma, 0,1)
     s=trucN.rvs(ngames)
+    fig3 = plt.figure(figsize=plt.figaspect(0.5))
+    ax3 = fig3.add_subplot(1, 1, 1)
     ##This test will select from a pool of players normally distributed around 0.5
     count, bins, ignored = plt.hist(s, 100, normed=False)
     #plt.plot(bins, 1 / (sigma * np.sqrt(2 * np.pi)) *np.exp( - (bins - mu)**2 / (2 * sigma**2) ),linewidth=2, color='r')
-    plt.title("Population distribution for testing prediction")
-    plt.ylabel("Quantity")
-    plt.xlabel("Probability player A is better than player B")
-    plt.savefig(f"failureTest/populationHist_eps{epsilon}_alpha{alpha}.png", format='png')
+    ax3.title("Population distribution for testing prediction")
+    ax3.ylabel("Quantity")
+    ax3.xlabel("Probability player A is better than player B")
+    fig3.savefig(f"failureTest/populationHist_eps{epsilon}_alpha{alpha}.png", format='png')
 
     plt.show()
 
@@ -878,7 +880,7 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     ax2 = fig2.add_subplot(1, 1, 1)
     ax2.set_title(f"Coverage using Bayesian-U. alpha={alpha} epsilon={epsilon} predictmargin={delta}")
 
-    ax2.plot(bayX, bayY)
+    ax2.plot(bayX, bayY,'x')
     fig2.savefig(f"failureTest/bayescoverage_alpha={alpha}_epsilon={epsilon}_predicMargin={delta}.png",format="png")
     plt.show()
 
@@ -890,8 +892,8 @@ if __name__ == '__main__':
     alpha=0.05
     epsilon=0.0
     delta=0.05
-    coverageTest(ngames=2000, epsilon=epsilon, alpha=alpha, delta=delta)
-    choosefromPoolTest(ngames=2000, epsilon=epsilon, alpha=alpha, delta=delta)
+    coverageTest(ngames=2, epsilon=epsilon, alpha=alpha, delta=delta)
+    choosefromPoolTest(ngames=2, epsilon=epsilon, alpha=alpha, delta=delta)
 
 
 
