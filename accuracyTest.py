@@ -878,7 +878,7 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     ax2 = fig2.add_subplot(1, 1, 1)
     ax2.set_title(f"Coverage using Bayesian-U. alpha={alpha} epsilon={epsilon} predictmargin={delta}")
 
-    ax2.plot(bayX, bayY,'x')
+    ax2.plot(bayX, bayY)
     fig2.savefig(f"failureTest/bayescoverage_alpha={alpha}_epsilon={epsilon}_predicMargin={delta}.png",format="png")
     plt.show()
 
