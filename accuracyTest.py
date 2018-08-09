@@ -554,7 +554,12 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
         print(line)
         for key, v in wpredictiongrid.items():
             line = '{0: <{width}}'.format(key, width=width)
-            line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v),2), np.round(v[1] / np.sum(v),2), np.round(v[2] / np.sum(v),2),int(np.sum(v)))
+            if np.sum(v)!=0:
+
+                line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v),2), np.round(v[1] / np.sum(v),2), np.round(v[2] / np.sum(v),2),int(np.sum(v)))
+            else:
+                line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(0,0,0,0)
+
             f.write(line+"\n")
             print(line)
         # print(wpredictiongrid)
@@ -567,7 +572,11 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
         print(line)
         for key, v in bpredictiongrid.items():
             line = '{0: <{width}}'.format(key, width=width)
-            line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v),2), np.round(v[1] / np.sum(v),2), np.round(v[2] / np.sum(v),2),int(np.sum(v)))
+            if np.sum(v)!=0:
+
+                line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v),2), np.round(v[1] / np.sum(v),2), np.round(v[2] / np.sum(v),2),int(np.sum(v)))
+            else:
+                line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(0,0,0,0)
             f.writelines(line+"\n")
             print(line)
 
@@ -600,7 +609,7 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     bpredictiongrid['pab>0.5']=np.zeros(3)
     bpredictiongrid['pab==0.5'] = np.zeros(3)
 
-    s=np.arange(0.40,0.6,0.014)
+    s=np.arange(0.30,0.7,0.0131)
     #s=[0.5]
     for p in s:
         p=np.round(p,3) #without this python stores p=0.45 as 0.4499999999 which is not a draw value!!!!. unfair.
@@ -881,8 +890,8 @@ if __name__ == '__main__':
     alpha=0.05
     epsilon=0.0
     delta=0.05
-    coverageTest(ngames=1000, epsilon=epsilon, alpha=alpha, delta=delta)
-    choosefromPoolTest(ngames=5000, epsilon=epsilon, alpha=alpha, delta=delta)
+    coverageTest(ngames=2000, epsilon=epsilon, alpha=alpha, delta=delta)
+    choosefromPoolTest(ngames=2000, epsilon=epsilon, alpha=alpha, delta=delta)
 
 
 
