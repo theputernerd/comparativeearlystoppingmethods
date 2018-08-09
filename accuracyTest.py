@@ -612,16 +612,26 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
         #g = game(p1, p2, player(0))
         #ut = 0.5 + epsilon  # upperthreshold
         #lt = 0.5 - epsilon  # lower threshold
-        if p1.pWin>p2.pWin:
-            best_actual = 1
-        elif p1.pWin<p2.pWin:
-            best_actual = 2
+        predictWhenDrawn = False  # set to tru to allow a prediciton when it is a draw
+        if predictWhenDrawn:
+            if p1.pWin>p2.pWin:
+                best_actual = 1
+            elif p1.pWin<p2.pWin:
+                best_actual = 2
+            else:
+                best_actual=3
         else:
-            best_actual=3
+            if p1.pWin>0.5+delta:
+                best_actual = 1
+            elif p1.pWin<0.5-delta:
+                best_actual = 2
+            else:
+                best_actual=3
+
         #p=0.46193
         #p1 = player(p)
         #p2 = player(1 - p)
-        if p1.pWin<=0.5+epsilon and p1.pWin>=0.5-epsilon:
+        if p1.pWin<=0.5+delta and p1.pWin>=0.5-delta:
             drawOK=True
         else:
             drawOK=False
@@ -639,7 +649,6 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
             Wcondition2 = []
             Bcondition1 = []
             Bcondition2 = []
-
             while not (wilsPredicted and baysPredicted):  # keep going until both methods made a prediction
                 # play one game
                 results = playOneGame(g, results)  # NB results not used
