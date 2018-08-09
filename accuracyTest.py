@@ -768,7 +768,7 @@ def coverageTest(ngames=5000,drawThreshold=0.05,alpha=0.05,pmargin=0.5):
     bpredictiongrid['0.5-epsilon<pab and pab<0.5'] = np.zeros(3)
     bpredictiongrid['0.5<pab and pab<=0.5+epsilon'] = np.zeros(3)
     bpredictiongrid['pab>0.5+epsilon'] = np.zeros(3)
-    s=np.arange(0.1,0.9,0.01)
+    s=np.arange(0.44,0.9,0.01)
     #s=[0.5]
     for p in s:
         p=np.round(p,3) #without this python stores p=0.45 as 0.4499999999 which is not a draw value!!!!. unfair.
