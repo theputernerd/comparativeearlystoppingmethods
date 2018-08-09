@@ -816,9 +816,9 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, pmargin=0.5):
                     #p1.nWins = 823
                     #n = 1507
                     p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                    #p1L=np.round(p1L,3)
-                    #p1U = np.round(p1U  , 3)
-                    #mean = np.round(mean, 3)
+                    p1L=np.round(p1L,3)
+                    p1U = np.round(p1U  , 3)
+                    mean = np.round(mean, 3)
 
                     winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,pmargin=0) #no threshold for lcb only
                     if winner != 0:  #condition1
@@ -858,9 +858,9 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, pmargin=0.5):
                     #n=1507
 
                     p1L, p1U, mean = wils_int(p1.nWins, n, alpha/2)
-                    #p1L = np.round(p1L, 3)
-                    #p1U = np.round(p1U, 3)
-                    #mean = np.round(mean, 3)
+                    p1L = np.round(p1L, 3)
+                    p1U = np.round(p1U, 3)
+                    mean = np.round(mean, 3)
 
                     winner, method = shouldIStop(2, p1L, p1U, mean, epsilon=epsilon,pmargin=pmargin)
                     if winner != 0 and not wilsPredicted:
@@ -928,9 +928,9 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, pmargin=0.5):
 
                     #########################BAYES CONDITION 2
                     p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha/2)
-                    #p1L = np.round(p1L, 3)
-                    #p1U = np.round(p1U, 3)
-                    #mean = np.round(mean, 3)
+                    p1L = np.round(p1L, 3)
+                    p1U = np.round(p1U, 3)
+                    mean = np.round(mean, 3)
                     winner, method = shouldIStop(2, p1L, p1U, mean, epsilon=epsilon,pmargin=pmargin)
                     if winner != 0 and not baysPredicted:
                         baysPredicted = True
