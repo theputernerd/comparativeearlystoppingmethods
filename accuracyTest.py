@@ -194,12 +194,12 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     ##This test will select from a pool of players normally distributed around 0.5
     count, bins, ignored = plt.hist(s, 100, normed=False)
     #plt.plot(bins, 1 / (sigma * np.sqrt(2 * np.pi)) *np.exp( - (bins - mu)**2 / (2 * sigma**2) ),linewidth=2, color='r')
-    ax3.title("Population distribution for testing prediction")
-    ax3.ylabel("Quantity")
-    ax3.xlabel("Probability player A is better than player B")
+    ax3.set_title("Population distribution for testing prediction")
+    ax3.set_ylabel("Quantity")
+    ax3.set_xlabel("Probability player A is better than player B")
     fig3.savefig(f"failureTest/populationHist_eps{epsilon}_alpha{alpha}.png", format='png')
 
-    plt.show()
+    #plt.show()
 
     epsilon=epsilon #draw threshold
     Bcorrect=0
@@ -533,7 +533,7 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
                          bin['pab==0.5'][1]
         combinedDrawsC = bin['0.5<pab and pab<=0.5+delta'][2] + bin['0.5-delta<=pab and pab<0.5'][2] + \
                          bin['pab==0.5'][2]
-        bin['Similar'] = combinedDrawsA + combinedDrawsB + combinedDrawsC
+        bin['Similar'] = [combinedDrawsA, combinedDrawsB, combinedDrawsC]
 
     with open(f"failureTest/accuracyTest_eps{epsilon}_alpha_{alpha}_predicMargin={delta}.txt", "w") as f:
 
@@ -558,7 +558,10 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
             line = '{0: <{width}}'.format(key, width=width)
             if np.sum(v)!=0:
 
-                line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v),2), np.round(v[1] / np.sum(v),2), np.round(v[2] / np.sum(v),2),int(np.sum(v)))
+                try:
+                    line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(np.round(v[0] / np.sum(v),2), np.round(v[1] / np.sum(v),2), np.round(v[2] / np.sum(v),2),int(np.sum(v)))
+                except:
+                    pass
             else:
                 line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(0,0,0,0)
 
@@ -892,8 +895,8 @@ if __name__ == '__main__':
     alpha=0.05
     epsilon=0.0
     delta=0.05
-    coverageTest(ngames=2, epsilon=epsilon, alpha=alpha, delta=delta)
-    choosefromPoolTest(ngames=2, epsilon=epsilon, alpha=alpha, delta=delta)
+    coverageTest(ngames=2000, epsilon=epsilon, alpha=alpha, delta=delta)
+    choosefromPoolTest(ngames=2000, epsilon=epsilon, alpha=alpha, delta=delta)
 
 
 
