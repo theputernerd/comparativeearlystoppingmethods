@@ -626,7 +626,7 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
         #g = game(p1, p2, player(0))
         #ut = 0.5 + epsilon  # upperthreshold
         #lt = 0.5 - epsilon  # lower threshold
-        predictWhenDrawn = False  # set to tru to allow a prediciton when it is a draw
+        predictWhenDrawn = True  # set to tru to allow a prediciton when it is a draw
         if predictWhenDrawn:
             if p1.pWin>p2.pWin:
                 best_actual = 1
