@@ -178,17 +178,16 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
     print(f"Bayes{bayesresults}")
 
 import random
-from scipy.stats import truncnorm
-
+from scipy.stats import truncnorm,uniform
+import scipy
 def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
+    return uniform()
     return truncnorm(
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
+def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
 
-def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
-    mu, sigma = 0.5, .2  # mean and standard deviation
-    trucN = get_truncated_normal(mu, sigma, 0,1)
-    s=trucN.rvs(ngames)
+    s=population.rvs(ngames)
     fig3 = plt.figure(figsize=plt.figaspect(0.5))
     ax3 = fig3.add_subplot(1, 1, 1)
     ##This test will select from a pool of players normally distributed around 0.5
@@ -210,17 +209,17 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     bAvGamesToPredic=[]
 
     wpredictiongrid = {}
-    wpredictiongrid['pab<0.5'] = np.zeros(3)
-    wpredictiongrid['0.5-delta<=pab and pab<0.5'] = np.zeros(3)
-    wpredictiongrid['0.5<pab and pab<=0.5+delta'] = np.zeros(3)
-    wpredictiongrid['pab>0.5'] = np.zeros(3)
-    wpredictiongrid['pab==0.5'] = np.zeros(3)
+    wpredictiongrid['Pab<0.5'] = np.zeros(3)
+    wpredictiongrid['0.5-delta<=Pab<0.5'] = np.zeros(3)
+    wpredictiongrid['0.5<Pab<=0.5+delta'] = np.zeros(3)
+    wpredictiongrid['Pab>0.5'] = np.zeros(3)
+    wpredictiongrid['Pab==0.5'] = np.zeros(3)
     bpredictiongrid = {}
-    bpredictiongrid['pab<0.5'] = np.zeros(3)
-    bpredictiongrid['0.5-delta<=pab and pab<0.5'] = np.zeros(3)
-    bpredictiongrid['0.5<pab and pab<=0.5+delta'] = np.zeros(3)
-    bpredictiongrid['pab>0.5'] = np.zeros(3)
-    bpredictiongrid['pab==0.5'] = np.zeros(3)
+    bpredictiongrid['Pab<0.5'] = np.zeros(3)
+    bpredictiongrid['0.5-delta<=Pab<0.5'] = np.zeros(3)
+    bpredictiongrid['0.5<Pab<=0.5+delta'] = np.zeros(3)
+    bpredictiongrid['Pab>0.5'] = np.zeros(3)
+    bpredictiongrid['Pab==0.5'] = np.zeros(3)
 
     for p in s:
         p1 = player(p)
@@ -444,23 +443,23 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
         p5minep=np.floor(float(0.5-epsilon)*1000)/1000.0 #python rounding causes problems on the edges
         p5plusep=np.ceil(float(0.5+epsilon)*1000)/1000.0
         if pab<0.5-delta:
-            wthisbin=wpredictiongrid['pab<0.5']
-            bthisbin=bpredictiongrid['pab<0.5']
+            wthisbin=wpredictiongrid['Pab<0.5']
+            bthisbin=bpredictiongrid['Pab<0.5']
 
         elif 0.5-delta<=pab and pab<0.5:
-            wthisbin=wpredictiongrid['0.5-delta<=pab and pab<0.5']
-            bthisbin=bpredictiongrid['0.5-delta<=pab and pab<0.5']
+            wthisbin=wpredictiongrid['0.5-delta<=Pab<0.5']
+            bthisbin=bpredictiongrid['0.5-delta<=Pab<0.5']
 
         elif 0.5<pab and pab<=0.5+delta:
-            wthisbin=wpredictiongrid['0.5<pab and pab<=0.5+delta']
-            bthisbin=bpredictiongrid['0.5<pab and pab<=0.5+delta']
+            wthisbin=wpredictiongrid['0.5<Pab<=0.5+delta']
+            bthisbin=bpredictiongrid['0.5<Pab<=0.5+delta']
         elif pab==0.5:
-            wthisbin=wpredictiongrid['pab==0.5']
-            bthisbin=bpredictiongrid['pab==0.5']
+            wthisbin=wpredictiongrid['Pab==0.5']
+            bthisbin=bpredictiongrid['Pab==0.5']
 
         elif pab>0.5+delta:
-            wthisbin=wpredictiongrid['pab>0.5']
-            bthisbin=bpredictiongrid['pab>0.5']
+            wthisbin=wpredictiongrid['Pab>0.5']
+            bthisbin=bpredictiongrid['Pab>0.5']
         else:
             assert False
 
@@ -484,11 +483,11 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
         if nplayed%100==0:
             bins=[wpredictiongrid, bpredictiongrid]
             for bin in bins:
-                combinedDrawsA=bin['0.5<pab and pab<=0.5+delta'][0]+bin['0.5-delta<=pab and pab<0.5'][0]+bin['pab==0.5'][0]
-                combinedDrawsB = bin['0.5<pab and pab<=0.5+delta'][1] + bin['0.5-delta<=pab and pab<0.5'][1] + \
-                                 bin['pab==0.5'][1]
-                combinedDrawsC = bin['0.5<pab and pab<=0.5+delta'][2] + bin['0.5-delta<=pab and pab<0.5'][2] + \
-                                 bin['pab==0.5'][2]
+                combinedDrawsA=bin['0.5<Pab<=0.5+delta'][0]+bin['0.5-delta<=Pab<0.5'][0]+bin['Pab==0.5'][0]
+                combinedDrawsB = bin['0.5<Pab<=0.5+delta'][1] + bin['0.5-delta<=Pab<0.5'][1] + \
+                                 bin['Pab==0.5'][1]
+                combinedDrawsC = bin['0.5<Pab<=0.5+delta'][2] + bin['0.5-delta<=Pab<0.5'][2] + \
+                                 bin['Pab==0.5'][2]
                 bin['Similar']=[combinedDrawsA,combinedDrawsB,combinedDrawsC]
 
             print("**********************************************************************************************")
@@ -511,7 +510,7 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
                 print(line)
             print("________________________________________________________________________________________")
             #print(wpredictiongrid)
-            print(f"Bayes_______epsilon={epsilon}_____________________________________")
+            print(f"Bayes_______epislon={epsilon}_____________________________________")
             line='{0: <{width}}'.format("actual   \predicted ->", width=width)
             line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Similar", "A", "Ngames")
             print(line)
@@ -527,12 +526,12 @@ def choosefromPoolTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     import csv
     bins = [wpredictiongrid, bpredictiongrid]
     for bin in bins:
-        combinedDrawsA = bin['0.5<pab and pab<=0.5+delta'][0] + bin['0.5-delta<=pab and pab<0.5'][0] + bin['pab==0.5'][
+        combinedDrawsA = bin['0.5<Pab<=0.5+delta'][0] + bin['0.5-delta<=Pab<0.5'][0] + bin['Pab==0.5'][
             0]
-        combinedDrawsB = bin['0.5<pab and pab<=0.5+delta'][1] + bin['0.5-delta<=pab and pab<0.5'][1] + \
-                         bin['pab==0.5'][1]
-        combinedDrawsC = bin['0.5<pab and pab<=0.5+delta'][2] + bin['0.5-delta<=pab and pab<0.5'][2] + \
-                         bin['pab==0.5'][2]
+        combinedDrawsB = bin['0.5<Pab<=0.5+delta'][1] + bin['0.5-delta<=Pab<0.5'][1] + \
+                         bin['Pab==0.5'][1]
+        combinedDrawsC = bin['0.5<Pab<=0.5+delta'][2] + bin['0.5-delta<=Pab<0.5'][2] + \
+                         bin['Pab==0.5'][2]
         bin['Similar'] = [combinedDrawsA, combinedDrawsB, combinedDrawsC]
 
     with open(f"failureTest/accuracyTest_eps{epsilon}_alpha_{alpha}_predicMargin={delta}.txt", "w") as f:
@@ -602,19 +601,20 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     bayX=[]
     bayY=[]
     wpredictiongrid={}
-    wpredictiongrid['pab<0.5']=np.zeros(3)
-    wpredictiongrid['0.5-delta<=pab and pab<0.5']=np.zeros(3)
-    wpredictiongrid['0.5<pab and pab<=0.5+delta']=np.zeros(3)
-    wpredictiongrid['pab>0.5']=np.zeros(3)
-    wpredictiongrid['pab==0.5'] = np.zeros(3)
+    wpredictiongrid['Pab<0.5']=np.zeros(3)
+    wpredictiongrid['0.5-delta<=Pab<0.5']=np.zeros(3)
+    wpredictiongrid['0.5<Pab<=0.5+delta']=np.zeros(3)
+    wpredictiongrid['Pab>0.5']=np.zeros(3)
+    wpredictiongrid['Pab==0.5'] = np.zeros(3)
     bpredictiongrid = {}
-    bpredictiongrid['pab<0.5'] = np.zeros(3)
-    bpredictiongrid['0.5-delta<=pab and pab<0.5'] = np.zeros(3)
-    bpredictiongrid['0.5<pab and pab<=0.5+delta'] = np.zeros(3)
-    bpredictiongrid['pab>0.5']=np.zeros(3)
-    bpredictiongrid['pab==0.5'] = np.zeros(3)
+    bpredictiongrid['Pab<0.5'] = np.zeros(3)
+    bpredictiongrid['0.5-delta<=Pab<0.5'] = np.zeros(3)
+    bpredictiongrid['0.5<Pab<=0.5+delta'] = np.zeros(3)
+    bpredictiongrid['Pab0.5']=np.zeros(3)
+    bpredictiongrid['Pab==0.5'] = np.zeros(3)
 
-    s=np.arange(0.20,0.8,0.007)
+    #s=np.arange(0.20,0.8,0.007)
+    s=np.arange(0.20,0.8,0.02)
     #s=[0.5]
     for p in s:
         p=np.round(p,3) #without this python stores p=0.45 as 0.4499999999 which is not a draw value!!!!. unfair.
@@ -877,14 +877,17 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     ax = fig1.add_subplot(1, 1, 1)
 
     ax.plot(wilX,wilY,'x')
-    ax.set_title(f"Coverage using Wilson.alpha={alpha}  epsilon={epsilon} predictmargin={delta}")
-    fig1.savefig(f"failureTest/wilsoncoverage_alpha={alpha}_epsilon={epsilon}_predicMargin={delta}.png",format="png")
+    ax.set_title(f"Accuracy using Wilson.alpha={alpha} delta={delta}")
+    ax.set_xlabel(f"True probability Pab")
+    ax.set_ylabel(f"Prediction accuracy")
+    fig1.savefig(f"failureTest/wilsoncoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png",format="png")
     fig2 = plt.figure(figsize=plt.figaspect(0.5))
     ax2 = fig2.add_subplot(1, 1, 1)
-    ax2.set_title(f"Coverage using Bayesian-U. alpha={alpha} epsilon={epsilon} predictmargin={delta}")
-
+    ax2.set_title(f"Accuracy using Bayesian-U. alpha={alpha} delta={delta}")
+    ax2.set_xlabel(f"True probability Pab")
+    ax2.set_ylabel(f"Prediction accuracy")
     ax2.plot(bayX, bayY,'x')
-    fig2.savefig(f"failureTest/bayescoverage_alpha={alpha}_epsilon={epsilon}_predicMargin={delta}.png",format="png")
+    fig2.savefig(f"failureTest/bayescoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png",format="png")
     plt.show()
 
 if __name__ == '__main__':
@@ -895,9 +898,17 @@ if __name__ == '__main__':
     alpha=0.05
     epsilon=0.0
     delta=0.05
-    coverageTest(ngames=2000, epsilon=epsilon, alpha=alpha, delta=delta)
-    choosefromPoolTest(ngames=2000, epsilon=epsilon, alpha=alpha, delta=delta)
-
+    alphaList=[0.1,0.05,0.01,0.001]
+    deltaList=[0.1,0.05,0.01]
+    #######plt.title(r'$\alpha > \beta$')
+    mu, sigma = 0.5, .2  # mean and standard deviation
+    population = get_truncated_normal(mu, sigma, 0,1)
+    #population=np.random.uniform(0.1,0.9,100)
+    for a in alphaList:
+        for d in deltaList:
+            coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+            choosefromPoolTest(population,ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+            print("-------------------------------------------------------------------------------------------------")
 
 
     pass
