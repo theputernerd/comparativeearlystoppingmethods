@@ -143,6 +143,16 @@ def shouldIStopAND(method, lc, uc, mean, epsilon=0, delta=0.05): #first number i
         #        return 3, 2.3 #it was a draw
     return 0,0
 
+def interpretXYZ(x,y,z,pts=1000): #added
+    from scipy.interpolate import griddata
+    import random
+    if len(x) > 0:
+        x, y,z = zip(*random.sample(list(zip(x, y,z)), int(len(x) / 1)))
+    xi = np.linspace(min(x), max(x),pts)
+    yi = np.linspace(min(y), max(y),pts)
+    zi = griddata((x, y), z, (xi[None,:], yi[:,None]), method='cubic')
+    return xi,yi,zi
+
 class player(object):
     def __init__(self, pWin):
         self.pWin = pWin

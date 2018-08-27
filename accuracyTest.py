@@ -209,16 +209,16 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
     bAvGamesToPredic=[]
 
     wpredictiongrid = {}
-    wpredictiongrid['Pab<0.5'] = np.zeros(3)
+    wpredictiongrid['Pab<0.5-delta'] = np.zeros(3)
     wpredictiongrid['0.5-delta<=Pab<0.5'] = np.zeros(3)
     wpredictiongrid['0.5<Pab<=0.5+delta'] = np.zeros(3)
-    wpredictiongrid['Pab>0.5'] = np.zeros(3)
+    wpredictiongrid['Pab>0.5+delta'] = np.zeros(3)
     wpredictiongrid['Pab==0.5'] = np.zeros(3)
     bpredictiongrid = {}
-    bpredictiongrid['Pab<0.5'] = np.zeros(3)
+    bpredictiongrid['Pab<0.5-delta'] = np.zeros(3)
     bpredictiongrid['0.5-delta<=Pab<0.5'] = np.zeros(3)
     bpredictiongrid['0.5<Pab<=0.5+delta'] = np.zeros(3)
-    bpredictiongrid['Pab>0.5'] = np.zeros(3)
+    bpredictiongrid['Pab>0.5+delta'] = np.zeros(3)
     bpredictiongrid['Pab==0.5'] = np.zeros(3)
 
     for p in s:
@@ -443,8 +443,8 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
         p5minep=np.floor(float(0.5-epsilon)*1000)/1000.0 #python rounding causes problems on the edges
         p5plusep=np.ceil(float(0.5+epsilon)*1000)/1000.0
         if pab<0.5-delta:
-            wthisbin=wpredictiongrid['Pab<0.5']
-            bthisbin=bpredictiongrid['Pab<0.5']
+            wthisbin=wpredictiongrid['Pab<0.5-delta']
+            bthisbin=bpredictiongrid['Pab<0.5-delta']
 
         elif 0.5-delta<=pab and pab<0.5:
             wthisbin=wpredictiongrid['0.5-delta<=Pab<0.5']
@@ -458,8 +458,8 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
             bthisbin=bpredictiongrid['Pab==0.5']
 
         elif pab>0.5+delta:
-            wthisbin=wpredictiongrid['Pab>0.5']
-            bthisbin=bpredictiongrid['Pab>0.5']
+            wthisbin=wpredictiongrid['Pab>0.5+delta']
+            bthisbin=bpredictiongrid['Pab>0.5+delta']
         else:
             assert False
 
@@ -584,7 +584,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
             f.writelines(line+"\n")
             print(line)
 
-def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
+def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
     #Iterates over a series of p values and records the coverage for that value.
 
 
@@ -601,16 +601,16 @@ def coverageTest(ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     bayX=[]
     bayY=[]
     wpredictiongrid={}
-    wpredictiongrid['Pab<0.5']=np.zeros(3)
+    wpredictiongrid['Pab<0.5-delta']=np.zeros(3)
     wpredictiongrid['0.5-delta<=Pab<0.5']=np.zeros(3)
     wpredictiongrid['0.5<Pab<=0.5+delta']=np.zeros(3)
-    wpredictiongrid['Pab>0.5']=np.zeros(3)
+    wpredictiongrid['Pab>0.5+delta']=np.zeros(3)
     wpredictiongrid['Pab==0.5'] = np.zeros(3)
     bpredictiongrid = {}
-    bpredictiongrid['Pab<0.5'] = np.zeros(3)
+    bpredictiongrid['Pab<0.5-delta'] = np.zeros(3)
     bpredictiongrid['0.5-delta<=Pab<0.5'] = np.zeros(3)
     bpredictiongrid['0.5<Pab<=0.5+delta'] = np.zeros(3)
-    bpredictiongrid['Pab0.5']=np.zeros(3)
+    bpredictiongrid['Pab>0.5+delta']=np.zeros(3)
     bpredictiongrid['Pab==0.5'] = np.zeros(3)
 
     #s=np.arange(0.20,0.8,0.007)
