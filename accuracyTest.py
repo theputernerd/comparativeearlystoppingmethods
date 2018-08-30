@@ -1,6 +1,6 @@
 
 import matplotlib as mpl
-mpl.use('Agg')
+#mpl.use('Agg')
 import numpy as np
 import random
 from lib import player
@@ -600,18 +600,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
     wilY=[]
     bayX=[]
     bayY=[]
-    wpredictiongrid={}
-    wpredictiongrid['Pab<0.5-delta']=np.zeros(3)
-    wpredictiongrid['0.5-delta<=Pab<0.5']=np.zeros(3)
-    wpredictiongrid['0.5<Pab<=0.5+delta']=np.zeros(3)
-    wpredictiongrid['Pab>0.5+delta']=np.zeros(3)
-    wpredictiongrid['Pab==0.5'] = np.zeros(3)
-    bpredictiongrid = {}
-    bpredictiongrid['Pab<0.5-delta'] = np.zeros(3)
-    bpredictiongrid['0.5-delta<=Pab<0.5'] = np.zeros(3)
-    bpredictiongrid['0.5<Pab<=0.5+delta'] = np.zeros(3)
-    bpredictiongrid['Pab>0.5+delta']=np.zeros(3)
-    bpredictiongrid['Pab==0.5'] = np.zeros(3)
+
 
     #s=np.arange(0.20,0.8,0.007)
     s=np.arange(0.20,0.8,0.02)
@@ -890,10 +879,368 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
     fig2.savefig(f"failureTest/bayescoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png",format="png")
     plt.show()
 
+def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
+    #returns xyz values for accuracy. y is accuracy, x,y is alpha delta
+    Bcorrect = 0
+    Wcorrect = 0
+    nplayed = 0
+    wAvGamesToPredic=[]
+    bAvGamesToPredic=[]
+    wcorrect = []
+    bcorrect = []
+    p=pab
+    p1 = player(p)
+    p2 = player(1 - p)
+    drawsP = player(0)
+    epsilon=0
+    if p1.pWin > p2.pWin:
+        best_actual = 1
+    elif p1.pWin < p2.pWin:
+        best_actual = 2
+    else:
+        best_actual = 3
+    if (p1.pWin<=0.5+delta) and (p1.pWin>=0.5-delta):
+        drawOK=True
+    else:
+        drawOK=False
+
+    for i in range(ngames):
+        wilsPredicted = False
+        baysPredicted = False
+        g = game(p1, p2, player(0))
+        wilsonresults = []
+        bayesresults = []
+        results = dict()
+        p1.reset()
+        p2.reset()
+        drawsP.reset()
+        while not (wilsPredicted and baysPredicted):  # keep going until both methods made a prediction
+            # play one game
+            results = playOneGame(g, results)  # NB results not used
+            n = p1.nWins + p2.nWins + drawsP.nWins
+
+            if not wilsPredicted and n > 7: #todo: remove this.
+                #########################WILSON CONDITION 1
+                # p1.pWin = 0.57
+                # p1.nWins = 823
+                # n = 1507
+                p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
+                p1L = np.round(p1L, 3)
+                p1U = np.round(p1U, 3)
+                mean = np.round(mean, 3)
+
+                winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,
+                                             delta=0)  # no threshold for lcb only
+                if winner != 0:  # condition1
+                    wilsPredicted = True
+                    # now to see if prediction is correct.
+                    if int(method) != int(1):
+                        assert False  # should only do predict 1
+                    if winner == 0:
+                        assert False  # should have made a prediction.
+                    else:
+                        if winner == best_actual:
+                            # corrrect
+                            storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                            p1U - p1L]
+                            wilsonresults = storedResult
+                            Wcondition1 = storedResult
+                            if drawOK:  # it could've been a draw.
+                                storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                                p1U - p1L, "or Draw"]
+                                wilsonresults = storedResult
+                                Wcondition2 = storedResult
+
+                        elif winner == 3 and drawOK:  # it's within the draw threshold
+                            storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                            p1U - p1L]
+                            wilsonresults = storedResult
+                            Wcondition1 = storedResult
+                        else:  # it is wrong
+                            storedResult = [p1.pWin, p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,
+                                            p1U - p1L]
+                            wilsonresults = storedResult
+                            Wcondition1 = storedResult
+                            print(f"wils{method} failed. {storedResult}")
+
+                #########################WILSON CONDITION 2
+                # p1.nWins=798
+                # n=1573
+                # p1.pWin=0.57
+                # p1.nWins=823
+                # n=1507
+
+                p1L, p1U, mean = wils_int(p1.nWins, n, alpha / 2)
+                p1L = np.round(p1L, 3)
+                p1U = np.round(p1U, 3)
+                mean = np.round(mean, 3)
+
+                winner, method = shouldIStop(2, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                if winner != 0 and not wilsPredicted:
+                    wilsPredicted = True
+                    # now to see if prediction is correct.
+                    if int(method) != int(2):
+                        assert False
+                    if winner == 0:
+                        assert False  # should have made a prediction.
+                    else:
+                        if winner == best_actual:
+                            # corrrect
+                            storedResult = (
+                            p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                            wilsonresults = storedResult
+                            Wcondition2 = storedResult
+                            if drawOK:  # it could've been a draw.
+                                storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                                p1U - p1L, "or Draw"]
+                                wilsonresults = storedResult
+                                Wcondition2 = storedResult
+
+                        elif winner == 3 and drawOK:  # it's within the draw threshold
+                            storedResult = (
+                            p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                            wilsonresults = storedResult
+                            Wcondition2 = storedResult
+                        else:
+                            storedResult = [p1.pWin, p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,
+                                            p1U - p1L]
+                            wilsonresults = storedResult
+                            Wcondition1 = storedResult
+                            print(f"wils{method} failed. {storedResult}")
+
+            if not baysPredicted:
+                #########################BAYES CONDITION 1
+
+                p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
+
+                winner, method = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon, delta=0)
+                if winner != 0:
+                    baysPredicted = True
+                    # now to see if prediction is correct.
+                    if int(method) != int(1):
+                        assert False
+                    if winner == 0:
+                        assert False  # should have made a prediction.
+                    else:
+                        if winner == best_actual:
+                            # corrrect
+                            storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                            p1U - p1L]
+
+                            if drawOK:  # it could've been a draw.
+                                storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                                p1U - p1L, "or Draw"]
+                            bayesresults = storedResult
+                            Bcondition1 = storedResult
+                        elif winner == 3 and drawOK:  # it's within the draw threshold
+                            storedResult = (
+                            p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                            bayesresults = storedResult
+                            Bcondition1 = storedResult
+                        else:
+                            storedResult = [p1.pWin, p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,
+                                            p1U - p1L]
+                            bayesresults = storedResult
+                            Bcondition1 = storedResult
+                            print(f"bayes{method} failed. {storedResult}")
+
+                #########################BAYES CONDITION 2
+                p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha / 2)
+                p1L = np.round(p1L, 3)
+                p1U = np.round(p1U, 3)
+                mean = np.round(mean, 3)
+                winner, method = shouldIStop(2, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                if winner != 0 and not baysPredicted:
+                    baysPredicted = True
+                    if int(method) != int(2):
+                        assert False
+                    # now to see if prediction is correct.
+                    if winner == 0:
+                        assert False  # should have made a prediction.
+
+                    else:
+                        if winner == best_actual:
+                            # corrrect
+                            storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                            p1U - p1L]
+                            if drawOK:  # it could've been a draw.
+                                storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                                p1U - p1L, "or Draw"]
+
+                            bayesresults = storedResult
+                            Bcondition2 = storedResult
+                        elif winner == 3 and drawOK:  # it's within the draw threshold
+                            storedResult = (
+                            p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                            bayesresults = storedResult
+                            Bcondition1 = storedResult
+                        else:
+                            storedResult = [p1.pWin, p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,
+                                            p1U - p1L]
+                            print(f"bayes{method} failed. {storedResult}")
+                            bayesresults = storedResult
+                            Bcondition2 = storedResult
+
+        if bayesresults[3]:
+            Bcorrect += 1
+            bcorrect.append(1)
+        else:
+            bcorrect.append(0)
+
+        if wilsonresults[3]:
+            Wcorrect += 1
+            wcorrect.append(1)
+        else:
+            wcorrect.append(0)
+
+        nplayed += 1
+        wAvGamesToPredic.append(wilsonresults[2])
+        bAvGamesToPredic.append(bayesresults[2])
+    nWCorrect = np.count_nonzero(wcorrect)
+    nW = len(wcorrect)
+    aW = np.average(wcorrect) #accuracy
+    ngW=np.average(wAvGamesToPredic) #how many game to predict
+    Wdel=delta
+    Walph=alpha
+    Waccuracyrate=aW
+
+    nBCorrect = np.count_nonzero(bcorrect)
+    nB = len(bcorrect)
+    aB = np.average(bcorrect)  # accuracy
+    ngB = np.average(bAvGamesToPredic)  # how many game to predict
+    Bdel = delta
+    Balph = alpha
+    Baccuracyrate = aB
+
+    return [[Waccuracyrate,ngW],[Baccuracyrate,ngB]]
+import numpy
+def interpretXYZ(x,y,z,pts=1000):
+    from scipy.interpolate import griddata
+    import random
+    if len(x) > 0:
+        x, y,z = zip(*random.sample(list(zip(x, y,z)), int(len(x) / 1)))
+    xi = np.linspace(min(x), max(x),pts)
+    yi = np.linspace(min(y), max(y),pts)
+    zi = griddata((x, y), z, (xi[None,:], yi[:,None]), method='cubic')
+    return xi,yi,zi
+
+def plotFixedPAB(pab=0.5):
+    #alpha=numpy.arange(0.10,0.01,-0.01)
+    #delta=numpy.arange(0.10,0.01,-0.01)
+    alpha = numpy.arange(.01, 0.205, 0.01) #TODO Add more fidelity make incr smaller
+    delta = numpy.arange(.01, 0.205, 0.01)
+    zWaccuracy=[]
+    zWnum=[]
+    zBaccuracy = []
+    zBnum = []
+    x=[]
+    y=[]
+    z=[]
+    n_extrapolatedPts=200
+    ngames=20
+    elev=30
+    az=117
+    import csv
+    for a in alpha:
+        for d in delta:
+            print(f"({a},{d})")
+            [W,B]=getaccuracy3dfixedpab(ngames,a,d,pab)
+            x.append(a)
+            y.append(d)
+            zWaccuracy.append(W[0])
+            zWnum.append(W[1])
+            zBaccuracy.append(B[0])
+            zBnum.append(B[1])
+            with open('failureTest/coverageFor3d.csv','a',newline='') as csvfile:
+                spamwriter = csv.writer(csvfile, delimiter=',')
+                line=[pab,ngames,round(a,4),round(d,4),W[0],W[1],B[0],B[1]]
+                spamwriter.writerow(line)
+    """
+    from matplotlib import cm
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import axes3d
+    #############################################Wilson accuracy
+
+    fig = plt.figure(figsize=plt.figaspect(0.5))
+    xi,yi,zi=interpretXYZ(x,y,zWaccuracy,n_extrapolatedPts)
+    ax = fig.add_subplot(1, 1, 1, projection='3d')
+    cs1 = ax.contourf(xi, yi, zi, 500, linewidths=1,cmap=cm.jet)
+    ax.invert_yaxis()
+    ax.set_xlabel('alpha')
+    # ax.set_xlim(0, maxNgames)
+    ax.set_ylabel('delta')
+    ax.set_zlabel('Accuracy')
+    ax.view_init(elev=elev, azim=az)
+    ax.set_title(f"Accuracy using Wilson Pab={pab}")
+    plt.colorbar(cs1,ax=ax)
+    fig.savefig(f"cont3d_Wilsonp={pab}.png", format='png')
+    fig.show()
+    plt.show()
+
+
+    #############################################Bayes
+    fig2 = plt.figure(figsize=plt.figaspect(0.5))
+    xi,yi,zi=interpretXYZ(x,y,zBaccuracy,n_extrapolatedPts)
+    ax2 = fig2.add_subplot(1, 1, 1, projection='3d')
+    cs2 = ax2.contourf(xi, yi, zi, 500, linewidths=1, cmap=cm.jet)
+    ax2.invert_yaxis()
+    ax2.set_xlabel('alpha')
+    # ax.set_xlim(0, maxNgames)
+    ax2.set_ylabel('delta')
+    ax2.set_zlabel('Accuracy')
+    ax2.view_init(elev=elev, azim=az)
+    ax2.set_title(f"Accuracy using Bayes-U Pab={pab}")
+
+    plt.colorbar(cs2, ax=ax)
+    fig2.savefig(f"cont3d_Bayesp={pab}.png", format='png')
+
+    fig2.show()
+    plt.show()
+
+    #############################################Wilson nGames
+
+    fig3 = plt.figure(figsize=plt.figaspect(0.5))
+    xi, yi, zi = interpretXYZ(x, y, zWnum, n_extrapolatedPts)
+    ax3 = fig3.add_subplot(1, 1, 1, projection='3d')
+    cs1 = ax3.contourf(xi, yi, zi, 500, linewidths=1, cmap=cm.jet)
+    ax3.invert_yaxis()
+    ax3.set_xlabel('alpha')
+    # ax.set_xlim(0, maxNgames)
+    ax3.set_ylabel('delta')
+    ax3.set_zlabel('Ngames to decision')
+    ax3.view_init(elev=elev, azim=az)
+    ax3.set_title(f"NGames to decision Wilson Pab={pab}")
+    plt.colorbar(cs1, ax=ax3)
+    fig3.savefig(f"nGames_Wilsonp={pab}.png", format='png')
+    fig3.show()
+    plt.show()
+    #############################################Bayes nGames
+
+    fig4 = plt.figure(figsize=plt.figaspect(0.5))
+    xi, yi, zi = interpretXYZ(x, y, zBnum, n_extrapolatedPts)
+    ax4 = fig4.add_subplot(1, 1, 1, projection='3d')
+    cs1 = ax4.contourf(xi, yi, zi, 500, linewidths=1, cmap=cm.jet)
+    ax4.invert_yaxis()
+    ax4.set_xlabel('alpha')
+    # ax.set_xlim(0, maxNgames)
+    ax4.set_ylabel('delta')
+    ax4.set_zlabel('Ngames to decision')
+    ax4.view_init(elev=elev, azim=az)
+    ax4.set_title(f"NGames to decision Bayes-U Pab={pab}")
+    plt.colorbar(cs1, ax=ax4)
+    fig4.savefig(f"nGames_Bayesp={pab}.png", format='png')
+    fig4.show()
+    plt.show()
+    pass
+    """
+
 if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
+    while True:
+        plotFixedPAB()
 
+    assert False
     fullResult=dict()
     alpha=0.05
     epsilon=0.0
