@@ -125,6 +125,7 @@ n_extrapolatedPts = 200
 fig2 = plt.figure(figsize=plt.figaspect(0.5))
 xi,yi,zi=interpretXYZ(x,y,zBaccuracy,n_extrapolatedPts)
 ax2 = fig2.add_subplot(1, 1, 1, projection='3d')
+
 cs2 = ax2.contourf(xi, yi, zi, 500, linewidths=1, cmap=cm.jet)
 ax2.invert_yaxis()
 ax2.set_xlabel('alpha')
