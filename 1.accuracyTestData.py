@@ -2,7 +2,7 @@
 This creates a table of accuracy for a range of different parameters.
 """
 import matplotlib as mpl
-#mpl.use('Agg')
+mpl.use('Agg')
 import numpy as np
 import random
 from lib import player
