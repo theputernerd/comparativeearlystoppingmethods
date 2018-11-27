@@ -157,24 +157,24 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
         # print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalFailure:{(1-predictN/trials)*100:.3f}%")
     import csv
     try:
-        with open(f"failureTest\\wilson.csv", "a") as f:
+        with open(f"failureTest/wilson.csv", "a") as f:
             wr = csv.writer(f, delimiter=",")
 
             wr.writerow(wilsonresults)
-        with open(f"failureTest\\wilsonC1.csv", "a") as f:
+        with open(f"failureTest/wilsonC1.csv", "a") as f:
             wr = csv.writer(f, delimiter=",")
             wr.writerow(Wcondition1)
-        with open(f"failureTest\\wilsonC2.csv", "a") as f:
+        with open(f"failureTest/wilsonC2.csv", "a") as f:
             wr = csv.writer(f, delimiter=",")
             wr.writerow(Wcondition2)
 
-        with open(f"failureTest\\bayes.csv", "a") as f:
+        with open(f"failureTest/bayes.csv", "a") as f:
             wr = csv.writer(f, delimiter=",")
             wr.writerow(bayesresults)
-        with open(f"failureTest\\bayesC1.csv", "a") as f:
+        with open(f"failureTest/bayesC1.csv", "a") as f:
             wr = csv.writer(f, delimiter=",")
             wr.writerow(Bcondition1)
-        with open(f"failureTest\\bayesC2.csv", "a") as f:
+        with open(f"failureTest/bayesC2.csv", "a") as f:
             wr = csv.writer(f, delimiter=",")
             wr.writerow(Bcondition2)
     except:
@@ -801,12 +801,12 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
 
     #f=_eps{epsilon}_alpha_{alpha}_delta={delta}
     for cm in CMs:
-        with open(f"confusionMatrix\\{cm.name}.csv", 'a', newline='') as f:
+        with open(f"confusionMatrix/{cm.name}.csv", 'a', newline='') as f:
             csvwriter=csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             params=[alpha,delta]+cm.allmetrics
             csvwriter.writerow(params)
 
-    with open(f"confusionMatrix\\_alpha_{alpha}_delta={delta}.txt", "w") as f:
+    with open(f"confusionMatrix/_alpha_{alpha}_delta={delta}.txt", "w") as f:
         for cm in CMs:
             f.write(f"{cm.name} avgames:{cm.av_predict}\n")
             f.writelines(str(cm))
@@ -1558,7 +1558,7 @@ def plotFixedPAB(pab=0.5):
             zWnum.append(W[1])
             zBaccuracy.append(B[0])
             zBnum.append(B[1])
-            fname=f'confusionMatrix\\coverageFor3d_pab={pab}.csv'
+            fname=f'confusionMatrix/coverageFor3d_pab={pab}.csv'
             print(fname)
             with open(fname,'a',newline='') as csvfile:
                 spamwriter = csv.writer(csvfile, delimiter=',')
