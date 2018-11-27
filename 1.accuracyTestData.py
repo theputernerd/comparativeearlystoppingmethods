@@ -1576,6 +1576,7 @@ if __name__ == '__main__':
     except:
         print("File exists")
     #assert False
+    [plotFixedPAB(0.5) for _ in 1000000]
     fullResult=dict()
     alpha=0.05
     epsilon=0.0
