@@ -1571,7 +1571,10 @@ if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
     import os
-    os.mkdir('confusionMatrix')
+    try:
+        os.mkdir('confusionMatrix')
+    except:
+        print("File exists")
     #assert False
     fullResult=dict()
     alpha=0.05
