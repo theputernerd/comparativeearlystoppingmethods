@@ -28,9 +28,11 @@ def coveragePlotData(fn, test1=True, test2=True):
     for p2W in range(0, ngames):
         predicted = False
         for p1W in range(0, ngames):
-            p1L, p1U, mean = getLimits(p1W, p2W, fn)
-            pred2 = DeltaTest(p1L, p1U) if doPred2 else False
-            pred1 = LCBTest(p1L, p1U) if doPred1 else False
+            p1L, p1U, mean = fn(p1W, p2W+p1W, alpha=0.05)
+            pred1,t1 = shouldIStop(1,p1L, p1U,mean) if doPred1 else False,0
+            p1L, p1U, mean = fn(p1W, p2W+p1W, alpha=0.025)
+            pred2,t2 = shouldIStop(3,p1L, p1U,mean) if doPred2 else False,0
+
             if pred1 == 1 or pred2 == 1:
                 # predicted player 1 won.
                 predicted = True
@@ -128,7 +130,7 @@ def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",sampleEvery=2):
     plt.ylabel("Player 2 wins")
     plt.title(f"{name}")
     plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
-    plt.savefig(f"{name}.eps", format='eps')
+    plt.savefig(f"{name}.pdf", format='pdf')
     plt.show()
     fig.canvas.draw()
     fig.canvas.flush_events()
@@ -220,7 +222,7 @@ def LCB_BayesOnly(name="Bayesian Only LCB_UCB Test",sampleEvery=1):
     t2 = False
     markersize = 1
     bayesianCoverageOnly(t1,t2,markersize,name,sampleEvery=sampleEvery)
-def delta_WilsOnly(name="Wilson Only ",sampleEvery=1):
+def delta_WilsOnly(name="Condition 2 Wilson Only ",sampleEvery=1):
     t1 = False
     t2 = True
     markersize = 1

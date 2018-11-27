@@ -20,7 +20,7 @@ zBnumf = []
 nf=[]
 pab=[]
 
-with open('failureTest/coverageFor3d.csv', 'rU') as csvfile:
+with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
         p,n,af, df, zWaf, zWnf, zBaf, zBnf=row
@@ -120,6 +120,54 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 #############################################Wilson accuracy
 n_extrapolatedPts = 200
+#############################################BayesContour
+fig5 = plt.figure(figsize=plt.figaspect(0.5))
+xi,yi,zi=interpretXYZ(x,y,zBaccuracy,n_extrapolatedPts)
+ax2 = fig5.add_subplot(1, 1, 1)
+cs2 = ax2.contour(xi, yi, zi, 50, linewidths=1, cmap=cm.jet)
+ax2.invert_yaxis()
+ax2.set_xlabel(r"$\alpha$")
+ax2.set_ylabel(r'$\Delta$')
+#ax2.set_zlabel('Accuracy')
+ax2.set_title(f"Accuracy using Bayes-U Pab={pab}")
+levels = cs2.levels
+plt.clabel(cs2, levels[1::5],inline=10, fontsize=10)
+plt.colorbar(cs2, ax=ax2)
+fig5.savefig(f"failureTest/contour_Bayesp={pab}.png", format='png')
+fig5.show()
+plt.show()
+############################################### WilsonContour
+fig = plt.figure(figsize=plt.figaspect(0.5))
+xi,yi,zi=interpretXYZ(x,y,zWaccuracy,n_extrapolatedPts)
+ax = fig.add_subplot(1, 1, 1)
+cs1 = ax.contour(xi, yi, zi, 50, linewidths=1,cmap=cm.jet)
+ax.invert_yaxis()
+ax.set_xlabel(r"$\alpha$")
+ax.set_ylabel(r'$\Delta$')
+#ax.set_zlabel('Accuracy')
+ax.set_title(f"Accuracy using Wilson Pab={pab}")
+levels = cs1.levels
+plt.clabel(cs1, levels[1::5], inline=10, fontsize=10)
+plt.colorbar(cs1,ax=ax)
+fig.savefig(f"failureTest/contour_Wilsonp={pab}.png", format='png')
+fig.show()
+plt.show()
+############################################### Wilson
+fig = plt.figure(figsize=plt.figaspect(0.5))
+xi,yi,zi=interpretXYZ(x,y,zWaccuracy,n_extrapolatedPts)
+ax = fig.add_subplot(1, 1, 1, projection='3d')
+cs1 = ax.contourf(xi, yi, zi, 500, linewidths=1,cmap=cm.jet)
+ax.invert_yaxis()
+ax.set_xlabel('alpha')
+# ax.set_xlim(0, maxNgames)
+ax.set_ylabel('delta')
+ax.set_zlabel('Accuracy')
+ax.view_init(elev=elev, azim=az)
+ax.set_title(f"Accuracy using Wilson Pab={pab}")
+plt.colorbar(cs1,ax=ax)
+fig.savefig(f"failureTest/cont3d_Wilsonp={pab}.png", format='png')
+fig.show()
+plt.show()
 
 #############################################Bayes
 fig2 = plt.figure(figsize=plt.figaspect(0.5))
@@ -134,7 +182,6 @@ ax2.set_ylabel('delta')
 ax2.set_zlabel('Accuracy')
 ax2.view_init(elev=elev, azim=az)
 ax2.set_title(f"Accuracy using Bayes-U Pab={pab}")
-
 plt.colorbar(cs2, ax=ax2)
 fig2.savefig(f"failureTest/cont3d_Bayesp={pab}.png", format='png')
 
@@ -174,6 +221,25 @@ ax3.set_title(f"NGames to decision Wilson Pab={pab}")
 plt.colorbar(cs3, ax=ax3)
 fig3.savefig(f"failureTest/nGames_Wilsonp={pab}.png", format='png')
 fig3.show()
+plt.show()
+
+#############################################Bayes nGames Contour
+
+fig7 = plt.figure(figsize=plt.figaspect(0.5))
+xi, yi, zi = interpretXYZ(x, y, zBnum, n_extrapolatedPts)
+ax4 = fig7.add_subplot(1, 1, 1)
+cs4 = ax4.contour(xi, yi, zi, 50, linewidths=1, cmap=cm.jet)
+ax4.invert_yaxis()
+ax4.set_xlabel('alpha')
+# ax.set_xlim(0, maxNgames)
+ax4.set_ylabel('delta')
+#ax4.set_zlabel('Ngames to decision')
+levels = cs1.levels
+plt.clabel(cs1, levels[1::5], inline=10, fontsize=10)
+ax4.set_title(f"NGames to decision Bayes-U Pab={pab}")
+plt.colorbar(cs4, ax=ax4)
+fig7.savefig(f"failureTest/contour_nGames_Bayesp={pab}.png", format='png')
+fig7.show()
 plt.show()
 #############################################Bayes nGames
 

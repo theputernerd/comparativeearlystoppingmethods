@@ -131,11 +131,11 @@ class bayes_MulStop():
         n=float(ngames)
         if n == 0:
             return finished, lowerBound, c
-        p1L,p1U,mean=bayesian_U(p1.nWins,n)
+        p1L,p1U,mean=bayesian_U(p1.nWins,n,alpha=0.05)
 
         lcp2 = 1 - p1U
         ucp2 = 1 - p1L
-        p2L,p2U,mean=bayesian_U(n-p1.nWins,n)
+        p2L,p2U,mean=bayesian_U(n-p1.nWins,n,alpha=0.05)
 
         pred1 = LCBTest(p1L, p1U)
         pred2 = DeltaTest(p1L, p1U)
@@ -204,7 +204,7 @@ class bayes_U():
         n=float(ngames)
         if n == 0:
             return finished, lowerBound, c
-        p1L,p1U,mean=bayesian_U(p1.nWins,n)
+        p1L,p1U,mean=bayesian_U(p1.nWins,n,alpha=0.05)
 
         deltaP1=p1U-p1L
         #print(str(deltaP1))
