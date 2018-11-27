@@ -1567,8 +1567,7 @@ def plotFixedPAB(pab=0.5):
 
 
 if __name__ == '__main__':
-    while True:
-        plotFixedPAB(0.5)
+
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
 
@@ -1577,8 +1576,8 @@ if __name__ == '__main__':
     alpha=0.05
     epsilon=0.0
     delta=0.05
-    alphaList=[0.1,0.05,0.01,0.001]
-    deltaList=[0.1,0.05,0.01]
+    alphaList=[0.1,.075,0.05,.025,0.01,0.001]
+    deltaList=[0.2,.15,.1,0.05,0.01]
     #######plt.title(r'$\alpha > \beta$')
     mu, sigma = 0.5, .2  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)
@@ -1593,7 +1592,6 @@ if __name__ == '__main__':
             #coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
 
             print("-------------------------------------------------------------------------------------------------")
-    assert False
     pass
     while True:
         plotFixedPAB(0.5)
