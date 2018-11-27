@@ -1587,15 +1587,19 @@ if __name__ == '__main__':
     population = get_truncated_normal(mu, sigma, 0,1)
     #population=np.random.uniform(0.1,0.9,100)
     for a in alphaList:
-        for d in deltaList:
-            print("Creating ConfusionMatrix")
-            C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
+
+        [C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d) for d in deltaList]
+
+        #for d in deltaList:
+        #    print("Creating ConfusionMatrix")
+        #    C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
             #print("Getting Data for PoolTest")
             #choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
             #print("Getting Data for CoverageTest")
             #coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
 
             print("-------------------------------------------------------------------------------------------------")
-    pass
-    while True:
-        plotFixedPAB(0.5)
+    [plotFixedPAB(0.5) for _ in 1000000]
+    #while True:
+    #    plotFixedPAB(0.5)
+
