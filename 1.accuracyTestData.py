@@ -1598,7 +1598,7 @@ if __name__ == '__main__':
             #print("Getting Data for CoverageTest")
             #coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
 
-            print("-------------------------------------------------------------------------------------------------")
+        print("-------------------------------------------------------------------------------------------------")
     [plotFixedPAB(0.5) for _ in 1000000]
     #while True:
     #    plotFixedPAB(0.5)
