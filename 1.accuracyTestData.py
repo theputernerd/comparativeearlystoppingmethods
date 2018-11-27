@@ -783,7 +783,7 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
         wAvGamesToPredic.append(wilsNgames)
         bAvGamesToPredic.append(bayesNgames)
 
-
+        nplayed+=1
         if nplayed%100==0:
 
             print("**********************************************************************************************")
