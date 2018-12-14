@@ -8,7 +8,7 @@ import random
 from lib import player
 playerPoolDist = random.uniform(1.5, 1.9)
 from wilson import wils_int
-from lib import shouldIStop,game,ConfusionMatrix
+from lib import shouldIStop,game,ConfusionMatrix,drawOk
 from bayes import bayesian_U
 tests = [bayesian_U, wils_int]
 import time
@@ -160,6 +160,8 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
                             Bcondition2.append(storedResult)
         # print (f"avGames_to_predict:{avPrediction:.1f}, incorrect_Predict_rate(type 1):{(falsePredict/trials)*100:.3f}%,failed_to_predict_rate(type2) {(1-len(nGamesprediction)/trials)*100:.3f}%, predicted_n_games:{len(nGamesprediction)},  totalFailure:{(1-predictN/trials)*100:.3f}%")
     import csv
+
+
     try:
         with open(f"failureTest/wilson.csv", "a") as f:
             wr = csv.writer(f, delimiter=",")
@@ -250,10 +252,8 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
         #p2 = player(1 - p)
         p5minep = np.floor(float(0.5 - epsilon) * 1000) / 1000.0  # python rounding causes problems on the edges
         p5plusep = np.ceil(0.5 + epsilon * 1000) / 1000.0
-        if p1.pWin<=p5plusep and p1.pWin>=p5minep:
-            drawOK=True
-        else:
-            drawOK=False
+        drawOK=drawOk(p1.pWin,delta)
+
 
         wilsPredicted = False
         baysPredicted = False
@@ -656,10 +656,8 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
         else:
             best_actual=3
 
-        if abs(p1.pWin-p2.pWin)<=2*delta:
-            drawOK=True
-        else:
-            drawOK=False
+        drawOK=drawOk(p1.pWin,delta)
+
 
         wilsPredicted = False
         baysPredicted = False
@@ -812,6 +810,7 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
         #allmetrics
 
     #f=_eps{epsilon}_alpha_{alpha}_delta={delta}
+
     for cm in CMs:
         with open(f"confusionMatrix/{cm.name}.csv", 'a', newline='') as f:
             csvwriter=csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
@@ -1052,10 +1051,8 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
             else:
                 best_actual=3
 
-        if p1.pWin<=0.5+delta and p1.pWin>=0.5-delta:
-            drawOK=True
-        else:
-            drawOK=False
+        drawOK=drawOk(p1.pWin,delta)
+
         for i in range(ngames):
             ################THIS IS WHERE THE LOOP WILL GO TO GET COVERAGE FOR A SPECIFIC VALUE
             wilsPredicted = False
@@ -1323,10 +1320,7 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
         best_actual = 2
     else:
         best_actual = 3
-    if (p1.pWin<=0.5+delta) and (p1.pWin>=0.5-delta):
-        drawOK=True
-    else:
-        drawOK=False
+    drawOK = drawOk(p1.pWin, delta)
 
     for i in range(ngames):
         wilsPredicted = False
@@ -1572,6 +1566,7 @@ def plotFixedPAB(pab=0.5):
     elev=30
     az=117
     import csv
+
     for a in alpha:
         for d in delta:
             a = round(a, 3)
@@ -1602,6 +1597,15 @@ if __name__ == '__main__':
         os.mkdir('confusionMatrix')
     except:
         print(f"confusionMatrix Folder exists")
+    try:
+        os.mkdir("1.accuracyforParams")
+    except FileExistsError:
+        pass
+
+    try:
+        os.mkdir("failureTest")
+    except FileExistsError:
+        pass
     #assert False
     fullResult=dict()
     #alpha=0.05
@@ -1622,12 +1626,14 @@ if __name__ == '__main__':
             print(f"(alpha,delta) ({a},{d})")
             print("Getting Data for CoverageTest")
             coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
-            print(f"(alpha,delta) ({a},{d})")
-            print("Creating ConfusionMatrix")
-            C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
+
             print(f"(alpha,delta) ({a},{d})")
             print("Getting Data for PoolTest")
             choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+            print(f"(alpha,delta) ({a},{d})")
+            print("Creating ConfusionMatrix")
+            C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
+
 
         print("-------------------------------------------------------------------------------------------------")
     [plotFixedPAB(0.5) for _ in range(1000000)]

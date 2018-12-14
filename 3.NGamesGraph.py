@@ -132,7 +132,7 @@ def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",sampleEvery=2):
         d_Ux, d_Uy=zip(*sorted(zip(d_Ux, d_Uy)))
 
     WPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="wilson", markersize=1)
-    wDraws, = ax.plot(d_Ux, d_Uy, 'go', label="wilson_Draws", markersize=1)
+    wDraws, = ax.plot(d_Ux, d_Uy, 'ro', label="wilson_Draws", markersize=1)
 
 
     ############################################
@@ -175,7 +175,7 @@ def coveragePlot(t1,t2,markersize,name,sampleEvery=2):
         d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux)/sampleEvery)))
 
     WPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="wilson", markersize=1)
-    wDraws, = ax.plot(d_Ux, d_Uy, 'go', label="wilson_Draws", markersize=1)
+    wDraws, = ax.plot(d_Ux, d_Uy, 'ro', label="wilson_Draws", markersize=1)
 
     #####################################################
     p1_Lx, p1_Ly, p1_Ux, p1_Uy, d_Ux, d_Uy = coveragePlotData(bayesian_U, t1, t2)
@@ -281,7 +281,7 @@ if __name__ == '__main__':
     plt.minorticks_on()
 
     BPlot, = ax[0].plot(b_x1w, b_y1w,'bo', label="bayes_p1Wins", markersize=markersize)
-    BPlot2, = ax[0].plot(b_x2w, b_y2w,'go', label="bayes_p2Wins", markersize=markersize)
+    BPlot2, = ax[0].plot(b_x2w, b_y2w,'r', label="bayes_p2Wins", markersize=markersize)
     BPlot3, = ax[0].plot(b_xdraw, b_ydraw,'co', label="bayes_Draws", markersize=markersize)
 
     WPlot, = ax[0].plot(x1w, y1w, 'mo', label="Wils_p1Wins", markersize=markersize)

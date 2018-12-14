@@ -20,7 +20,11 @@ zBnumf = []
 nf=[]
 pabs=[]
 pab=0.45
-
+import os
+try:
+    os.mkdir("failureTest")
+except FileExistsError:
+    pass
 with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:

@@ -244,8 +244,12 @@ def LCB_WilsOnly(name="Wilson Only LCB_UCB Test",sampleEvery=1):
     t2 = False
     markersize = 1
     wilsonCoverageOnly(t1,t2,markersize,name,sampleEvery=sampleEvery)
-
+import os
 if __name__ == '__main__':
+    try:
+        os.mkdir("4.0_2D_pWinVsNwincoverage")
+    except FileExistsError:
+        pass
     a=0.05
     a=0.0423
     d=.1

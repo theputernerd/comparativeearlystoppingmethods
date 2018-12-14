@@ -20,6 +20,11 @@ zBnumf = []
 nf=[]
 pab=[]
 p=0.5
+import os
+try:
+    os.mkdir("confusionMatrix")
+except FileExistsError:
+    pass
 filename=f'confusionMatrix/coverageFor3d_pab={p}.csv'
 print(f"Creating 3d plots for {filename}")
 with open(filename, 'rU') as csvfile:

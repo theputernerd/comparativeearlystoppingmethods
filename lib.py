@@ -85,6 +85,13 @@ class game(object):  #just chooses a random winner based on the probabilty distr
         return winner
 
 import math
+def drawOk(p1Winrate,delta):
+    #tells you if a draw would be ok or not
+    if (p1Winrate <= 0.5 + delta/2.0) and (p1Winrate >= 0.5 - delta/2.0):
+        return True
+    else:
+        return False
+
 def shouldIStop(method, lc, uc, mean, n, delta=0.05, epsilon=0,blocksize=20): #first number is winner, second number stopping condition.
     #blocksize=10 give 85% for at p=0.5, blocksize=10 give 92%. blocksize=20
     #method is needed cause lc and uc should be either 0.025 or 0.05
@@ -325,10 +332,10 @@ class ConfusionMatrix(object): #confusion matrix object
         line += "\n"
 
         line += '{0: <{width}}'.format(self.predictions[0], width=self.width)
-        line += "|{:<7}|{:<7}".format(np.round(0, 2), np.round(0, 2))
+        line += "|{:<7}|{:<7}".format(np.round(0, 3), np.round(0, 3))
         line += "\n"
         line += '{0: <{width}}'.format(self.predictions[1], width=self.width)
-        line += "|{:<7}|{:<7}".format(np.round(0, 2), np.round(0, 2))
+        line += "|{:<7}|{:<7}".format(np.round(0, 3), np.round(0, 3))
         line += "\n"
         return line
     @property
@@ -339,17 +346,17 @@ class ConfusionMatrix(object): #confusion matrix object
         if self.ntrials==0:
             return self.repEmpty()
         line=f"{self.name}________ntrials:{self.ntrials}______Av_predict:{self.av_predict}_______________________\n"
-        line+=f"TPR:{round(self.TPR,2)} TNR:{round(self.TNR,2)} PPV:{round(self.PPV,2)}  NPV:{round(self.NPV,2)}   ACC:{round(self.ACC,2)}  F1:{round(self.F1,2)}   MCC:{round(self.MCC,2)} \n "
+        line+=f"TPR:{round(self.TPR,3)} TNR:{round(self.TNR,3)} PPV:{round(self.PPV,3)}  NPV:{round(self.NPV,3)}   ACC:{round(self.ACC,3)}  F1:{round(self.F1,3)}   MCC:{round(self.MCC,3)} \n "
         lw = 6
         line += '{0:<{width}}'.format("actual  \predicted ->", width=self.width)
         line += "|{0:<7}|{1:<7}".format(self.predictions[0], self.predictions[1])
         line += "\n"
 
         line += '{0:<{width}}'.format(self.predictions[0], width=self.width)
-        line += "|{:<7}|{:<7}".format(np.round(self.TP / self.ntrials, 2), np.round(self.FN / self.ntrials, 2))
+        line += "|{:<7}|{:<7}".format(np.round(self.TP / self.ntrials, 3), np.round(self.FN / self.ntrials, 3))
         line +="\n"
         line += '{0:<{width}}'.format(self.predictions[1], width=self.width)
-        line += "|{:<7}|{:<7}".format(np.round(self.FP / self.ntrials, 2), np.round(self.TN / self.ntrials, 2))
+        line += "|{:<7}|{:<7}".format(np.round(self.FP / self.ntrials, 3), np.round(self.TN / self.ntrials, 3))
         line += "\n"
         return line
 

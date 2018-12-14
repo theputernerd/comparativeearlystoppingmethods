@@ -934,10 +934,17 @@ def plot_PAB_vs_N_coverageShaded(ngames,alpha=0.05,delta=0.05):
 
 
 #####################################################################
+import os
 if __name__ == '__main__':
-    ngames=300
-
-
+    ngames=1000
+    try:
+        os.mkdir("data")
+    except FileExistsError:
+        pass
+    try:
+        os.mkdir("plots")
+    except FileExistsError:
+        pass
     #creates the dataset for when all conditions stop for ngames.
 
     al=[0.1,0.05,0.01]
