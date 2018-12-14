@@ -18,13 +18,17 @@ zWnumf = []
 zBaccuracyf = []
 zBnumf = []
 nf=[]
-pab=[]
+pabs=[]
+pab=0.45
 
 with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
         p,n,af, df, zWaf, zWnf, zBaf, zBnf=row
-        pab.append(round(float(p),3))
+        p=round(float(p),3)
+        pabs.append(p)
+        if p!=pab:
+            continue
         nf.append(float(n))
         xf.append(round(float(af),3))
         yf.append(round(float(df),3))
@@ -32,7 +36,6 @@ with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
         zWnumf.append(float(zWnf))
         zBaccuracyf.append(float(zBaf))
         zBnumf.append(float(zBnf))
-
 #xf=[1,2,2,2,2]
 #yf=[4,2,4,2,6]
 #zWaf=[0.11,0.21,0.211,0.99,0.213]
@@ -41,7 +44,6 @@ with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
 #zBnf=[0.14,0.24,0.241,0.242,0.243]
 #nf=[10,20,30,40,50]
 #pab=[0.5,0.5,0.5,0.5,0.5]
-pab=pab[0]
 combined=zip(xf,yf,zWaccuracyf,zWnumf,zBaccuracyf,zBnumf,nf)
 
 s=sorted(combined,key=lambda t: t[1])
@@ -121,6 +123,8 @@ from mpl_toolkits.mplot3d import axes3d
 #############################################Wilson accuracy
 n_extrapolatedPts = 200
 #############################################BayesContour
+
+
 fig5 = plt.figure(figsize=plt.figaspect(0.5))
 xi,yi,zi=interpretXYZ(x,y,zBaccuracy,n_extrapolatedPts)
 ax2 = fig5.add_subplot(1, 1, 1)

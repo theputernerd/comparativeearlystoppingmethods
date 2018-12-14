@@ -85,29 +85,31 @@ class game(object):  #just chooses a random winner based on the probabilty distr
         return winner
 
 import math
-def shouldIStop(method, lc, uc, mean, epsilon=0, delta=0.05): #first number is winner, second number stopping condition.
+def shouldIStop(method, lc, uc, mean, n, delta=0.05, epsilon=0,blocksize=20): #first number is winner, second number stopping condition.
+    #blocksize=10 give 85% for at p=0.5, blocksize=10 give 92%. blocksize=20
     #method is needed cause lc and uc should be either 0.025 or 0.05
+    if n%blocksize!=0:
+        return (False, 66)
     if epsilon!=0:
         print("Epsilon not zero")
-    ut=0.5+epsilon #upperthreshold
-    lt=0.5-epsilon #lower threshold
+    ut=0.5+epsilon+delta/2.0 #upperthreshold
+    lt=0.5-epsilon-delta/2.0 #lower threshold
     #lc=int(lc*1000)/1000.0#round down. #covers for when python has rounding errors. Floats cause issues at the boundaries.
     #uc = np.round(uc, 3)
     #mean=np.round(mean,3)
 
     if method==1:
-
         if lc>ut:
             return True,1  #player wins from condition 1
         elif uc<lt:
             return True,2 #player loses from condition 1.1
     elif method==2: #Bot UC and LC within +-delta
-        assert False
-        if uc<=0.5+delta and lc>=0.5-delta:
+        if (math.fabs(uc-lc)<delta) and any([uc<=0.5+delta ,lc>=0.5-delta]):
             return True,3
 
     elif method == 3:
         diff=math.fabs(uc-lc)
+        #NB 2delta is 0.5+delta and 0.5-delta from paper fixed with sequential confidence intervals
         if diff<=delta:# and any([uc <= 0.5 + delta, lc >= 0.5 - delta]):
             return True, 3
 

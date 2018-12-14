@@ -254,7 +254,8 @@ def LCB_WilsOnly(name="Wilson Only LCB_UCB Test",sampleEvery=1):
 
 if __name__ == '__main__':
     #delta_WilsOnly(sampleEvery=2)
-    LCB_WilsOnly(sampleEvery=2)
+    both_TestsTestPlots()
+    #LCB_WilsOnly(sampleEvery=2)
     assert False
     delta_BayesOnly(sampleEvery=2)
     LCB_BayesOnly(sampleEvery=2)

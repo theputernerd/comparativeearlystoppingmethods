@@ -73,11 +73,12 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
 
             if not wilsPredicted:
                 p1L, p1U,mean =wils_int(p1.nWins,n,0.05)
-                stop,winner= shouldIStop(1, p1L, p1U, mean, epsilon=epsilon, delta=0)
+                stop,winner= shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)
+                method = 1
                 if stop:  ##condition1
                     wilsPredicted=True
                     # now to see if prediction is correct.
-                    method=2
+                    method=1
                     if int(method) == int(3):
                         assert False
                     if winner == 0:
@@ -93,7 +94,8 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
                             wilsonresults.append(storedResult)
                             Wcondition1.append(storedResult)
                 p1L, p1U, mean = wils_int(p1.nWins, n, 0.025)
-                stop, winner= shouldIStop(3, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                stop, winner= shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                method = 3
                 if stop and not wilsPredicted:
                     wilsPredicted=True
                     # now to see if prediction is correct.
@@ -114,11 +116,12 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
                             Wcondition1.append(storedResult)
             if not baysPredicted:
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.05)
-                stop, winner= shouldIStop(1, p1L, p1U, mean, epsilon=epsilon, delta=0)
+                stop, winner= shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)
+                method = 1
                 if stop:
                     baysPredicted = True
                     # now to see if prediction is correct.
-                    method=2
+                    method=1
                     if int(method) == int(3):
                         assert False
                     if winner == 0:
@@ -135,7 +138,8 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
                             Bcondition1.append(storedResult)
 
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.025)
-                stop, winner= shouldIStop(3, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                stop, winner= shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                method = 3
                 if stop and not baysPredicted:
                     baysPredicted = True
                     method=3
@@ -279,11 +283,12 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
             if not wilsPredicted:
                 #########################WILSON CONDITION 1
                 p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=0, delta=0)  #no threshold for lcb only
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)  #no threshold for lcb only
+                method = 1
                 if stop:
                     wilsPredicted = True
                     # now to see if prediction is correct.
-                    method=2
+                    method=1
                     if int(method) == int(3):
                         assert False #should only do predict 1
                     if winner == 0:
@@ -312,7 +317,8 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                 #p1.nWins=798
                 #n=1573
                 p1L, p1U, mean = wils_int(p1.nWins, n, alpha/2)
-                stop, winner = shouldIStop(3, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                method = 3
                 if stop and not wilsPredicted:
                     wilsPredicted = True
                     # now to see if prediction is correct.
@@ -348,11 +354,12 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                 #########################BAYES CONDITION 1
 
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=0, delta=0)
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)
+                method = 1
                 if stop:
                     baysPredicted = True
                     # now to see if prediction is correct.
-                    method=2
+                    method=1
                     if int(method) == int(3):
                         assert False
                     if winner == 0:
@@ -377,7 +384,8 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                             Bcondition1 = storedResult
                 #########################BAYES CONDITION 2
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha/2)
-                stop, winner = shouldIStop(3, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                method = 3
                 if stop and not baysPredicted:
                     baysPredicted = True
                     method=3
@@ -648,7 +656,7 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
         else:
             best_actual=3
 
-        if abs(p1.pWin-p2.pWin)<=delta:
+        if abs(p1.pWin-p2.pWin)<=2*delta:
             drawOK=True
         else:
             drawOK=False
@@ -669,7 +677,8 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
             if not wilsPredicted:
                 #########################WILSON CONDITION 1
                 p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=0, delta=0)  #no threshold for lcb only
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)  #no threshold for lcb only
+                method = 1
                 if stop:
                     wilsPredicted = True
                     # now to see if prediction is correct.
@@ -703,8 +712,9 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
 
                 if not wilsPredicted:
                     p1L, p1U, mean = wils_int(p1.nWins, n, alpha/2.0)
-                    stop, winner = shouldIStop(3, p1L, p1U, mean, epsilon=0, delta=delta)
+                    stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=0)
 
+                method = 3
                 if stop and not wilsPredicted:
                     wilsPredicted=True
                     if winner!=3:
@@ -726,7 +736,8 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
             if not baysPredicted:
                 #########################BAYES CONDITION 1
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=0, delta=0)
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)
+                method = 1
                 if stop:
                     bayesNgames=n
                     baysPredicted = True
@@ -760,7 +771,8 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
                 #########################BAYES CONDITION 2
                 if not baysPredicted:
                     p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha/2)
-                    stop, winner = shouldIStop(3, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                    method = 3
+                    stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
                 if stop and not baysPredicted:
                     bayesNgames=n
                     baysPredicted = True
@@ -864,7 +876,8 @@ def getACCfor3d_fixedPAB(ngames,alpha,delta,pab):
                 if not wilsPredicted:
                     #########################WILSON CONDITION 1
                     p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                    stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=0, delta=0)  # no threshold for lcb only
+                    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)  # no threshold for lcb only
+                    method=1
                     if stop:
                         wilsPredicted = True
                         # now to see if prediction is correct.
@@ -898,9 +911,11 @@ def getACCfor3d_fixedPAB(ngames,alpha,delta,pab):
 
                     if not wilsPredicted:
                         p1L, p1U, mean = wils_int(p1.nWins, n, alpha / 2.0)
-                        stop, winner = shouldIStop(3, p1L, p1U, mean, epsilon=0, delta=delta)
+                        stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=0)
+                    method=3
 
                     if stop and not wilsPredicted:
+                        method = 3
                         wilsPredicted = True
                         if winner != 3:
                             assert False  # expecting prediction fo draw only.
@@ -921,8 +936,10 @@ def getACCfor3d_fixedPAB(ngames,alpha,delta,pab):
                 if not baysPredicted:
                     #########################BAYES CONDITION 1
                     p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                    stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=0, delta=0)
+                    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)
+                    method = 1
                     if stop:
+                        method=1
                         bayesNgames = n
                         baysPredicted = True
                         # now to see if prediction is correct.
@@ -955,8 +972,10 @@ def getACCfor3d_fixedPAB(ngames,alpha,delta,pab):
                     #########################BAYES CONDITION 2
                     if not baysPredicted:
                         p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha / 2)
-                        stop, winner = shouldIStop(3, p1L, p1U, mean, epsilon=0, delta=delta)
+                        stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=0)
+                    method = 3
                     if stop and not baysPredicted:
+                        method=3
                         bayesNgames = n
                         baysPredicted = True
                         if winner != 3:
@@ -1004,7 +1023,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
     bayY=[]
 
     #s=np.arange(0.20,0.8,0.007)
-    s=np.arange(0.10,0.91,0.05)
+    s=np.arange(0.1,0.91,0.05)
     #s=[0.5]
     for p in s:
         p=np.round(p,3) #without this python stores p=0.45 as 0.4499999999 which is not a draw value!!!!. unfair.
@@ -1025,6 +1044,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
             else:
                 best_actual=3
         else:
+            assert False #is this really what you want?
             if p1.pWin>0.5+delta:
                 best_actual = 1
             elif p1.pWin<0.5-delta:
@@ -1055,7 +1075,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                 results = playOneGame(g, results)  # NB results not used
                 n = p1.nWins + p2.nWins + drawsP.nWins
 
-                if not wilsPredicted and n>7:
+                if not wilsPredicted:
                     #########################WILSON CONDITION 1
                     #p1.pWin = 0.57
                     #p1.nWins = 823
@@ -1064,35 +1084,33 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                     p1L=np.round(p1L,3)
                     p1U = np.round(p1U  , 3)
                     mean = np.round(mean, 3)
-
-                    stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,
-                                                 delta=0)  #no threshold for lcb only
+                    method=1
+                    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta,
+                                               epsilon=epsilon)  #no threshold for lcb only
                     if stop:  #condition1
                         wilsPredicted = True
                         # now to see if prediction is correct.
-                        method=2
-                        if int(method) == int(3):
-                            assert False #should only do predict 1
+
                         if winner == 0:
                             assert False  # should have made a prediction.
                         else:
                             if winner == best_actual:
                                 # corrrect
-                                storedResult = [p1.pWin, p1.nWins,n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin, p1.nWins,n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 wilsonresults = storedResult
                                 Wcondition1 = storedResult
                                 if drawOK: #it could've been a draw.
-                                    storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                    storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
                                                     p1U - p1L,"or Draw"]
                                     wilsonresults = storedResult
                                     Wcondition2 = storedResult
 
                             elif winner==3 and drawOK: #it's within the draw threshold
-                                storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 wilsonresults = storedResult
                                 Wcondition1 = storedResult
                             else: #it is wrong
-                                storedResult = [p1.pWin,p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, False, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 wilsonresults = storedResult
                                 Wcondition1 = storedResult
                                 print(f"wils{method} failed. {storedResult}")
@@ -1109,7 +1127,8 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                     p1U = np.round(p1U, 3)
                     mean = np.round(mean, 3)
 
-                    stop, winner = shouldIStop(3, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                    stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                    method = 3
                     if stop and not wilsPredicted:
                         wilsPredicted = True
                         # now to see if prediction is correct.
@@ -1121,21 +1140,21 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                         else:
                             if winner == best_actual:
                                 # corrrect
-                                storedResult = (p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L)
+                                storedResult = (p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L)
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
                                 if drawOK: #it could've been a draw.
-                                    storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                    storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
                                                     p1U - p1L,"or Draw"]
                                     wilsonresults = storedResult
                                     Wcondition2 = storedResult
 
                             elif winner==3 and drawOK: #it's within the draw threshold
-                                storedResult = (p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                                storedResult = (p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
                             else:
-                                storedResult = [p1.pWin,p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, False, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 wilsonresults = storedResult
                                 Wcondition1 = storedResult
                                 print(f"wils{method} failed. {storedResult}")
@@ -1146,11 +1165,12 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
 
                     p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
 
-                    stop, winner= shouldIStop(1, p1L, p1U, mean, epsilon=epsilon, delta=0)
+                    stop, winner= shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                    method = 1
                     if stop :
                         baysPredicted = True
                         # now to see if prediction is correct.
-                        method=2
+                        method=1
                         if int(method) == int(3):
                             assert False
                         if winner == 0:
@@ -1158,19 +1178,19 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                         else:
                             if winner == best_actual:
                                 # corrrect
-                                storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
 
                                 if drawOK: #it could've been a draw.
-                                    storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                    storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
                                                     p1U - p1L,"or Draw"]
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                             elif winner==3 and drawOK: #it's within the draw threshold
-                                storedResult = (p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                                storedResult = (p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                             else:
-                                storedResult = [p1.pWin,p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, False, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                                 print(f"bayes{method} failed. {storedResult}")
@@ -1180,7 +1200,8 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                     p1L = np.round(p1L, 3)
                     p1U = np.round(p1U, 3)
                     mean = np.round(mean, 3)
-                    stop, winner = shouldIStop(3, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                    stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                    method = 3
                     if stop and not baysPredicted:
                         baysPredicted = True
                         method=3
@@ -1193,19 +1214,19 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                         else:
                             if winner == best_actual:
                                 # corrrect
-                                storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 if drawOK: #it could've been a draw.
-                                    storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                    storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
                                                     p1U - p1L,"or Draw"]
 
                                 bayesresults = storedResult
                                 Bcondition2 = storedResult
                             elif winner == 3 and drawOK:  # it's within the draw threshold
-                                storedResult = (p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                                storedResult = (p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                             else:
-                                storedResult = [p1.pWin,p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, False, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 print(f"bayes{method} failed. {storedResult}")
                                 bayesresults = storedResult
                                 Bcondition2 = storedResult
@@ -1230,8 +1251,8 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
         import csv
 
         try:
-            print("Writing to accuracyforParams/wcoverage.csv")
-            with open(f"accuracyforParams/wcoverage.csv", "a") as f:
+            print("Writing to 1.accuracyforParams/wcoverage.csv")
+            with open(f"1.accuracyforParams/wcoverage.csv", "a") as f:
                 nCorrect = np.count_nonzero(wcorrect)
                 n = len(wcorrect)
                 wilsonC = np.average(wcorrect)
@@ -1241,8 +1262,8 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                 line=[nCorrect,n,wilsonC,predictLength]
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(line)
-            print("Writing to accuracyforParams/bcoverage.csv")
-            with open(f"accuracyforParams/bcoverage.csv", "a") as f:
+            print("Writing to 1.accuracyforParams/bcoverage.csv")
+            with open(f"1.accuracyforParams/bcoverage.csv", "a") as f:
                 nCorrect = np.count_nonzero(bcorrect)
                 n = len(bcorrect)
                 bayesC = np.average(bcorrect)
@@ -1270,16 +1291,16 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
     ax.set_title(f"Accuracy using Wilson.alpha={alpha} delta={delta}")
     ax.set_xlabel(f"True probability Pab")
     ax.set_ylabel(f"Prediction accuracy")
-    print(f"Writing accuracyforParams/wilsoncoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png")
-    fig1.savefig(f"accuracyforParams/wilsoncoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png",format="png")
+    print(f"Writing 1.accuracyforParams/wilsoncoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png")
+    fig1.savefig(f"1.accuracyforParams/wilsoncoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png",format="png")
     fig2 = plt.figure(figsize=plt.figaspect(0.5))
     ax2 = fig2.add_subplot(1, 1, 1)
     ax2.set_title(f"Accuracy using Bayesian-U. alpha={alpha} delta={delta}")
     ax2.set_xlabel(f"True probability Pab")
     ax2.set_ylabel(f"Prediction accuracy")
     ax2.plot(bayX, bayY,'x')
-    print(f"Writing accuracyforParams/bayescoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png")
-    fig2.savefig(f"accuracyforParams/bayescoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png",format="png")
+    print(f"Writing 1.accuracyforParams/bayescoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png")
+    fig2.savefig(f"1.accuracyforParams/bayescoverage_alpha={alpha}_epsilon={epsilon}_delta={delta}.png",format="png")
     #plt.show()
 
 def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
@@ -1332,12 +1353,12 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
                 p1U = np.round(p1U, 3)
                 mean = np.round(mean, 3)
 
-                stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon,
-                                             delta=0)  # no threshold for lcb only
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)  # no threshold for lcb only
+                method = 1
                 if stop :  # condition1
                     wilsPredicted = True
                     # now to see if prediction is correct.
-                    method=2
+                    method=1
                     if int(method) == int(3):
                         assert False  # should only do predict 1
                     if winner == 0:
@@ -1379,7 +1400,8 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
                 p1U = np.round(p1U, 3)
                 mean = np.round(mean, 3)
 
-                stop, winner = shouldIStop(2, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                method = 3
                 if stop  and not wilsPredicted:
                     wilsPredicted = True
                     # now to see if prediction is correct.
@@ -1418,9 +1440,11 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
 
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
 
-                stop, winner = shouldIStop(1, p1L, p1U, mean, epsilon=epsilon, delta=0)
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                method = 1
                 if stop:
-                    method=2
+                    stop = False
+                    method=1
                     baysPredicted = True
                     # now to see if prediction is correct.
                     if int(method) == int(3):
@@ -1451,11 +1475,12 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
                             print(f"bayes{method} failed. {storedResult}")
 
                 #########################BAYES CONDITION 2
-                p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha / 2)
+                p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha / 2.0)
                 p1L = np.round(p1L, 3)
                 p1U = np.round(p1U, 3)
                 mean = np.round(mean, 3)
-                stop, winner = shouldIStop(2, p1L, p1U, mean, epsilon=epsilon, delta=delta)
+                stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                method = 3
                 if stop and not baysPredicted:
                     method==3
                     baysPredicted = True
@@ -1533,8 +1558,9 @@ def interpretXYZ(x,y,z,pts=1000):
 
 def plotFixedPAB(pab=0.5):
 
-    alpha = numpy.arange(.01, 0.205, 0.01) #TODO Add more fidelity make incr smaller
-    delta = numpy.arange(.01, 0.205, 0.01)
+    alpha = numpy.arange(.001, 0.205, 0.01) #TODO Add more fidelity make incr smaller
+    delta = numpy.arange(.05, 0.205, 0.01)
+
     zWaccuracy=[]
     zWnum=[]
     zBaccuracy = []
@@ -1548,9 +1574,10 @@ def plotFixedPAB(pab=0.5):
     import csv
     for a in alpha:
         for d in delta:
+            a = round(a, 3)
+            d = round(d, 3)
             print(f"({a},{d})")
-            a=round(a,3)
-            d=round(d,3)
+
             [W,B]=getACCfor3d_fixedPAB(ngames,a,d,pab)
             x.append(a)
             y.append(d)
@@ -1574,33 +1601,36 @@ if __name__ == '__main__':
     try:
         os.mkdir('confusionMatrix')
     except:
-        print("File exists")
+        print(f"confusionMatrix Folder exists")
     #assert False
-    [plotFixedPAB(0.5) for _ in range(1000000)]
     fullResult=dict()
-    alpha=0.05
+    #alpha=0.05
+    #alpha=0.0423
     epsilon=0.0
     delta=0.05
-    alphaList=[0.1,.075,0.05,.025,0.01,0.001]
-    deltaList=[0.2,.15,.1,0.05,0.01]
+    alphaList=[0.05,0.1,.075,0.0423,.025,0.01,0.001]
+    deltaList=[.1,0.2,.15,0.05,0.01]
     #######plt.title(r'$\alpha > \beta$')
     mu, sigma = 0.5, .2  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)
     #population=np.random.uniform(0.1,0.9,100)
     for a in alphaList:
 
-        [C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d) for d in deltaList]
+        #[C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d) for d in deltaList]
 
-        #for d in deltaList:
-        #    print("Creating ConfusionMatrix")
-        #    C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
-            #print("Getting Data for PoolTest")
-            #choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
-            #print("Getting Data for CoverageTest")
-            #coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+        for d in deltaList:
+            print(f"(alpha,delta) ({a},{d})")
+            print("Getting Data for CoverageTest")
+            coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+            print(f"(alpha,delta) ({a},{d})")
+            print("Creating ConfusionMatrix")
+            C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
+            print(f"(alpha,delta) ({a},{d})")
+            print("Getting Data for PoolTest")
+            choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
 
         print("-------------------------------------------------------------------------------------------------")
-    [plotFixedPAB(0.5) for _ in 1000000]
+    [plotFixedPAB(0.5) for _ in range(1000000)]
     #while True:
     #    plotFixedPAB(0.5)
 
