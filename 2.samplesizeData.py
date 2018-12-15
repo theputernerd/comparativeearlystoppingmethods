@@ -1127,8 +1127,8 @@ def interpretXYZ(x,y,z,pts=1000):
 def SamplesForPAB(p1W,nPlayed):
     #alpha=numpy.arange(0.10,0.01,-0.01)
     #delta=numpy.arange(0.10,0.01,-0.01)
-    alpha = numpy.arange(0.01,0.06,0.01) #[1-0.95,1-0.975,1-0.99] #numpy.arange(.01, 0.205, 0.01) #TODO Add more fidelity make incr smaller
-    delta = numpy.arange(0.05,0.11,0.01)#[0.05,0.075,0.1]#numpy.arange(.01, 0.205, 0.01)
+    alpha = numpy.arange(0.01,0.11,0.01) #[1-0.95,1-0.975,1-0.99] #numpy.arange(.01, 0.205, 0.01) #TODO Add more fidelity make incr smaller
+    delta = numpy.arange(0.01,0.11,0.01)#[0.05,0.075,0.1]#numpy.arange(.01, 0.205, 0.01)
     zWaccuracy=[]
     zWnum=[]
     zBaccuracy = []
