@@ -1552,8 +1552,8 @@ def interpretXYZ(x,y,z,pts=1000):
 
 def plotFixedPAB(pab=0.5):
 
-    alpha = numpy.arange(.001, 0.201, 0.01) #TODO Add more fidelity make incr smaller
-    delta = numpy.arange(.001, 0.201, 0.01)
+    alpha = numpy.arange(.01, 0.201, 0.01) #TODO Add more fidelity make incr smaller
+    delta = numpy.arange(.01, 0.201, 0.01)
 
     zWaccuracy=[]
     zWnum=[]
