@@ -1248,7 +1248,7 @@ if __name__ == '__main__':
     except FileExistsError:
         pass
     while True:
-        [SamplesForPAB(p, nPlayed=1) for p in pvals]
+        [SamplesForPAB(p*100, nPlayed=100) for p in pvals]
         #for p in pvals:
         #    SamplesForPAB(p,nPlayed=1)
 

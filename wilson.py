@@ -25,9 +25,6 @@ def wils_int(X,n,alpha,cc=True): ##cc==True means with continuity correction.
                 if p_hat == 0:
                     p1L=0
                 else:
-                    sqr = (z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2))
-                    if sqr<0:
-                        p1L=0
                     p1L = max(0,(2 * n * p_hat + z * z - (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) + (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
                 if p_hat==1:
                     p1U=1
