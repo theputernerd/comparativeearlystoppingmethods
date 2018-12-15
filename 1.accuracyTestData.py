@@ -73,7 +73,7 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
 
             if not wilsPredicted:
                 p1L, p1U,mean =wils_int(p1.nWins,n,0.05)
-                stop,winner= shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)
+                stop,winner= shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
                 method = 1
                 if stop:  ##condition1
                     wilsPredicted=True
@@ -116,7 +116,7 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
                             Wcondition1.append(storedResult)
             if not baysPredicted:
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.05)
-                stop, winner= shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)
+                stop, winner= shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
                 method = 1
                 if stop:
                     baysPredicted = True
@@ -283,7 +283,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
             if not wilsPredicted:
                 #########################WILSON CONDITION 1
                 p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)  #no threshold for lcb only
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)  #no threshold for lcb only
                 method = 1
                 if stop:
                     wilsPredicted = True
@@ -354,7 +354,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                 #########################BAYES CONDITION 1
 
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)
                 method = 1
                 if stop:
                     baysPredicted = True
@@ -675,7 +675,7 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
             if not wilsPredicted:
                 #########################WILSON CONDITION 1
                 p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)  #no threshold for lcb only
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)  #no threshold for lcb only
                 method = 1
                 if stop:
                     wilsPredicted = True
@@ -734,7 +734,7 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
             if not baysPredicted:
                 #########################BAYES CONDITION 1
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)
                 method = 1
                 if stop:
                     bayesNgames=n
@@ -875,7 +875,7 @@ def getACCfor3d_fixedPAB(ngames,alpha,delta,pab):
                 if not wilsPredicted:
                     #########################WILSON CONDITION 1
                     p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)  # no threshold for lcb only
+                    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)  # no threshold for lcb only
                     method=1
                     if stop:
                         wilsPredicted = True
@@ -935,7 +935,7 @@ def getACCfor3d_fixedPAB(ngames,alpha,delta,pab):
                 if not baysPredicted:
                     #########################BAYES CONDITION 1
                     p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)
+                    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)
                     method = 1
                     if stop:
                         method=1

@@ -71,7 +71,7 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
 
             if not wilsPredicted:
                 p1L, p1U,mean =wils_int(p1.nWins,n,0.05)
-                winner,method= shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)
+                winner,method= shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
                 if winner!=0:  ##condition1
                     wilsPredicted=True
                     # now to see if prediction is correct.
@@ -110,7 +110,7 @@ def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=
                             Wcondition1.append(storedResult)
             if not baysPredicted:
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, 0.05)
-                winner,method= shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)
+                winner,method= shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
                 if winner != 0:
                     baysPredicted = True
                     # now to see if prediction is correct.
@@ -271,7 +271,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
             if not wilsPredicted:
                 #########################WILSON CONDITION 1
                 p1L, p1U, mean = wils_int(p1.nWins, n, alpha)
-                winner, method = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)  #no threshold for lcb only
+                winner, method = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)  #no threshold for lcb only
                 if winner != 0:  #condition1
                     wilsPredicted = True
                     # now to see if prediction is correct.
@@ -338,7 +338,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                 #########################BAYES CONDITION 1
 
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
-                winner, method = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)
+                winner, method = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)
                 if winner != 0:
                     baysPredicted = True
                     # now to see if prediction is correct.
@@ -666,7 +666,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                     p1U = np.round(p1U  , 3)
                     mean = np.round(mean, 3)
 
-                    winner, method = shouldIStop(1, p1L, p1U, mean, n, delta=0,
+                    winner, method = shouldIStop(1, p1L, p1U, mean, n, delta=delta,
                                                  epsilon=epsilon)  #no threshold for lcb only
                     if winner != 0:  #condition1
                         wilsPredicted = True
@@ -745,7 +745,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
 
                     p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
 
-                    winner, method = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)
+                    winner, method = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
                     if winner != 0:
                         baysPredicted = True
                         # now to see if prediction is correct.
@@ -904,7 +904,7 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
     p1U = np.round(p1U, 3)
     mean = np.round(mean, 3)
     n=nplayed
-    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=0)
+    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)
     for i in range(ntrials):
         wilsPredicted = False
         baysPredicted = False
@@ -930,7 +930,7 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
                 p1U = np.round(p1U, 3)
                 mean = np.round(mean, 3)
 
-                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)  # no threshold for lcb only
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)  # no threshold for lcb only
                 if stop:  ##condition1
                     wilsPredicted = True
                     # now to see if prediction is correct.
@@ -1013,7 +1013,7 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
 
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha)
 
-                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=0, epsilon=epsilon)
+                stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
                 if stop:
                     baysPredicted = True
                     # now to see if prediction is correct.
