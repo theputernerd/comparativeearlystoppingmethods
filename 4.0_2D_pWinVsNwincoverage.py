@@ -28,6 +28,7 @@ def coveragePlotData(fn, test1=True, test2=True,alpha=0.05,delta=0.05):
     for p2W in range(0, ngames):
         predicted = False
         for p1W in range(0, ngames):
+            n=p2W+p1W
             p1L, p1U, mean = fn(p1W, p2W+p1W, alpha=alpha)
             p = shouldIStop(1, p1L, p1U, mean, n, delta=0) if doPred1 else (False, 0)
             (pred1, t1)=p[0],p[1]
@@ -251,7 +252,7 @@ if __name__ == '__main__':
     except FileExistsError:
         pass
     a=0.05
-    a=0.0423
+    #a=0.0423
     d=.1
     #d=0.05
     markersize=.75

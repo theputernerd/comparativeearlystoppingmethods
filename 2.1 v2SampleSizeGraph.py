@@ -21,7 +21,7 @@ nf='nf'
 pab=[]
 pAB={}
 roundTo=3
-show=False
+show=True
 with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:

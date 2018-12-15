@@ -87,7 +87,7 @@ class game(object):  #just chooses a random winner based on the probabilty distr
 import math
 def drawOk(p1Winrate,delta):
     #tells you if a draw would be ok or not
-    if (p1Winrate <= 0.5 + delta/2.0) and (p1Winrate >= 0.5 - delta/2.0):
+    if (p1Winrate <= 0.5 + delta) and (p1Winrate >= 0.5 - delta):
         return True
     else:
         return False

@@ -1241,7 +1241,7 @@ def SamplesForPAB(p1W,nPlayed):
 if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
-    pvals=[0.05,0.25,0.45,0.49]
+    pvals=[0.05,0.25,0.3,0.4,0.45,0.50]
     try:
         os.mkdir("failureTest")
     except FileExistsError:
