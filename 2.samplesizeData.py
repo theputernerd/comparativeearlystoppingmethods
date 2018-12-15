@@ -1147,7 +1147,7 @@ def SamplesForPAB(p1W,nPlayed):
         for d in delta:
             a=round(a,3)
             d=round(d,3)
-            print(f"({a},{d})")
+            #print(f"({a},{d})")
             [W,B]=getNgamesToPredicefixedpab(10,a, d, p1W,nPlayed)
             x.append(a)
             y.append(d)
@@ -1159,6 +1159,7 @@ def SamplesForPAB(p1W,nPlayed):
                 spamwriter = csv.writer(csvfile, delimiter=',')
                 line=[pab,ngames,round(a,4),round(d,4),W[0],W[1],B[0],B[1]]
                 spamwriter.writerow(line)
+    print("written to failureTest/ngamesforPAB.csv")
     """
     from matplotlib import cm
     import matplotlib.pyplot as plt
