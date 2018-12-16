@@ -880,6 +880,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
 
 def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
     #returns xyz values for accuracy. y is accuracy, x,y is alpha delta
+    #note nplayed only is used to determine probability of winning
     Bcorrect = 0
     Wcorrect = 0
     wAvGamesToPredic=[]
@@ -903,8 +904,8 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
     p1L = np.round(p1L, 3)
     p1U = np.round(p1U, 3)
     mean = np.round(mean, 3)
-    n=nplayed
-    stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)
+    n=0#nplayed
+    #stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)
     for i in range(ntrials):
         wilsPredicted = False
         baysPredicted = False
@@ -1148,7 +1149,7 @@ def SamplesForPAB(p1W,nPlayed):
             a=round(a,3)
             d=round(d,3)
             #print(f"({a},{d})")
-            [W,B]=getNgamesToPredicefixedpab(10,a, d, p1W,nPlayed)
+            [W,B]=getNgamesToPredicefixedpab(ntrials=10,alpha=a, delta=d, p1w=p1W,nplayed=nPlayed)
             x.append(a)
             y.append(d)
             zWaccuracy.append(W[0])
@@ -1248,7 +1249,7 @@ if __name__ == '__main__':
     except FileExistsError:
         pass
     while True:
-        [SamplesForPAB(p*100, nPlayed=100) for p in pvals]
+        [SamplesForPAB(p, nPlayed=1) for p in pvals]
         #for p in pvals:
         #    SamplesForPAB(p,nPlayed=1)
 
