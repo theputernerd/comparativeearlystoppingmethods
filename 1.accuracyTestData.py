@@ -1632,7 +1632,7 @@ if __name__ == '__main__':
                     print(f"-removing {p.pid}")
                     jobs.remove(j)
             time.sleep(1)
-
+    assert False
     for a in alphaList:
 
         #[C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d) for d in deltaList]
