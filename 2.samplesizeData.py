@@ -1249,7 +1249,7 @@ import multiprocessing
 if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
-    pvals=[0.50,0.05,0.25,0.3,0.4,0.45,0.50]
+    pvals=[0.50]
     pvals+=pvals
     try:
         os.mkdir("failureTest")
