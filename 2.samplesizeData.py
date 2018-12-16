@@ -1242,7 +1242,7 @@ def SamplesForPAB(p1W,nPlayed=1):
     pass
     """
 from multiprocessing import Pool
-
+import multiprocessing
 if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
@@ -1252,9 +1252,23 @@ if __name__ == '__main__':
         os.mkdir("failureTest")
     except FileExistsError:
         pass
-    p=Pool(len(pvals))
+    jobs=[]
+    poolsize=12
     while True:
-        p.map(SamplesForPAB,pvals)
+            for pv in pvals:
+                #res=p.apply_async(SamplesForPAB,pv)
+                p = multiprocessing.Process(target=SamplesForPAB, args=(pv,))
+                jobs.append(p)
+                p.start()
+                while len(jobs)>=poolsize: #this is my pool
+                    #check if any are closed.
+                    for j in jobs:
+                        if not j.is_alive():
+                            jobs.remove(j)
+                    time.sleep(1)
+
+
+        #p.map(SamplesForPAB,pvals)
 #        [SamplesForPAB(p) for p in pvals]
         #for p in pvals:
         #    SamplesForPAB(p,nPlayed=1)
