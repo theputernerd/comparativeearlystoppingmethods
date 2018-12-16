@@ -1611,8 +1611,8 @@ if __name__ == '__main__':
     #alpha=0.0423
     epsilon=0.0
     delta=0.05
-    alphaList=[0.05,0.1,0.01]
-    deltaList=[.1,0.2,0.05]
+    alphaList=[0.05,0.01,0.1]
+    deltaList=[.1,0.2,0.05,0.02]
     #######plt.title(r'$\alpha > \beta$')
     mu, sigma = 0.5, .2  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)
