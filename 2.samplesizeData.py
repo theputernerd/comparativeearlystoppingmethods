@@ -187,7 +187,7 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
-
+    assert False
     s=population.rvs(ngames)
     fig3 = plt.figure(figsize=plt.figaspect(0.5))
     ax3 = fig3.add_subplot(1, 1, 1)
@@ -587,6 +587,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
 
 def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
     #Iterates over a series of p values and records the coverage for that value.
+    assert False
 
 
     epsilon=epsilon #draw threshold
@@ -932,6 +933,7 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
                 mean = np.round(mean, 3)
 
                 stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)  # no threshold for lcb only
+                method=1
                 if stop:  ##condition1
                     wilsPredicted = True
                     # now to see if prediction is correct.
@@ -942,27 +944,27 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
                     else:
                         if winner == best_actual:
                             # corrrect
-                            storedResult = [p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual,
+                            storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                             p1U - p1L]
                             wilsonresults = storedResult
                             Wcondition1 = storedResult
                             if drawOK:  # it could've been a draw.
-                                storedResult = [p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual,
+                                storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                                 p1U - p1L, "or Draw"]
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
 
                         elif winner == 3 and drawOK:  # it's within the draw threshold
-                            storedResult = [p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual,
+                            storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                             p1U - p1L]
                             wilsonresults = storedResult
                             Wcondition1 = storedResult
                         else:  # it is wrong
-                            storedResult = [p1.pWin, p1.nWins, n, False, 3, p1L, p1U, mean, winner, best_actual,
+                            storedResult = [p1.pWin, p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,
                                             p1U - p1L]
                             wilsonresults = storedResult
                             Wcondition1 = storedResult
-                            print(f"wils{3} failed. {storedResult}")
+                            print(f"wils {winner} failed. {storedResult}")
 
                 #########################WILSON CONDITION 2
                 # p1.nWins=798
@@ -977,6 +979,7 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
                 mean = np.round(mean, 3)
 
                 stop, winner = shouldIStop(3, p1L, p1U, mean, n, delta=delta, epsilon=epsilon)
+                method=3
                 if stop and not wilsPredicted:
                     wilsPredicted = True
                     # now to see if prediction is correct.
@@ -988,26 +991,26 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
                         if winner == best_actual:
                             # corrrect
                             storedResult = (
-                            p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                            p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                             wilsonresults = storedResult
                             Wcondition2 = storedResult
                             if drawOK:  # it could've been a draw.
-                                storedResult = [p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual,
+                                storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                                 p1U - p1L, "or Draw"]
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
 
                         elif winner == 3 and drawOK:  # it's within the draw threshold
                             storedResult = (
-                            p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                            p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                             wilsonresults = storedResult
                             Wcondition2 = storedResult
                         else:
-                            storedResult = [p1.pWin, p1.nWins, n, False, 3, p1L, p1U, mean, winner, best_actual,
+                            storedResult = [p1.pWin, p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,
                                             p1U - p1L]
                             wilsonresults = storedResult
                             Wcondition1 = storedResult
-                            #print(f"wils{method} failed. {storedResult}")
+                            print(f"wils{winner} failed. {storedResult}")
 
             if not baysPredicted:
                 #########################BAYES CONDITION 1
@@ -1025,12 +1028,12 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
                     else:
                         if winner == best_actual:
                             # corrrect
-                            storedResult = [p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual,
+                            storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                             p1U - p1L]
 
                             if drawOK:  # it could've been a draw.
-                                storedResult = [p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L, "or Draw"]
+                                storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
+                                                p1U - p1L, "or Similar"]
                             bayesresults = storedResult
                             Bcondition1 = storedResult
                         elif winner == 3 and drawOK:  # it's within the draw threshold
@@ -1039,11 +1042,11 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
                             bayesresults = storedResult
                             Bcondition1 = storedResult
                         else:
-                            storedResult = [p1.pWin, p1.nWins, n, False, 3, p1L, p1U, mean, winner, best_actual,
+                            storedResult = [p1.pWin, p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,
                                             p1U - p1L]
                             bayesresults = storedResult
                             Bcondition1 = storedResult
-                            #print(f"bayes{3} failed. {storedResult}")
+                            print(f"bayes{winner} failed. {storedResult}")
 
                 #########################BAYES CONDITION 2
                 p1L, p1U, mean = bayesian_U(p1.nWins, n, alpha / 2)
@@ -1062,23 +1065,23 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
                     else:
                         if winner == best_actual:
                             # corrrect
-                            storedResult = [p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual,
+                            storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                             p1U - p1L]
                             if drawOK:  # it could've been a draw.
-                                storedResult = [p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual,
+                                storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                                 p1U - p1L, "or Draw"]
 
                             bayesresults = storedResult
                             Bcondition2 = storedResult
                         elif winner == 3 and drawOK:  # it's within the draw threshold
                             storedResult = (
-                            p1.pWin, p1.nWins, n, True, 3, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                            p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                             bayesresults = storedResult
                             Bcondition1 = storedResult
                         else:
-                            storedResult = [p1.pWin, p1.nWins, n, False, 3, p1L, p1U, mean, winner, best_actual,
+                            storedResult = [p1.pWin, p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,
                                             p1U - p1L]
-                            #print(f"bayes{method} failed. {storedResult}")
+                            print(f"bayes{winner} failed. {storedResult}")
                             bayesresults = storedResult
                             Bcondition2 = storedResult
 
@@ -1130,8 +1133,8 @@ def SamplesForPAB(p1W,nPlayed=1):
     #delta=numpy.arange(0.10,0.01,-0.01)
     #alpha = numpy.arange(0.01,0.11,0.01) #[1-0.95,1-0.975,1-0.99] #numpy.arange(.01, 0.205, 0.01) #TODO Add more fidelity make incr smaller
     #delta = numpy.arange(0.01,0.11,0.01)#[0.05,0.075,0.1]#numpy.arange(.01, 0.205, 0.01)
-    alpha = numpy.arange(.01, 0.201, 0.01)  # TODO Add more fidelity make incr smaller
-    delta = numpy.arange(.05, 0.201, 0.01)
+    alpha = numpy.arange(.01, 0.101, 0.02)  # TODO Add more fidelity make incr smaller
+    delta = numpy.arange(.05, 0.201, 0.02)
     zWaccuracy=[]
     zWnum=[]
     zBaccuracy = []
@@ -1246,7 +1249,7 @@ import multiprocessing
 if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
-    pvals=[0.50,0.50]
+    pvals=[0.50,0.05,0.25,0.3,0.4,0.45,0.50]
     pvals+=pvals
     try:
         os.mkdir("failureTest")

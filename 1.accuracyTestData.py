@@ -1093,21 +1093,21 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                         else:
                             if winner == best_actual:
                                 # corrrect
-                                storedResult = [p1.pWin, p1.nWins,n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin, p1.nWins,n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 wilsonresults = storedResult
                                 Wcondition1 = storedResult
                                 if drawOK: #it could've been a draw.
-                                    storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
+                                    storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                                     p1U - p1L,"or Similar"]
                                     wilsonresults = storedResult
                                     Wcondition2 = storedResult
 
                             elif winner==3 and drawOK: #it's within the draw threshold
-                                storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 wilsonresults = storedResult
                                 Wcondition1 = storedResult
                             else: #it is wrong
-                                storedResult = [p1.pWin,p1.nWins, n, False, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 wilsonresults = storedResult
                                 Wcondition1 = storedResult
                                 print(f"wils{method} failed. {storedResult}")
@@ -1137,21 +1137,21 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                         else:
                             if winner == best_actual:
                                 # corrrect
-                                storedResult = (p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L)
+                                storedResult = (p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L)
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
                                 if drawOK: #it could've been a draw.
-                                    storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
+                                    storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                                     p1U - p1L,"or Similar"]
                                     wilsonresults = storedResult
                                     Wcondition2 = storedResult
 
                             elif winner==3 and drawOK: #it's within the draw threshold
-                                storedResult = (p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                                storedResult = (p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
                             else:
-                                storedResult = [p1.pWin,p1.nWins, n, False, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 wilsonresults = storedResult
                                 Wcondition1 = storedResult
                                 print(f"wils{method} failed. {storedResult}")
@@ -1175,19 +1175,19 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                         else:
                             if winner == best_actual:
                                 # corrrect
-                                storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
 
                                 if drawOK: #it could've been a draw.
-                                    storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
+                                    storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                                     p1U - p1L,"or Similar"]
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                             elif winner==3 and drawOK: #it's within the draw threshold
-                                storedResult = (p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                                storedResult = (p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                             else:
-                                storedResult = [p1.pWin,p1.nWins, n, False, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                                 print(f"bayes{method} failed. {storedResult}")
@@ -1211,19 +1211,19 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                         else:
                             if winner == best_actual:
                                 # corrrect
-                                storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 if drawOK: #it could've been a draw.
-                                    storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
+                                    storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
                                                     p1U - p1L,"or Similar"]
 
                                 bayesresults = storedResult
                                 Bcondition2 = storedResult
                             elif winner == 3 and drawOK:  # it's within the draw threshold
-                                storedResult = (p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual, p1U - p1L)
+                                storedResult = (p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual, p1U - p1L)
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                             else:
-                                storedResult = [p1.pWin,p1.nWins, n, False, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
+                                storedResult = [p1.pWin,p1.nWins, n, False, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 print(f"bayes{method} failed. {storedResult}")
                                 bayesresults = storedResult
                                 Bcondition2 = storedResult

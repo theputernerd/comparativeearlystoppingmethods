@@ -140,13 +140,14 @@ for pab2 in sorted(pAB.keys()):
     ax2.set_xlabel(r"$\alpha$")
     ax2.set_ylabel(r'$\Delta$')
     #ax2.set_zlabel('Accuracy')
-    ax2.set_title(f"Accuracy using Bayes-U Pab={pab}")
+    ax2.set_title(rf"Accuracy using Bayes-U with $P={pab}$")
     levels = cs2.levels
     plt.clabel(cs2, levels[1::5],inline=10, fontsize=10)
     try:
         plt.colorbar(cs2, ax=ax2)
     except: #if there is no variation then color wont show
         pass
+    print(f"saved failureTest/contour_Bayesp={pab}.png")
     fig5.savefig(f"failureTest/contour_Bayesp={pab}.png", format='png')
     if show:
         fig5.show()
@@ -160,7 +161,7 @@ for pab2 in sorted(pAB.keys()):
     ax.set_xlabel(r"$\alpha$")
     ax.set_ylabel(r'$\Delta$')
     #ax.set_zlabel('Accuracy')
-    ax.set_title(f"Accuracy using Wilson Pab={pab}")
+    ax.set_title(rf"Accuracy using Wilson $Pab={pab}$")
     levels = cs1.levels
     plt.clabel(cs1, levels[1::5], inline=10, fontsize=10)
     try:
@@ -168,6 +169,7 @@ for pab2 in sorted(pAB.keys()):
     except: #if there is no variation then color wont show
         print("colorbar error line 167.")
         pass
+    print(f"saved failureTest/contour_Wilsonp={pab}.png")
     fig.savefig(f"failureTest/contour_Wilsonp={pab}.png", format='png')
     if show:
         fig.show()
@@ -178,13 +180,13 @@ for pab2 in sorted(pAB.keys()):
     ax = fig.add_subplot(1, 1, 1, projection='3d')
     cs1 = ax.contourf(xi, yi, zi, 500, linewidths=1,cmap=cm.jet)
     ax.invert_yaxis()
-    ax.set_xlabel('alpha')
-    # ax.set_xlim(0, maxNgames)
-    ax.set_ylabel('delta')
+    ax.set_xlabel(r"$\alpha$")
+    ax.set_ylabel(r'$\Delta$')
     ax.set_zlabel('Accuracy')
     ax.view_init(elev=elev, azim=az)
-    ax.set_title(f"Accuracy using Wilson Pab={pab}")
+    ax.set_title(fr"Accuracy using Wilson $Pab={pab}$")
     plt.colorbar(cs1,ax=ax)
+    print(f"saved failureTest/cont3d_Wilsonp={pab}.png")
     fig.savefig(f"failureTest/cont3d_Wilsonp={pab}.png", format='png')
     if show:
         fig.show()
@@ -197,13 +199,13 @@ for pab2 in sorted(pAB.keys()):
 
     cs2 = ax2.contourf(xi, yi, zi, 500, linewidths=1, cmap=cm.jet)
     ax2.invert_yaxis()
-    ax2.set_xlabel('alpha')
-    # ax.set_xlim(0, maxNgames)
-    ax2.set_ylabel('delta')
+    ax2.set_xlabel(r"$\alpha$")
+    ax2.set_ylabel(r'$\Delta$')
     ax2.set_zlabel('Accuracy')
     ax2.view_init(elev=elev, azim=az)
-    ax2.set_title(f"Accuracy using Bayes-U Pab={pab}")
+    ax2.set_title(rf"Accuracy using Bayes-U $Pab={pab}$")
     plt.colorbar(cs2, ax=ax2)
+    print(f"saved failureTest/cont3d_Bayesp={pab}.png")
     fig2.savefig(f"failureTest/cont3d_Bayesp={pab}.png", format='png')
 
     if show:
@@ -215,13 +217,13 @@ for pab2 in sorted(pAB.keys()):
     ax = fig.add_subplot(1, 1, 1, projection='3d')
     cs1 = ax.contourf(xi, yi, zi, 500, linewidths=1,cmap=cm.jet)
     ax.invert_yaxis()
-    ax.set_xlabel('alpha')
-    # ax.set_xlim(0, maxNgames)
-    ax.set_ylabel('delta')
+    ax.set_xlabel(r"$\alpha$")
+    ax.set_ylabel(r'$\Delta$')
     ax.set_zlabel('Accuracy')
     ax.view_init(elev=elev, azim=az)
-    ax.set_title(f"Accuracy using Wilson Pab={pab}")
+    ax.set_title(fr"Accuracy using Wilson $Pab={pab}$")
     plt.colorbar(cs1,ax=ax)
+    print(f"saved failureTest/cont3d_Wilsonp={pab}.png")
     fig.savefig(f"failureTest/cont3d_Wilsonp={pab}.png", format='png')
     if show:
         fig.show()
@@ -235,13 +237,13 @@ for pab2 in sorted(pAB.keys()):
     ax3 = fig3.add_subplot(1, 1, 1, projection='3d')
     cs3 = ax3.contourf(xi, yi, zi, 500, linewidths=1, cmap=cm.jet)
     ax3.invert_yaxis()
-    ax3.set_xlabel('alpha')
-    # ax.set_xlim(0, maxNgames)
-    ax3.set_ylabel('delta')
+    ax3.set_xlabel(r"$\alpha$")
+    ax3.set_ylabel(r'$\Delta$')
     ax3.set_zlabel('Ngames to decision')
     ax3.view_init(elev=elev, azim=az)
-    ax3.set_title(f"NGames to decision Wilson Pab={pab}")
+    ax3.set_title(fr"NGames to decision Wilson $Pab={pab}$")
     plt.colorbar(cs3, ax=ax3)
+    print(f"saved failureTest/nGames_Wilsonp={pab}.png")
     fig3.savefig(f"failureTest/nGames_Wilsonp={pab}.png", format='png')
     if show:
         fig3.show()
@@ -254,9 +256,8 @@ for pab2 in sorted(pAB.keys()):
     ax4 = fig7.add_subplot(1, 1, 1)
     cs4 = ax4.contour(xi, yi, zi, 50, linewidths=1, cmap=cm.jet)
     ax4.invert_yaxis()
-    ax4.set_xlabel('alpha')
-    # ax.set_xlim(0, maxNgames)
-    ax4.set_ylabel('delta')
+    ax4.set_xlabel(r"$\alpha$")
+    ax4.set_ylabel(r'$\Delta$')
     #ax4.set_zlabel('Ngames to decision')
     levels = cs1.levels
     try:
@@ -264,8 +265,9 @@ for pab2 in sorted(pAB.keys()):
     except:
         pass
 
-    ax4.set_title(f"NGames to decision Bayes-U Pab={pab}")
+    ax4.set_title(fr"NGames to decision Bayes-U $Pab={pab}$")
     plt.colorbar(cs4, ax=ax4)
+    print(f"saved failureTest/contour_nGames_Bayesp={pab}.png")
     fig7.savefig(f"failureTest/contour_nGames_Bayesp={pab}.png", format='png')
     if show:
         fig7.show()
@@ -277,13 +279,13 @@ for pab2 in sorted(pAB.keys()):
     ax4 = fig4.add_subplot(1, 1, 1, projection='3d')
     cs4 = ax4.contourf(xi, yi, zi, 500, linewidths=1, cmap=cm.jet)
     ax4.invert_yaxis()
-    ax4.set_xlabel('alpha')
-    # ax.set_xlim(0, maxNgames)
-    ax4.set_ylabel('delta')
+    ax4.set_xlabel(r"$\alpha$")
+    ax4.set_ylabel(r'$\Delta$')
     ax4.set_zlabel('Ngames to decision')
     ax4.view_init(elev=elev, azim=az)
-    ax4.set_title(f"NGames to decision Bayes-U Pab={pab}")
+    ax4.set_title(fr"NGames to decision Bayes-U $P={pab}$")
     plt.colorbar(cs4, ax=ax4)
+    print(f"saved failureTest/nGames_Bayesp={pab}.png")
     fig4.savefig(f"failureTest/nGames_Bayesp={pab}.png", format='png')
     if show:
         fig4.show()
