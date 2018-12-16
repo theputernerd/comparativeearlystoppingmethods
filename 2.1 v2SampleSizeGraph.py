@@ -10,6 +10,11 @@ def interpretXYZ(x,y,z,pts=1000):
     zi = griddata((x, y), z, (xi[None,:], yi[:,None]), method='cubic')
     return xi,yi,zi
 
+#this is like 1.accuracyTest3Dgraph
+# but can do a whole series of p values
+#This method does not use confusion pmatrices calcs.
+#just purely correctness of full decision. Not combination of both.
+#should be the same but might have some differences.
 
 xf ='xf'# []
 yf ='yf'# []
@@ -21,7 +26,7 @@ nf='nf'
 pab=[]
 pAB={}
 roundTo=3
-show=False
+show=True
 with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
