@@ -11,7 +11,7 @@ import time
 from binomial import binomial_mean_conf
 from bayes import bayesTheorum,bayes_U,bayes_MulStop,bayesian_U
 import csv
-ngames = 1000
+ngames = 100
 linewidth=1
 import numpy as np
 import random
@@ -63,8 +63,7 @@ def coveragePlotData(fn, test1=True, test2=True,alpha=0.05,delta=0.05):
 
     return p1_Lx,p1_Ly,p1_Ux,p1_Uy,d_Ux,d_Uy
 
-
-def bayesianCoverageOnly(t1,t2,markersize,name="Bayesian Coverage",filename="",sampleEvery=2,alpha=0.05,delta=0.1,show=False):
+def plot2OnOneFigure(line1Name,line2Name,x1,y1,x2,y2,xlabel,ylabel,name,markersize=.7,filename="",logy=False,show=False,linestyle='',linewidth=1):
     ###############
     fig, ax = plt.subplots(1, 1, figsize=(19.20, 10.8))
     gcolor = '#b7b7bc'
@@ -72,50 +71,72 @@ def bayesianCoverageOnly(t1,t2,markersize,name="Bayesian Coverage",filename="",s
     ax.grid(color=gcolor, linestyle='-', linewidth=linewidth)
     plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
     plt.minorticks_on()
+
+    BPlot, = ax.plot(x1, y1, 'bo', label=fr"{line1Name}", markersize=markersize,linestyle=linestyle,linewidth=linewidth)
+    bDraws, = ax.plot(x2, y2, 'ro', label=fr"{line2Name}", markersize=markersize,linestyle=linestyle,linewidth=linewidth)
+
+    ############################################
+    # linPlot, = ax.plot(range(0, ngames), range(0, ngames),
+    #                   'k-', label='Linear', markersize=markersize)
+    if logy:
+        ax.set_yscale('log', linthreshy=0.001,nonposx='clip')
+        plt.yscale('log', linthreshy=0.001)
+        ymax=max(y1,y2)
+        ax.set_ylim(ymin=1,ymax=ymax)
+
+        #ax.set_yscale()
+        #plt.grid(True)
+        #plt.gca().yaxis.grid(True, which='minor', linestyle='-')  # minor grid on too
+    ax.grid(True,)
+    lgnd = plt.legend(handles=[BPlot, bDraws])
+    lgnd.legendHandles[0]._legmarker.set_markersize(markersize * 5)
+    lgnd.legendHandles[1]._legmarker.set_markersize(markersize * 5)
+    ax.set_ylim(ymin=0, ymax=ngames)
+    ax.set_xlim(xmin=0, xmax=ngames)
+    plt.xlabel(fr"{xlabel}")
+    plt.ylabel(fr"{ylabel}")
+    plt.title(fr"{name}")
+    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
+    plt.savefig(f"{filename}.eps", format='eps')
+    plt.savefig(f"{filename}.png", format='png')
+    plt.savefig(f"{filename}.pdf", format='pdf')
+    if show:
+        plt.show()
+def bayesianCoverageOnly(t1,t2,markersize,name="Bayesian Coverage",filename="",sampleEvery=2,alpha=0.05,delta=0.1,show=False):
+
 
     #####################################################
     p1_Lx, p1_Ly, p1_Ux, p1_Uy, d_Ux, d_Uy = coveragePlotData(bayesian_U, t1, t2,alpha=alpha,delta=delta)
     p1_Lx, p1_Ly = zip(*random.sample(list(zip(p1_Lx, p1_Ly)), int(len(p1_Lx) / sampleEvery)))
     if len(d_Ux) > 0:
         d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux) / sampleEvery)))
+    line1Name="Condition 1"
+    line2Name="Condition 2"
+    x1,y1=p1_Lx,p1_Ly
+    x2,y2=d_Ux, d_Uy
+    xlabel=r"number of wins for Player A, $k$"
+    ylabel=r"number of wins for Player B wins, $n-k$"
 
-    BPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="Condition 1", markersize=markersize)
-    bDraws, = ax.plot(d_Ux, d_Uy, 'go', label="Condition 2", markersize=markersize)
+    plot2OnOneFigure(line1Name,line2Name,x1,y1,x2,y2,xlabel,ylabel,name,markersize=markersize,filename=filename,logy=False,show=show,linestyle='-')
 
-    ############################################
-    #linPlot, = ax.plot(range(0, ngames), range(0, ngames),
-    #                   'k-', label='Linear', markersize=markersize)
-
-    lgnd=plt.legend(handles=[BPlot, bDraws])
-    lgnd.legendHandles[0]._legmarker.set_markersize(markersize*5)
-    lgnd.legendHandles[1]._legmarker.set_markersize(markersize*5)
-    ax.set_ylim(ymin=0,ymax=ngames)
-    ax.set_xlim(xmin=0,xmax=ngames)
-    plt.xlabel(r"Player A wins, $k$")
-    plt.ylabel(r"Player B wins, $n-k$")
-    plt.title(f"{name}")
-    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
-    plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.eps", format='eps')
-    plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.png", format='png')
-    plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.pdf", format='pdf')
-    if show:
-        plt.show()
     #fig.canvas.draw()
     #fig.canvas.flush_events()
 
 def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",filename="",sampleEvery=2,alpha=0.05,delta=0.1,show=False):
     ###############
-    fig, ax = plt.subplots(1, 1, figsize=(19.20, 10.8))
-    gcolor = '#b7b7bc'
-
-    ax.grid(color=gcolor, linestyle='-', linewidth=linewidth)
-    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
-    plt.minorticks_on()
 
     p1_Lx, p1_Ly, p1_Ux, p1_Uy, d_Ux, d_Uy = coveragePlotData(wils_int, t1, t2,alpha=alpha,delta=delta)
+    line1Name = "Condition 1"
+    line2Name = "Condition 2"
+
     if len(p1_Lx)>0:
 
         p1_Lx, p1_Ly = zip(*random.sample(list(zip(p1_Lx, p1_Ly)), int(len(p1_Lx)/sampleEvery)))
+    x1, y1 = p1_Lx, p1_Ly
+    x2, y2 = d_Ux, d_Uy
+    xlabel = r"number of wins for Player A, $k$"
+    ylabel = r"number of wins for Player B wins, $n-k$"
+
 
     #p1_Ly = p1_Ly[1::sampleEvery]
     #d_Ux = d_Ux[1::sampleEvery]
@@ -123,28 +144,8 @@ def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",filename="",sampl
     if len(d_Ux)>0:
         d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux)/sampleEvery)))
 
-    WPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="Condition 1", markersize=markersize)
-    wDraws, = ax.plot(d_Ux, d_Uy, 'go', label="Condition 2", markersize=markersize)
+    plot2OnOneFigure(line1Name,line2Name,x1,y1,x2,y2,xlabel,ylabel,name,markersize=markersize,filename=filename,logy=False,show=show,linestyle='-')
 
-
-    ############################################
-    #linPlot, = ax.plot(range(0, ngames), range(0, ngames),
-    #                   'k-', label='Linear', markersize=markersize)
-
-    lgnd = plt.legend(handles=[WPlot, wDraws])
-    lgnd.legendHandles[0]._legmarker.set_markersize(markersize * 5)
-    lgnd.legendHandles[1]._legmarker.set_markersize(markersize * 5)
-    ax.set_ylim(ymin=0, ymax=ngames)
-    ax.set_xlim(xmin=0, xmax=ngames)
-    plt.xlabel(r"Player A wins, $k$")
-    plt.ylabel(r"Player B wins, $n-k$")
-    plt.title(f"{name}")
-    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
-    plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.eps", format='eps')
-    plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.png", format='png')
-    plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.pdf", format='pdf')
-    if show:
-        plt.show()
     #fig.canvas.draw()
     #fig.canvas.flush_events()
 
@@ -169,7 +170,7 @@ def coveragePlot(t1,t2,markersize,name,sampleEvery=2):
         d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux)/sampleEvery)))
 
     WPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="wilson", markersize=markersize)
-    wDraws, = ax.plot(d_Ux, d_Uy, 'go', label="wilson_Draws", markersize=markersize)
+    wDraws, = ax.plot(d_Ux, d_Uy, 'ro', label="wilson_Draws", markersize=markersize)
 
     #####################################################
     p1_Lx, p1_Ly, p1_Ux, p1_Uy, d_Ux, d_Uy = coveragePlotData(bayesian_U, t1, t2)
@@ -260,16 +261,23 @@ if __name__ == '__main__':
     markersize=.75
 
     plt.rcParams.update({'font.size': 22})
-    alpha=[0.05,0.1,0.01]
-    delta=[0.05,0.1,0.01]
+    alpha=[0.1,0.05,0.01]
+    delta=[0.1,0.05,0.01]
     for a in alpha:
         for d in delta:
             name = fr"$\alpha={a}, \Delta={d}$"
             filename = f"a_{a}d_{d}"
-            bayesianCoverageOnly(True, True, markersize, rf"Bayesian Updating {name}", filename=f"Bayesian{filename}", sampleEvery=1,
+            filename = f"{ngames}Wilson{filename}"
+            filename=f"4.0_2D_pWinVsNwincoverage\{filename}"
+
+            wilsonCoverageOnly(True, True, markersize, fr"Wilson {name}", filename=filename, sampleEvery=1,
+                               alpha=a,
+                               delta=d, show=False)
+            filename = f"a_{a}d_{d}"
+            filename = f"{ngames}Bayesian{filename}"
+            filename = f"4.0_2D_pWinVsNwincoverage\{filename}"
+            bayesianCoverageOnly(True, True, markersize, rf"Bayesian Updating {name}", filename=filename, sampleEvery=1,
                                  alpha=a, delta=d,show=False)
-            wilsonCoverageOnly(True, True, markersize, fr"Wilson {name}", filename=f"Wilson{filename}", sampleEvery=1, alpha=a,
-                               delta=d,show=False)
 
     assert False
 

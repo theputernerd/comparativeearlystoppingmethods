@@ -394,70 +394,84 @@ def cond3Stop_p1w_p2w(fn,ngames,alpha=0.05,delta=0.05,newData=False):
 #############################################################################
 
 #############################################################################
-def plot2OnOneFigure(line1Name,line2Name,x1,y1,x2,y2,xlabel,ylabel,name,logy=False,show=False,linestyle='-'):
+def plot2OnOneFigure(line1Name,line2Name,x1,y1,x2,y2,xlabel,ylabel,name,markersize=.7,filename="",logy=False,show=False,linestyle='',linewidth=1):
+    if filename=="":
+        filename=f"plots/{name}"
+    ###############
     fig, ax = plt.subplots(1, 1, figsize=(19.20, 10.8))
     gcolor = '#b7b7bc'
-    ax.grid(color=gcolor, linestyle='-', linewidth=1)
 
+    ax.grid(color=gcolor, linestyle='-', linewidth=linewidth)
+    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
     plt.minorticks_on()
-    WPlot, = ax.plot(x1, y1, 'bo',linestyle=linestyle, label=line1Name, markersize=1)
-    wDraws, = ax.plot(x2, y2, 'ro',linestyle=linestyle, label=line2Name, markersize=1)
-    plt.legend(handles=[WPlot, wDraws])
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+
+    BPlot, = ax.plot(x1, y1, 'bo', label=fr"{line1Name}", markersize=markersize,linestyle=linestyle,linewidth=linewidth)
+    bDraws, = ax.plot(x2, y2, 'ro', label=fr"{line2Name}", markersize=markersize,linestyle=linestyle,linewidth=linewidth)
+
+    ############################################
+    # linPlot, = ax.plot(range(0, ngames), range(0, ngames),
+    #                   'k-', label='Linear', markersize=markersize)
+    ymax = max(list(y1) + list(y2))
     if logy:
+        from math import log10, floor
         ax.set_yscale('log', linthreshy=0.001,nonposx='clip')
         plt.yscale('log', linthreshy=0.001)
-        ax.set_ylim(ymin=1,ymax=500)
+        ym=round(ymax, -int(floor(log10(abs(ymax)))))
+        ax.set_ylim(ymin=1,ymax=ym)
+        ax.set_ylim(ymin=1,ymax=ngames)
 
+
+    else:
+        ax.set_ylim(ymin=0, ymax=ngames)
+    xmax = max(list(x1) + list(x2))
+
+    ax.set_xlim(xmin=0, xmax=xmax)
         #ax.set_yscale()
         #plt.grid(True)
         #plt.gca().yaxis.grid(True, which='minor', linestyle='-')  # minor grid on too
-        ax.grid(True,)
+    ax.grid(True,)
     ax.grid(color=gcolor, which="both",linestyle='-', linewidth=1)
-    #if max(x1)>500:
-    #    ax.set_xlim(xmin=0,xmax=500)
-    #else:
-    #    ax.set_ylim(ymin=0)
-    #    ax.set_xlim(xmin=0)
-
     ax.xaxis.grid(b=True, which='major', color='black', linestyle='-', alpha=0.5)
     ax.xaxis.grid(b=True, which='minor', color=gcolor, linestyle='--', alpha=0.5)
-    #ax.tick_params(axis='y', which='minor')
+    # ax.tick_params(axis='y', which='minor')
     ax.yaxis.grid(b=True, which='major', color='black', linestyle='-', alpha=0.5)
     ax.yaxis.grid(b=True, which='minor', color=gcolor, linestyle='--', alpha=0.5)
-    #plt.minorticks_on()
-    plt.title(f"{name}")
-    plt.savefig(f"plots/{name}.pdf", format='pdf')
-    plt.savefig(f"plots/{name}.png", format='png')
 
-    print(f"plot saved {name}.pdf")
+
+    lgnd = plt.legend(handles=[BPlot, bDraws])
+    lgnd.legendHandles[0]._legmarker.set_markersize(markersize * 5)
+    lgnd.legendHandles[1]._legmarker.set_markersize(markersize * 5)
+
+    plt.xlabel(fr"{xlabel}")
+    plt.ylabel(fr"{ylabel}")
+    plt.title(fr"{name}")
+    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
+    plt.savefig(f"{filename}.eps", format='eps')
+    plt.savefig(f"{filename}.png", format='png')
+    plt.savefig(f"{filename}.pdf", format='pdf')
     if show:
         plt.show()
-    plt.close()
 
 def plot_Aw_vs_Bw_coverage(ngames,alpha=0.05,delta=0.05):
     #creates plot for bayes and wilson.
     ##################################
+    prefix="Wins vs Wins"
     W2x, W2y = cond3Stop_p1w_p2w(bayesianU_int, ngames,alpha=alpha,delta=delta,newData=False)
     W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames,alpha=alpha,delta=delta,)
-    name = "C1_C3bayesStopping"
+    name = prefix+"Bayes-U Stopping"
     name=f"{ngames}_{alpha}_{delta}"+name
-    xlabel = "P1Wins"
-    ylabel = "P2Wins"
-    line1Name = "bayes Cond1"
-    line2Name = "bayes Cond3"
+    xlabel = r"P1Wins"
+    ylabel = r"P2Wins"
+    line1Name = "Condition 1"
+    line2Name = "Condition 2"
     plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name,linestyle='',show=False)
     ##################################
     W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames,alpha=alpha,delta=delta,)
     W2x, W2y = oldC2cond3Stop_p1w_p2w(bayesianU_int, ngames,alpha=alpha,delta=delta,)
-    name = "C1_C2OldbayesStopping"
+    name = prefix+"Bayes-U Stopping C2 Over C1 "
     name = f"{ngames}_{alpha}_{delta}" + name
 
-    xlabel = "P1Wins"
-    ylabel = "P2Wins"
-    line1Name = "bayes Cond1"
-    line2Name = "bayes Cond2"
+
     plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name,linestyle='',show=False)
     ####################################
 
@@ -465,54 +479,36 @@ def plot_Aw_vs_Bw_coverage(ngames,alpha=0.05,delta=0.05):
     ######################################
     Bx = []
     By = []
-
-    W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
+    W2x, W2y = cond3Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
     W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
-    name = "wilsonStopping"
+    name = prefix+"Wilson Stopping"
     name = f"{ngames}_{alpha}_{delta}" + name
 
-    xlabel="P1Wins"
-    ylabel="P2Wins"
-    line1Name="Wilson Cond1"
-    line2Name="Wilson Cond2"
     plot2OnOneFigure(line1Name,line2Name,W1x, W1y,W2x, W2y,xlabel,ylabel, name=name,linestyle='',show=False)
     #################################### P on X axis ngames on y axis
     ##################################
-    W2x, W2y = cond3Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
+    W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
     W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
-    name = "C1_C3WilsStopping"
+    name = prefix+"Wilson Stopping C2 Over C1 "
     name = f"{ngames}_{alpha}_{delta}" + name
 
-    xlabel = "P1Wins"
-    ylabel = "P2Wins"
-    line1Name = "Wils Cond1"
-    line2Name = "Wils Cond3"
     plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name,linestyle='',show=False)
 
-    ######################################
-    W2x, W2y = cond3Stop_p1w_p2w(bayesianU_int, ngames,alpha=alpha,delta=delta,)
-    W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames,alpha=alpha,delta=delta,)
-    name = "bayesStopping"
-    name = f"{ngames}_{alpha}_{delta}" + name
 
-    xlabel = "P1Wins"
-    ylabel = "P2Wins"
-    line1Name = "bayes Cond1"
-    line2Name = "bayes Cond2"
-    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name,linestyle='',show=False)
-#
 def plot_PAB_vs_N_coverage(ngames,alpha=0.05,delta=0.05):
     #creates plot for bayes and wilson.
     ##################################
+    nsigFigs = 3
+    prefix="PvN"
     W2x, W2y = cond3Stop_p1w_p2w(bayesianU_int, ngames,newData=False,alpha=alpha,delta=delta,)
     W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames,newData=False,alpha=alpha,delta=delta,)
-    name = "C1_C3bayesStopping_PvN"
+    name = prefix+"bayesStopping"
     name = f"{ngames}_{alpha}_{delta}" + name
 
     xlabel = "Pab"
     ylabel = "N"
-    line1Name = "bayes Cond1"
-    line2Name = "bayes Cond3"
+    line1Name = "Condition 1"
+    line2Name = "Condition 2"
     combined1=zip(W1x,W1y)
     combined2=zip(W2x,W2y)
 
@@ -522,7 +518,6 @@ def plot_PAB_vs_N_coverage(ngames,alpha=0.05,delta=0.05):
     W2y=[]
 
     x1min={}
-    nsigFigs=4
     for x1,y1 in combined1:
         n1 = x1 + y1
         x1val=round(x1/n1,nsigFigs)
@@ -577,13 +572,9 @@ def plot_PAB_vs_N_coverage(ngames,alpha=0.05,delta=0.05):
     ##################################
     W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames,alpha=alpha,delta=delta,)
     W2x, W2y = oldC2cond3Stop_p1w_p2w(bayesianU_int, ngames,alpha=alpha,delta=delta,)
-    name = "C1_C2OldbayesStopping_PvN"
+    name = prefix+"bayesStopping C2 Over C1"
     name = f"{ngames}_{alpha}_{delta}" + name
 
-    xlabel = "Pab"
-    ylabel = "N"
-    line1Name = "bayes Cond1"
-    line2Name = "bayes Cond2"
     combined1 = zip(W1x, W1y)
     combined2 = zip(W2x, W2y)
 
@@ -593,7 +584,6 @@ def plot_PAB_vs_N_coverage(ngames,alpha=0.05,delta=0.05):
     W2y = []
 
     x1min = {}
-    nsigFigs = 4
     for x1, y1 in combined1:
         n1 = x1 + y1
         x1val = round(x1 / n1, nsigFigs)
@@ -642,20 +632,13 @@ def plot_PAB_vs_N_coverage(ngames,alpha=0.05,delta=0.05):
     plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel,linestyle='',logy=True, name=name,show=False)
     ####################################
 
-
-    ######################################
-    Bx = []
-    By = []
-
-    W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
-    W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
-    name = "C1C2OldwilsonStopping_PvN"
+    #################################### P on X axis ngames on y axis
+    ##################################
+    W2x, W2y = cond3Stop_p1w_p2w(wils_int, ngames, alpha=alpha, delta=delta,)
+    W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames, alpha=alpha, delta=delta,)
+    name = prefix + "Wilson Stopping"
     name = f"{ngames}_{alpha}_{delta}" + name
 
-    xlabel = "Pab"
-    ylabel = "N"
-    line1Name="Wilson Cond1"
-    line2Name="Wilson Cond2"
     combined1 = zip(W1x, W1y)
     combined2 = zip(W2x, W2y)
 
@@ -665,7 +648,73 @@ def plot_PAB_vs_N_coverage(ngames,alpha=0.05,delta=0.05):
     W2y = []
 
     x1min = {}
-    nsigFigs = 3
+    for x1, y1 in combined1:
+        n1 = x1 + y1
+        x1val = round(x1 / n1, nsigFigs)
+
+        y1val = n1
+        if x1val in x1min.keys():
+            if x1min[x1val] > y1val:  # we have a lower value for this value of x
+                x1min[x1val] = y1val
+        else:
+            x1min[x1val] = y1val
+    V = list(x1min.items())
+    if len(V)>0:
+        W1x, W1y = zip(*V)
+
+    x2min = {}
+    for x2, y2 in combined2:
+        n2 = x2 + y2
+        x2val = round(x2 / n2, nsigFigs - 1)
+        y2val = n2
+        if x2val in x2min.keys():
+            if x2min[x2val] > y2val:  # we have a lower value for this value of x
+                x2min[x2val] = y2val
+        else:
+            x2min[x2val] = y2val
+    v=x2min.items()
+    if len(v)>0:
+        V = list(v)
+        W2x, W2y = zip(*V)
+    W1S=[]
+    if len(W1x) > 0:
+        W1S = sorted(zip(W1x, W1y))
+    if len(W2x)>0:
+        W2x, W2y = zip(*sorted(zip(W2x, W2y)))
+    # now for some magic To remove shading. Note that to get 99% with integers you need to play 100 games.
+    # So if left alone it looks like Ngames required increases, but it is just an artifact of the data. Which I remove here.
+    # If x<0.5 and the next value is less, then set this value to the next one.
+    lastY = 1000
+    if len(W1x) > 0:
+        W1x, W1y = zip(*W1S)
+        W1x, W1y = list(W1x), list(W1y)
+    L = len(W1x)
+    for i in range(1, L):
+        if W1x[L - i] < 0.5 and W1y[L - i] < W1y[L - i - 1]:
+            W1y[L - i - 1] = W1y[L - i]
+
+        if W1x[i] > 0.5 and W1y[i] > W1y[i - 1]:
+            W1y[i] = W1y[i - 1]
+    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel,linestyle='', name=name,logy=True,show=False)
+
+
+    Bx = []
+    By = []
+
+    W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames, alpha=alpha, delta=delta, )
+    W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames, alpha=alpha, delta=delta, )
+    name = prefix + "WilsonStopping_C2 Over C1"
+    name = f"{ngames}_{alpha}_{delta}" + name
+
+    combined1 = zip(W1x, W1y)
+    combined2 = zip(W2x, W2y)
+
+    W1x = []
+    W1y = []
+    W2x = []
+    W2y = []
+
+    x1min = {}
     for x1, y1 in combined1:
         n1 = x1 + y1
         x1val = round(x1 / n1, nsigFigs)
@@ -690,14 +739,14 @@ def plot_PAB_vs_N_coverage(ngames,alpha=0.05,delta=0.05):
         else:
             x2min[x2val] = y2val
     V = list(x2min.items())
-    if len(V)>0:
+    if len(V) > 0:
         W2x, W2y = zip(*V)
 
     W1S = sorted(zip(W1x, W1y))
-    if len(W2x)>0:
+    if len(W2x) > 0:
         W2x, W2y = zip(*sorted(zip(W2x, W2y)))
 
-    #This used to say this W2x, W2y = zip(*sorted(zip(W1x, W2y)))
+    # This used to say this W2x, W2y = zip(*sorted(zip(W1x, W2y)))
     # now for some magic To remove shading. Note that to get 99% with integers you need to play 100 games.
     # So if left alone it looks like Ngames required increases, but it is just an artifact of the data. Which I remove here.
     # If x<0.5 and the next value is less, then set this value to the next one.
@@ -711,85 +760,22 @@ def plot_PAB_vs_N_coverage(ngames,alpha=0.05,delta=0.05):
 
         if W1x[i] > 0.5 and W1y[i] > W1y[i - 1]:
             W1y[i] = W1y[i - 1]
-    plot2OnOneFigure(line1Name,line2Name,W1x, W1y,W2x, W2y,xlabel,ylabel,linestyle='',logy=True, name=name,show=False)
-    #################################### P on X axis ngames on y axis
-    ##################################
-    W2x, W2y = cond3Stop_p1w_p2w(wils_int, ngames)
-    W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames)
-    name = "C1C3WilsStopping_PvN"
-    name = f"{ngames}_{alpha}_{delta}" + name
+    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, linestyle='', logy=True, name=name,
+                     show=False)
 
-    xlabel = "Pab"
-    ylabel = "N"
-    line1Name = "Wils Cond1"
-    line2Name = "Wils Cond3"
-    combined1 = zip(W1x, W1y)
-    combined2 = zip(W2x, W2y)
-
-    W1x = []
-    W1y = []
-    W2x = []
-    W2y = []
-
-    x1min = {}
-    nsigFigs = 3
-    for x1, y1 in combined1:
-        n1 = x1 + y1
-        x1val = round(x1 / n1, nsigFigs)
-
-        y1val = n1
-        if x1val in x1min.keys():
-            if x1min[x1val] > y1val:  # we have a lower value for this value of x
-                x1min[x1val] = y1val
-        else:
-            x1min[x1val] = y1val
-    V = list(x1min.items())
-    W1x, W1y = zip(*V)
-
-    x2min = {}
-    for x2, y2 in combined2:
-        n2 = x2 + y2
-        x2val = round(x2 / n2, nsigFigs - 1)
-        y2val = n2
-        if x2val in x2min.keys():
-            if x2min[x2val] > y2val:  # we have a lower value for this value of x
-                x2min[x2val] = y2val
-        else:
-            x2min[x2val] = y2val
-    v=x2min.items()
-    if len(v)>0:
-        V = list(v)
-        W2x, W2y = zip(*V)
-
-    W1S = sorted(zip(W1x, W1y))
-    if len(W2x)>0:
-        W2x, W2y = zip(*sorted(zip(W2x, W2y)))
-    # now for some magic To remove shading. Note that to get 99% with integers you need to play 100 games.
-    # So if left alone it looks like Ngames required increases, but it is just an artifact of the data. Which I remove here.
-    # If x<0.5 and the next value is less, then set this value to the next one.
-    lastY = 1000
-    W1x, W1y = zip(*W1S)
-    W1x, W1y = list(W1x), list(W1y)
-    L = len(W1x)
-    for i in range(1, L):
-        if W1x[L - i] < 0.5 and W1y[L - i] < W1y[L - i - 1]:
-            W1y[L - i - 1] = W1y[L - i]
-
-        if W1x[i] > 0.5 and W1y[i] > W1y[i - 1]:
-            W1y[i] = W1y[i - 1]
-    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel,linestyle='', name=name,logy=True,show=False)
 
 def plot_PAB_vs_N_coverageShaded(ngames,alpha=0.05,delta=0.05):
     #creates plot for bayes and wilson.
     ##################################
+    prefix="PvNShaded"
     W2x, W2y = cond3Stop_p1w_p2w(bayesianU_int, ngames,newData=False,alpha=alpha,delta=delta,)
     W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames,newData=False,alpha=alpha,delta=delta,)
-    name = "C1_C3bayesStopping_PvN_shaded"
+    name = prefix+"C1_C3bayesStopping_PvN_shaded"
     name = f"{ngames}_{alpha}_{delta}" + name
     xlabel = "Pab"
     ylabel = "N"
-    line1Name = "bayes Cond1"
-    line2Name = "bayes Cond3"
+    line1Name = "Condition 1"
+    line2Name = "Condition 2"
     combined1=zip(W1x,W1y)
     combined2=zip(W2x,W2y)
 
@@ -820,13 +806,9 @@ def plot_PAB_vs_N_coverageShaded(ngames,alpha=0.05,delta=0.05):
     ##################################
     W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames,newData=False,alpha=alpha,delta=delta,)
     W2x, W2y = oldC2cond3Stop_p1w_p2w(bayesianU_int, ngames,newData=False,alpha=alpha,delta=delta,)
-    name = "C1_C2OldbayesStopping_PvN_shaded"
+    name = prefix+"bayesStopping C2 over C1"
     name = f"{ngames}_{alpha}_{delta}" + name
 
-    xlabel = "Pab"
-    ylabel = "N"
-    line1Name = "bayes Cond1"
-    line2Name = "bayes Cond2"
     combined1 = zip(W1x, W1y)
     combined2 = zip(W2x, W2y)
 
@@ -852,9 +834,40 @@ def plot_PAB_vs_N_coverageShaded(ngames,alpha=0.05,delta=0.05):
 
     if len(W2x)>0:
         W2x, W2y=zip(*sorted(zip(W2x, W2y)))
-    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name,linestyle='')
+    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name,linestyle='',logy=True)
     ####################################
 
+    ##################################
+    W2x, W2y = cond3Stop_p1w_p2w(wils_int, ngames, alpha=alpha, delta=delta, )
+    W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames, alpha=alpha, delta=delta, )
+    name = prefix + "WilsStopping"
+    name = f"{ngames}_{alpha}_{delta}" + name
+
+    combined1 = zip(W1x, W1y)
+    combined2 = zip(W2x, W2y)
+
+    W1x = []
+    W1y = []
+    W2x = []
+    W2y = []
+
+    x1min = {}
+    for x1, y1 in combined1:
+        n1 = x1 + y1
+        x1val = round(x1 / n1, nsigFigs)
+        W1x.append(x1val)
+        W1y.append(n1)
+    for x1, y1 in combined2:
+        n1 = x1 + y1
+        x1val = round(x1 / n1, nsigFigs)
+        W2x.append(x1val)
+        W2y.append(n1)
+
+    W1S = sorted(zip(W1x, W1y))
+    W1x, W1y = zip(*W1S)
+    if len(W2x) > 0:
+        W2x, W2y = zip(*sorted(zip(W2x, W2y)))
+    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name, linestyle='', logy=True)
 
     ######################################
     Bx = []
@@ -862,13 +875,9 @@ def plot_PAB_vs_N_coverageShaded(ngames,alpha=0.05,delta=0.05):
 
     W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
     W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
-    name = "C1C2OldwilsonStopping_PvN_shaded"
+    name = prefix+"WilsonStopping C2 Over C1"
     name = f"{ngames}_{alpha}_{delta}" + name
 
-    xlabel = "Pab"
-    ylabel = "N"
-    line1Name="Wilson Cond1"
-    line2Name="Wilson Cond2"
     combined1 = zip(W1x, W1y)
     combined2 = zip(W2x, W2y)
 
@@ -894,48 +903,14 @@ def plot_PAB_vs_N_coverageShaded(ngames,alpha=0.05,delta=0.05):
 
     if len(W2x)>0:
         W2x, W2y=zip(*sorted(zip(W2x, W2y)))
-    plot2OnOneFigure(line1Name,line2Name,W1x, W1y,W2x, W2y,xlabel,ylabel, name=name,linestyle='')
+    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name,linestyle='',logy=True)
     #################################### P on X axis ngames on y axis
-    ##################################
-    W2x, W2y = cond3Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
-    W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=alpha,delta=delta,)
-    name = "C1_C3WilsStopping_PvN_shaded"
-    name = f"{ngames}_{alpha}_{delta}" + name
-
-    xlabel = "Pab"
-    ylabel = "N"
-    line1Name = "Wils Cond1"
-    line2Name = "Wils Cond3"
-    combined1 = zip(W1x, W1y)
-    combined2 = zip(W2x, W2y)
-
-    W1x = []
-    W1y = []
-    W2x = []
-    W2y = []
-
-    x1min = {}
-    for x1,y1 in combined1:
-        n1 = x1 + y1
-        x1val=round(x1/n1,nsigFigs)
-        W1x.append(x1val)
-        W1y.append(n1)
-    for x1,y1 in combined2:
-        n1 = x1 + y1
-        x1val=round(x1/n1,nsigFigs)
-        W2x.append(x1val)
-        W2y.append(n1)
-
-    W1S=sorted(zip(W1x, W1y))
-    W1x, W1y=zip(*W1S)
-    if len(W2x)>0:
-        W2x, W2y=zip(*sorted(zip(W2x, W2y)))
-    plot2OnOneFigure(line1Name, line2Name, W1x, W1y, W2x, W2y, xlabel, ylabel, name=name,linestyle='')
 
 
 #####################################################################
 import os
 if __name__ == '__main__':
+
     ngames=1000
     try:
         os.mkdir("data")
@@ -949,17 +924,21 @@ if __name__ == '__main__':
 
     al=[0.1,0.05,0.01]
     de=[0.1,0.05,0.01]
-    for a in al:
-        for d in de:
-            plot_Aw_vs_Bw_coverage(ngames,alpha=a, delta=d)
-            plot_PAB_vs_N_coverage(ngames, alpha=a, delta=d)
-            plot_PAB_vs_N_coverageShaded(ngames,alpha=a, delta=d)
-            W3x, W3y = cond3Stop_p1w_p2w(wils_int, ngames, alpha=a, delta=d, )
-            W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames,alpha=a,delta=d,)
-            W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=a,delta=d,)
-            W3x, W3y = cond3Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
-            W2x, W2y = oldC2cond3Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
-            W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
+    ng=[500,1000,2000,3000]
+    for ngames in ng:
+        for a in al:
+            for d in de:
+                plot_Aw_vs_Bw_coverage(ngames, alpha=a, delta=d)
+                plot_PAB_vs_N_coverage(ngames, alpha=a, delta=d)
+                plot_PAB_vs_N_coverageShaded(ngames, alpha=a, delta=d)
+                #######Writes data for plotting later if wanted.
+                W3x, W3y = cond3Stop_p1w_p2w(wils_int, ngames, alpha=a, delta=d, )
+                W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames,alpha=a,delta=d,)
+                W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=a,delta=d,)
+                W3x, W3y = cond3Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
+                W2x, W2y = oldC2cond3Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
+                W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
+
 
 
     #cameronsPlot(ngames)

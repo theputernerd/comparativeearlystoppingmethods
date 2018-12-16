@@ -301,7 +301,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                             Wcondition1 = storedResult
                             if drawOK: #it could've been a draw.
                                 storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L,"or Draw"]
+                                                p1U - p1L,"or Similar"]
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
 
@@ -335,7 +335,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                             Wcondition2 = storedResult
                             if drawOK: #it could've been a draw.
                                 storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L,"or Draw"]
+                                                p1U - p1L,"or Similar"]
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
 
@@ -371,7 +371,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
 
                             if drawOK: #it could've been a draw.
                                 storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L,"or Draw"]
+                                                p1U - p1L,"or Similar"]
                             bayesresults = storedResult
                             Bcondition1 = storedResult
                         elif winner==3 and drawOK: #it's within the draw threshold
@@ -401,7 +401,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                             storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                             if drawOK: #it could've been a draw.
                                 storedResult = [p1.pWin,p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L,"or Draw"]
+                                                p1U - p1L,"or Similar"]
 
                             bayesresults = storedResult
                             Bcondition2 = storedResult
@@ -527,7 +527,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
             width = 30
             lw=6
             line='{0: <{width}}'.format("actual   \predicted ->", width=width)
-            line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Draw", "A", "Ngames")
+            line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Similar", "A", "Ngames")
             print(line)
             keys=[]
             vs=[]
@@ -580,7 +580,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
         width = 30
         lw = 6
         line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
-        line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Draw", "A", "Ngames")
+        line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Similar", "A", "Ngames")
         f.write(line+"\n")
         print(line)
         for key, v in wpredictiongrid.items():
@@ -601,7 +601,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
         f.write(line+"\n")
         print(line)
         line = '{0: <{width}}'.format("actual   \predicted ->", width=width)
-        line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Draw", "A", "Ngames")
+        line += "|{0:<7}|{1:<7}|{2:<7}|{3:<7}".format("B", "Similar", "A", "Ngames")
         f.write(line+"\n")
         print(line)
         for key, v in bpredictiongrid.items():
@@ -1098,7 +1098,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                                 Wcondition1 = storedResult
                                 if drawOK: #it could've been a draw.
                                     storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
-                                                    p1U - p1L,"or Draw"]
+                                                    p1U - p1L,"or Similar"]
                                     wilsonresults = storedResult
                                     Wcondition2 = storedResult
 
@@ -1142,7 +1142,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                                 Wcondition2 = storedResult
                                 if drawOK: #it could've been a draw.
                                     storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
-                                                    p1U - p1L,"or Draw"]
+                                                    p1U - p1L,"or Similar"]
                                     wilsonresults = storedResult
                                     Wcondition2 = storedResult
 
@@ -1179,7 +1179,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
 
                                 if drawOK: #it could've been a draw.
                                     storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
-                                                    p1U - p1L,"or Draw"]
+                                                    p1U - p1L,"or Similar"]
                                 bayesresults = storedResult
                                 Bcondition1 = storedResult
                             elif winner==3 and drawOK: #it's within the draw threshold
@@ -1214,7 +1214,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
                                 storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,p1U-p1L]
                                 if drawOK: #it could've been a draw.
                                     storedResult = [p1.pWin,p1.nWins, n, True, None, p1L, p1U, mean, winner, best_actual,
-                                                    p1U - p1L,"or Draw"]
+                                                    p1U - p1L,"or Similar"]
 
                                 bayesresults = storedResult
                                 Bcondition2 = storedResult
@@ -1366,7 +1366,7 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
                             Wcondition1 = storedResult
                             if drawOK:  # it could've been a draw.
                                 storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L, "or Draw"]
+                                                p1U - p1L, "or Similar"]
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
 
@@ -1413,7 +1413,7 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
                             Wcondition2 = storedResult
                             if drawOK:  # it could've been a draw.
                                 storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L, "or Draw"]
+                                                p1U - p1L, "or Similar"]
                                 wilsonresults = storedResult
                                 Wcondition2 = storedResult
 
@@ -1453,7 +1453,7 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
 
                             if drawOK:  # it could've been a draw.
                                 storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L, "or Draw"]
+                                                p1U - p1L, "or Similar"]
                             bayesresults = storedResult
                             Bcondition1 = storedResult
                         elif winner == 3 and drawOK:  # it's within the draw threshold
@@ -1491,7 +1491,7 @@ def getaccuracy3dfixedpab(ngames,alpha,delta,pab):
                                             p1U - p1L]
                             if drawOK:  # it could've been a draw.
                                 storedResult = [p1.pWin, p1.nWins, n, True, method, p1L, p1U, mean, winner, best_actual,
-                                                p1U - p1L, "or Draw"]
+                                                p1U - p1L, "or Similar"]
 
                             bayesresults = storedResult
                             Bcondition2 = storedResult
