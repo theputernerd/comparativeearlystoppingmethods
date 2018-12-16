@@ -21,7 +21,7 @@ nf='nf'
 pab=[]
 pAB={}
 roundTo=3
-show=True
+show=False
 with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
@@ -166,6 +166,7 @@ for pab2 in sorted(pAB.keys()):
     try:
         plt.colorbar(cs1, ax=ax)
     except: #if there is no variation then color wont show
+        print("colorbar error line 167.")
         pass
     fig.savefig(f"failureTest/contour_Wilsonp={pab}.png", format='png')
     if show:
@@ -258,7 +259,11 @@ for pab2 in sorted(pAB.keys()):
     ax4.set_ylabel('delta')
     #ax4.set_zlabel('Ngames to decision')
     levels = cs1.levels
-    plt.clabel(cs1, levels[1::5], inline=10, fontsize=10)
+    try:
+        plt.clabel(cs1, levels[1::5], inline=10, fontsize=10)
+    except:
+        pass
+
     ax4.set_title(f"NGames to decision Bayes-U Pab={pab}")
     plt.colorbar(cs4, ax=ax4)
     fig7.savefig(f"failureTest/contour_nGames_Bayesp={pab}.png", format='png')

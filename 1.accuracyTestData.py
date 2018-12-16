@@ -1553,7 +1553,7 @@ def interpretXYZ(x,y,z,pts=1000):
 def plotFixedPAB(pab=0.5):
 
     alpha = numpy.arange(.01, 0.201, 0.01) #TODO Add more fidelity make incr smaller
-    delta = numpy.arange(.01, 0.201, 0.01)
+    delta = numpy.arange(.05, 0.201, 0.01)
 
     zWaccuracy=[]
     zWnum=[]
@@ -1612,8 +1612,8 @@ if __name__ == '__main__':
     #alpha=0.0423
     epsilon=0.0
     delta=0.05
-    alphaList=[0.05,0.1,.075,0.0423,.025,0.01,0.001]
-    deltaList=[.1,0.2,.15,0.05,0.01]
+    alphaList=[0.05,0.1,.075,.025,0.01]
+    deltaList=[.1,0.2,.15,0.05,0.025,0.01]
     #######plt.title(r'$\alpha > \beta$')
     mu, sigma = 0.5, .2  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)

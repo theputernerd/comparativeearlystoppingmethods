@@ -1128,8 +1128,10 @@ def interpretXYZ(x,y,z,pts=1000):
 def SamplesForPAB(p1W,nPlayed):
     #alpha=numpy.arange(0.10,0.01,-0.01)
     #delta=numpy.arange(0.10,0.01,-0.01)
-    alpha = numpy.arange(0.01,0.11,0.01) #[1-0.95,1-0.975,1-0.99] #numpy.arange(.01, 0.205, 0.01) #TODO Add more fidelity make incr smaller
-    delta = numpy.arange(0.01,0.11,0.01)#[0.05,0.075,0.1]#numpy.arange(.01, 0.205, 0.01)
+    #alpha = numpy.arange(0.01,0.11,0.01) #[1-0.95,1-0.975,1-0.99] #numpy.arange(.01, 0.205, 0.01) #TODO Add more fidelity make incr smaller
+    #delta = numpy.arange(0.01,0.11,0.01)#[0.05,0.075,0.1]#numpy.arange(.01, 0.205, 0.01)
+    alpha = numpy.arange(.01, 0.201, 0.01)  # TODO Add more fidelity make incr smaller
+    delta = numpy.arange(.05, 0.201, 0.01)
     zWaccuracy=[]
     zWnum=[]
     zBaccuracy = []
@@ -1260,6 +1262,7 @@ if __name__ == '__main__':
     delta=0.05
     alphaList=[0.1,0.05,0.01,0.001]
     deltaList=[0.1,0.05,0.01]
+
     #######plt.title(r'$\alpha > \beta$')
     mu, sigma = 0.5, .2  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)
