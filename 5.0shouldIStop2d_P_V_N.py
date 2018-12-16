@@ -925,6 +925,7 @@ if __name__ == '__main__':
     al=[0.1,0.05,0.01]
     de=[0.1,0.05,0.01]
     ng=[500,1000,2000,3000]
+
     for ngames in ng:
         for a in al:
             for d in de:
