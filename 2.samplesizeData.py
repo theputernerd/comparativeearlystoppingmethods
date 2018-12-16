@@ -1260,10 +1260,12 @@ if __name__ == '__main__':
                 p = multiprocessing.Process(target=SamplesForPAB, args=(pv,))
                 jobs.append(p)
                 p.start()
+                print(f"starting {p.pid}")
                 while len(jobs)>=poolsize: #this is my pool
                     #check if any are closed.
                     for j in jobs:
                         if not j.is_alive():
+                            print(f"removing {p.pid}")
                             jobs.remove(j)
                     time.sleep(1)
 
