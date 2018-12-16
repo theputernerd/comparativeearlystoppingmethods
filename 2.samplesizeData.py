@@ -900,10 +900,10 @@ def getNgamesToPredicefixedpab(ntrials,alpha, delta, p1w,nplayed):
         best_actual = 3
     drawOK = drawOk(p1.pWin, delta)
 
-    p1L, p1U, mean = wils_int(p1w, nplayed, alpha)
-    p1L = np.round(p1L, 3)
-    p1U = np.round(p1U, 3)
-    mean = np.round(mean, 3)
+    #p1L, p1U, mean = wils_int(p1w, nplayed, alpha)
+    #p1L = np.round(p1L, 3)
+    #p1U = np.round(p1U, 3)
+    #mean = np.round(mean, 3)
     n=0#nplayed
     #stop, winner = shouldIStop(1, p1L, p1U, mean, n, delta=delta, epsilon=0)
     for i in range(ntrials):
