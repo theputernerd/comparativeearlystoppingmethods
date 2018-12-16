@@ -1619,17 +1619,7 @@ if __name__ == '__main__':
     #population=np.random.uniform(0.1,0.9,100)
     poolsize=9
     jobs=[]
-    for _ in range(1000000):
-        p = multiprocessing.Process(target=plotFixedPAB, args=(0.5, ))
-        jobs.append(p)
-        p.start()
-        while len(jobs) >= poolsize:  # this is my pool
-            # check if any are closed.
-            for j in jobs:
-                if not j.is_alive():
-                    print(f"-removing {p.pid}")
-                    jobs.remove(j)
-            time.sleep(1)
+
     for a in alphaList:
 
         #[C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d) for d in deltaList]
@@ -1666,7 +1656,17 @@ if __name__ == '__main__':
 
 
         print("-------------------------------------------------------------------------------------------------")
-
+    for _ in range(1000000):
+        p = multiprocessing.Process(target=plotFixedPAB, args=(0.5, ))
+        jobs.append(p)
+        p.start()
+        while len(jobs) >= poolsize:  # this is my pool
+            # check if any are closed.
+            for j in jobs:
+                if not j.is_alive():
+                    print(f"-removing {p.pid}")
+                    jobs.remove(j)
+            time.sleep(1)
     #[plotFixedPAB(0.5) for _ in range(1000000)]
     #while True:
     #    plotFixedPAB(0.5)
