@@ -1247,11 +1247,12 @@ if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
     pvals=[0.05,0.25,0.3,0.4,0.45,0.50]
+    pvals+=pvals
     try:
         os.mkdir("failureTest")
     except FileExistsError:
         pass
-    p=Pool(10)
+    p=Pool(len(pvals))
     while True:
         p.map(SamplesForPAB,pvals)
 #        [SamplesForPAB(p) for p in pvals]

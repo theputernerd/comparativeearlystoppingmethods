@@ -11,7 +11,7 @@ import time
 from binomial import binomial_mean_conf
 from bayes import bayesTheorum,bayes_U,bayes_MulStop,bayesian_U
 import csv
-ngames = 500
+ngames = 1000
 linewidth=1
 import numpy as np
 import random
