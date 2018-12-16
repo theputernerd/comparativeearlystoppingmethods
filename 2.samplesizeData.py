@@ -1125,7 +1125,7 @@ def interpretXYZ(x,y,z,pts=1000):
     zi = griddata((x, y), z, (xi[None,:], yi[:,None]), method='cubic')
     return xi,yi,zi
 
-def SamplesForPAB(p1W,nPlayed):
+def SamplesForPAB(p1W,nPlayed=1):
     #alpha=numpy.arange(0.10,0.01,-0.01)
     #delta=numpy.arange(0.10,0.01,-0.01)
     #alpha = numpy.arange(0.01,0.11,0.01) #[1-0.95,1-0.975,1-0.99] #numpy.arange(.01, 0.205, 0.01) #TODO Add more fidelity make incr smaller
@@ -1145,7 +1145,7 @@ def SamplesForPAB(p1W,nPlayed):
     az=117
     import csv
     pab=p1W/float(nPlayed)
-
+    print(f"doing {p1W}")
     for a in alpha:
         for d in delta:
             a=round(a,3)
@@ -1241,17 +1241,21 @@ def SamplesForPAB(p1W,nPlayed):
     plt.show()
     pass
     """
+from multiprocessing import Pool
 
 if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
     pvals=[0.05,0.25,0.3,0.4,0.45,0.50]
+    pvals=pvals+pvals
     try:
         os.mkdir("failureTest")
     except FileExistsError:
         pass
+    p=Pool(10)
     while True:
-        [SamplesForPAB(p, nPlayed=1) for p in pvals]
+        p.map(SamplesForPAB,pvals)
+#        [SamplesForPAB(p) for p in pvals]
         #for p in pvals:
         #    SamplesForPAB(p,nPlayed=1)
 
