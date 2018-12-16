@@ -1587,7 +1587,7 @@ def plotFixedPAB(pab=0.5):
                 line=[pab,ngames,round(a,4),round(d,4),W[0],W[1],B[0],B[1]]
                 spamwriter.writerow(line)
 
-
+import multiprocessing
 if __name__ == '__main__':
 
     np.random.seed(None)  # changed Put Outside the loop.
@@ -1618,6 +1618,9 @@ if __name__ == '__main__':
     mu, sigma = 0.5, .2  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)
     #population=np.random.uniform(0.1,0.9,100)
+    poolsize=9
+    jobs=[]
+
     for a in alphaList:
 
         #[C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d) for d in deltaList]
@@ -1625,18 +1628,47 @@ if __name__ == '__main__':
         for d in deltaList:
             print(f"(alpha,delta) ({a},{d})")
             print("Getting Data for CoverageTest")
-            coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
-
+            #coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+            #ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5
+            p = multiprocessing.Process(target=coverageTest, args=(1000, epsilon, a, d))
+            jobs.append(p)
+            p.start()
             print(f"(alpha,delta) ({a},{d})")
             print("Getting Data for PoolTest")
-            choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+            #choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+            #population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5
+            p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 1000, epsilon, a, d))
+            jobs.append(p)
+            p.start()
             print(f"(alpha,delta) ({a},{d})")
             print("Creating ConfusionMatrix")
-            C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
+            #C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
+            #population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5
+            p = multiprocessing.Process(target=C1ConfusionMatrix_fromPoolTest, args=(population, 5000, epsilon, a, d))
+            jobs.append(p)
+            p.start()
+            while len(jobs) >= poolsize:  # this is my pool
+                # check if any are closed.
+                for j in jobs:
+                    if not j.is_alive():
+                        print(f"-removing {p.pid}")
+                        jobs.remove(j)
+                time.sleep(1)
 
 
         print("-------------------------------------------------------------------------------------------------")
-    [plotFixedPAB(0.5) for _ in range(1000000)]
+    for _ in range(1000000):
+        p = multiprocessing.Process(target=plotFixedPAB, args=(0.5, ))
+        jobs.append(p)
+        p.start()
+        while len(jobs) >= poolsize:  # this is my pool
+            # check if any are closed.
+            for j in jobs:
+                if not j.is_alive():
+                    print(f"-removing {p.pid}")
+                    jobs.remove(j)
+            time.sleep(1)
+    #[plotFixedPAB(0.5) for _ in range(1000000)]
     #while True:
     #    plotFixedPAB(0.5)
 

@@ -1265,7 +1265,7 @@ if __name__ == '__main__':
                     #check if any are closed.
                     for j in jobs:
                         if not j.is_alive():
-                            print(f"removing {p.pid}")
+                            print(f"-removing {p.pid}")
                             jobs.remove(j)
                     time.sleep(1)
 
