@@ -12,7 +12,7 @@ from binomial import binomial_mean_conf
 from bayes import bayesTheorum,bayes_U,bayes_MulStop,bayesian_U
 import csv
 maxNgames = 100  # if the detector hasn't made its mind up by this many games it becomes a type 2 error.
-ngames = 250
+ngames = 350
 import numpy as np
 import random
 import matplotlib.pyplot as plt
@@ -80,8 +80,8 @@ def bayesianCoverageOnly(t1,t2,markersize,name="Bayesian Coverage",sampleEvery=2
     if len(d_Ux) > 0:
         d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux) / sampleEvery)))
 
-    BPlot, = ax.plot(p1_Lx, p1_Ly, 'ro', label="bayesian", markersize=markersize)
-    bDraws, = ax.plot(d_Ux, d_Uy, 'mo', label="bayesian_Draws", markersize=markersize)
+    BPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="bayesian", markersize=markersize)
+    bDraws, = ax.plot(d_Ux, d_Uy, 'ro', label="bayesian_Draws", markersize=markersize)
 
     ############################################
     #linPlot, = ax.plot(range(0, ngames), range(0, ngames),
@@ -96,8 +96,41 @@ def bayesianCoverageOnly(t1,t2,markersize,name="Bayesian Coverage",sampleEvery=2
     plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
     plt.savefig(f"{name}.eps", format='eps')
     plt.show()
-    fig.canvas.draw()
-    fig.canvas.flush_events()
+    #fig.canvas.draw()
+    #fig.canvas.flush_events()
+def wCoverageOnly(t1,t2,markersize,name="wils_int Coverage",sampleEvery=2):
+    ###############
+    fig, ax = plt.subplots(1, 1, figsize=(19.20, 10.8))
+    gcolor = '#b7b7bc'
+
+    ax.grid(color=gcolor, linestyle='-', linewidth=1)
+    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
+    plt.minorticks_on()
+
+    #####################################################
+    p1_Lx, p1_Ly, p1_Ux, p1_Uy, d_Ux, d_Uy = coveragePlotData(wils_int, t1, t2)
+    p1_Lx, p1_Ly = zip(*random.sample(list(zip(p1_Lx, p1_Ly)), int(len(p1_Lx) / sampleEvery)))
+    if len(d_Ux) > 0:
+        d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux) / sampleEvery)))
+
+    BPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="wils_int", markersize=markersize)
+    bDraws, = ax.plot(d_Ux, d_Uy, 'ro', label="wils_int_Draws", markersize=markersize)
+
+    ############################################
+    #linPlot, = ax.plot(range(0, ngames), range(0, ngames),
+    #                   'k-', label='Linear', markersize=markersize)
+
+    #plt.legend(handles=[BPlot, linPlot, bDraws])
+    ax.set_ylim(ymin=0)
+    ax.set_xlim(xmin=0)
+    plt.xlabel("Player 1 wins")
+    plt.ylabel("Player 2 wins")
+    plt.title(f"{name}")
+    plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
+    plt.savefig(f"{name}.eps", format='eps')
+    plt.show()
+    #fig.canvas.draw()
+    #fig.canvas.flush_events()
 
 def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",sampleEvery=2):
     ###############
@@ -110,8 +143,6 @@ def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",sampleEvery=2):
 
     p1_Lx, p1_Ly, p1_Ux, p1_Uy, d_Ux, d_Uy = coveragePlotData(wils_int, t1, t2)
     if len(p1_Lx)>0:
-
-        #p1_Lx, p1_Ly = zip(*random.sample(list(zip(p1_Lx, p1_Ly)), int(len(p1_Lx)/sampleEvery)))
         p1_Lx, p1_Ly=zip(*sorted(zip(p1_Lx, p1_Ly)))
     di={}
     for x,y in zip(p1_Lx, p1_Ly):
@@ -135,24 +166,18 @@ def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",sampleEvery=2):
     wDraws, = ax.plot(d_Ux, d_Uy, 'ro', label="wilson_Draws", markersize=1)
 
 
-    ############################################
-    #linPlot, = ax.plot(range(0, ngames), range(0, ngames),
-    #                   'k-', label='Linear', markersize=markersize)
-
-    #plt.legend(handles=[WPlot, linPlot, wDraws])
     ax.set_ylim(ymin=0)
     ax.set_xlim(xmin=0)
     ax.grid(color='gray', alpha=0.5,linestyle='-', linewidth=2)
     plt.xlabel("PAB")
     plt.ylabel("NGames")
-    #ax.set_yscale('log')
     plt.title(f"{name}")
     plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
     plt.savefig(f"{name}.eps", format='eps')
     plt.yscale('linear')
     plt.show()
-    fig.canvas.draw()
-    fig.canvas.flush_events()
+    #fig.canvas.draw()
+    #fig.canvas.flush_events()
 
 def coveragePlot(t1,t2,markersize,name,sampleEvery=2):
     ###############
@@ -183,8 +208,8 @@ def coveragePlot(t1,t2,markersize,name,sampleEvery=2):
     if len(d_Ux)>0:
         d_Ux, d_Uy = zip(*random.sample(list(zip(d_Ux, d_Uy)), int(len(d_Ux)/sampleEvery)))
 
-    BPlot, = ax.plot(p1_Lx, p1_Ly, 'ro', label="bayesian", markersize=markersize)
-    bDraws, = ax.plot(d_Ux, d_Uy, 'mo', label="bayesian_Draws", markersize=markersize)
+    BPlot, = ax.plot(p1_Lx, p1_Ly, 'bo', label="bayesian", markersize=markersize)
+    bDraws, = ax.plot(d_Ux, d_Uy, 'ro', label="bayesian_Draws", markersize=markersize)
 
     ############################################
     #linPlot, = ax.plot(range(0, ngames), range(0, ngames),
@@ -199,8 +224,8 @@ def coveragePlot(t1,t2,markersize,name,sampleEvery=2):
     plt.grid(b=True, which='minor', color=gcolor, linestyle='-', alpha=0.5)
     plt.savefig(f"{name}.eps", format='eps')
     plt.show()
-    fig.canvas.draw()
-    fig.canvas.flush_events()
+    #fig.canvas.draw()
+    #fig.canvas.flush_events()
 
 
 def LCBTestPlots(name="0.5<LCB 0.5>UCB "):
@@ -245,7 +270,7 @@ def delta_WilsOnly(name="Wilson Only ",sampleEvery=1):
     t1 = False
     t2 = True
     markersize = 1
-    wilsonCoverageOnly(t1,t2,markersize,name,sampleEvery=sampleEvery)
+    wCoverageOnly(t1,t2,markersize,name,sampleEvery=sampleEvery)
 def LCB_WilsOnly(name="Wilson Only LCB_UCB Test",sampleEvery=1):
     t1 = True
     t2 = False
@@ -253,12 +278,17 @@ def LCB_WilsOnly(name="Wilson Only LCB_UCB Test",sampleEvery=1):
     wilsonCoverageOnly(t1,t2,markersize,name,sampleEvery=sampleEvery)
 
 if __name__ == '__main__':
+
+    assert False #pVn now can be achieved through 2.
     #delta_WilsOnly(sampleEvery=2)
-    both_TestsTestPlots()
+    delta_BayesOnly(sampleEvery=2)
+    delta_WilsOnly(sampleEvery=2)
+    #both_TestsTestPlots()
+
     #LCB_WilsOnly(sampleEvery=2)
     assert False
-    delta_BayesOnly(sampleEvery=2)
-    LCB_BayesOnly(sampleEvery=2)
+    delta_BayesOnly(sampleEvery=1)
+    LCB_BayesOnly(sampleEvery=1)
 
     Delta_CBTestPlots()
     LCBTestPlots()

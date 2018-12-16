@@ -32,7 +32,7 @@ def wils_int(X,n,alpha,cc=True): ##cc==True means with continuity correction.
                     p1U = min(1,(2 * n * p_hat + z * z + (z * math.sqrt(z * z - 1 / n + 4 * n * p_hat * (1 - p_hat) - (4 * p_hat - 2)) + 1)) / (2 * (n + z * z)))
 
             except ValueError:
-                print(f"X:{X},n:{n},p_hat:{p_hat},z:{z},sqr{sqr}")
+                print(f"X:{X},n:{n},p_hat:{p_hat},z:{z}")
                 raise
         else:
             p1L = ((p_hat + z * z / (2 * n) - z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)) / (1 + z * z / n))

@@ -11,7 +11,7 @@ import time
 from binomial import binomial_mean_conf
 from bayes import bayesTheorum,bayes_U,bayes_MulStop,bayesian_U
 import csv
-ngames = 300
+ngames = 500
 linewidth=1
 import numpy as np
 import random
@@ -64,7 +64,7 @@ def coveragePlotData(fn, test1=True, test2=True,alpha=0.05,delta=0.05):
     return p1_Lx,p1_Ly,p1_Ux,p1_Uy,d_Ux,d_Uy
 
 
-def bayesianCoverageOnly(t1,t2,markersize,name="Bayesian Coverage",filename="",sampleEvery=2,alpha=0.05,delta=0.1):
+def bayesianCoverageOnly(t1,t2,markersize,name="Bayesian Coverage",filename="",sampleEvery=2,alpha=0.05,delta=0.1,show=False):
     ###############
     fig, ax = plt.subplots(1, 1, figsize=(19.20, 10.8))
     gcolor = '#b7b7bc'
@@ -98,11 +98,12 @@ def bayesianCoverageOnly(t1,t2,markersize,name="Bayesian Coverage",filename="",s
     plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.eps", format='eps')
     plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.png", format='png')
     plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.pdf", format='pdf')
-    plt.show()
+    if show:
+        plt.show()
     #fig.canvas.draw()
     #fig.canvas.flush_events()
 
-def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",filename="",sampleEvery=2,alpha=0.05,delta=0.1):
+def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",filename="",sampleEvery=2,alpha=0.05,delta=0.1,show=False):
     ###############
     fig, ax = plt.subplots(1, 1, figsize=(19.20, 10.8))
     gcolor = '#b7b7bc'
@@ -142,7 +143,8 @@ def wilsonCoverageOnly(t1,t2,markersize,name="Wilson Coverage",filename="",sampl
     plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.eps", format='eps')
     plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.png", format='png')
     plt.savefig(f"4.0_2D_pWinVsNwincoverage\{filename}.pdf", format='pdf')
-    plt.show()
+    if show:
+        plt.show()
     #fig.canvas.draw()
     #fig.canvas.flush_events()
 
@@ -256,13 +258,19 @@ if __name__ == '__main__':
     d=.1
     #d=0.05
     markersize=.75
-    name=fr"$\alpha={a}, \Delta={d}$"
-    filename=f"a_{a}d_{d}"
+
     plt.rcParams.update({'font.size': 22})
-    bayesianCoverageOnly(True, True, markersize, rf"Bayesian Updating {name}", filename=f"Bayesian{filename}", sampleEvery=1,
-                         alpha=a, delta=d)
-    wilsonCoverageOnly(True, True, markersize, fr"Wilson {name}", filename=f"Wilson{filename}", sampleEvery=1, alpha=a,
-                       delta=d)
+    alpha=[0.05,0.1,0.01]
+    delta=[0.05,0.1,0.01]
+    for a in alpha:
+        for d in delta:
+            name = fr"$\alpha={a}, \Delta={d}$"
+            filename = f"a_{a}d_{d}"
+            bayesianCoverageOnly(True, True, markersize, rf"Bayesian Updating {name}", filename=f"Bayesian{filename}", sampleEvery=1,
+                                 alpha=a, delta=d,show=False)
+            wilsonCoverageOnly(True, True, markersize, fr"Wilson {name}", filename=f"Wilson{filename}", sampleEvery=1, alpha=a,
+                               delta=d,show=False)
+
     assert False
 
     try:
