@@ -925,7 +925,7 @@ if __name__ == '__main__':
     al=[0.01,0.1,0.05,]
     de=[0.05,0.1,0.01,0.02]
 
-    ng=[2000,3000]
+    ng=[300,500,1000,2000,3000]
 
     for ngames in ng:
         for a in al:
@@ -934,12 +934,13 @@ if __name__ == '__main__':
                 plot_PAB_vs_N_coverage(ngames, alpha=a, delta=d)
                 plot_PAB_vs_N_coverageShaded(ngames, alpha=a, delta=d)
                 #######Writes data for plotting later if wanted.
-                W3x, W3y = cond3Stop_p1w_p2w(wils_int, ngames, alpha=a, delta=d, )
-                W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames,alpha=a,delta=d,)
-                W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=a,delta=d,)
-                W3x, W3y = cond3Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
-                W2x, W2y = oldC2cond3Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
-                W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
+
+                #W3x, W3y = cond3Stop_p1w_p2w(wils_int, ngames, alpha=a, delta=d, )
+                #W2x, W2y = oldC2cond3Stop_p1w_p2w(wils_int, ngames,alpha=a,delta=d,)
+                #W1x, W1y = cond1Stop_p1w_p2w(wils_int, ngames,alpha=a,delta=d,)
+                #W3x, W3y = cond3Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
+                #W2x, W2y = oldC2cond3Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
+                #W1x, W1y = cond1Stop_p1w_p2w(bayesianU_int, ngames, alpha=a, delta=d, )
 
 
 
