@@ -1550,42 +1550,6 @@ def interpretXYZ(x,y,z,pts=1000):
     zi = griddata((x, y), z, (xi[None,:], yi[:,None]), method='cubic')
     return xi,yi,zi
 
-def plotFixedPAB(pab=0.5):
-    alpha = numpy.arange(.01, 0.11, 0.01)  # TODO Add more fidelity make incr smaller
-    delta = numpy.arange(.05, 0.21, 0.01)
-    random.shuffle(alpha)
-    random.shuffle(delta)
-    zWaccuracy=[]
-    zWnum=[]
-    zBaccuracy = []
-    zBnum = []
-    x=[]
-    y=[]
-    z=[]
-    ngames=20
-    elev=30
-    az=117
-    import csv
-
-    for a in alpha:
-        for d in delta:
-            a = round(a, 3)
-            d = round(d, 3)
-            print(f"({a},{d})")
-
-            [W,B]=getACCfor3d_fixedPAB(ngames,a,d,pab)
-            x.append(a)
-            y.append(d)
-            zWaccuracy.append(W[0])
-            zWnum.append(W[1])
-            zBaccuracy.append(B[0])
-            zBnum.append(B[1])
-            fname=f'confusionMatrix/coverageFor3d_pab={pab}.csv'
-            print(fname)
-            with open(fname,'a',newline='') as csvfile:
-                spamwriter = csv.writer(csvfile, delimiter=',')
-                line=[pab,ngames,round(a,4),round(d,4),W[0],W[1],B[0],B[1]]
-                spamwriter.writerow(line)
 
 import multiprocessing
 if __name__ == '__main__':
@@ -1612,8 +1576,8 @@ if __name__ == '__main__':
     #alpha=0.0423
     epsilon=0.0
     delta=0.05
-    alphaList=[0.05,0.01,0.1]
-    deltaList=[.1,0.2,0.05,0.02]
+    alphaList=[0.05,0.01,0.1,0.02]
+    deltaList=[.1,0.2,0.05,0.04]
     #######plt.title(r'$\alpha > \beta$')
     mu, sigma = 0.5, .2  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)

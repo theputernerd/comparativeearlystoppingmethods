@@ -1552,7 +1552,7 @@ def interpretXYZ(x,y,z,pts=1000):
 
 def plotFixedPAB(pab=0.5):
     alpha = numpy.arange(.01, 0.11, 0.01)  # TODO Add more fidelity make incr smaller
-    delta = numpy.arange(.05, 0.22, 0.02)
+    delta = numpy.arange(.05, 0.21, 0.01)
     random.shuffle(alpha)
     random.shuffle(delta)
     zWaccuracy=[]
