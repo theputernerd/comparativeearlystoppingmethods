@@ -113,6 +113,7 @@ def cameronsPlot(ngames):
     plt.savefig(f"{name}.pdf", format='pdf')
     if show:
         plt.show()
+    plt.close()
 ###################################################
 def cond1Stop_X_nY(fn,ngames):
     W1x = []
@@ -455,6 +456,7 @@ def plot2OnOneFigure(line1Name,line2Name,x1,y1,x2,y2,xlabel,ylabel,name,markersi
     plt.savefig(f"{filename}.pdf", format='pdf')
     if show:
         plt.show()
+    plt.close()
 
 def plot_Aw_vs_Bw_coverage(ngames,alpha=0.05,delta=0.05):
     #creates plot for bayes and wilson.
