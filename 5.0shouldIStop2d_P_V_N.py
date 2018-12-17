@@ -1,8 +1,10 @@
 from lib import shouldIStop
 from lib import bayesianU_int,wils_int
-import matplotlib.pyplot as plt
 import matplotlib
+
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 import numpy as np
 import matplotlib.ticker
 #####################################################
