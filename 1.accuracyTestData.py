@@ -1584,7 +1584,7 @@ if __name__ == '__main__':
     mu, sigma = 0.5, 0  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)
     #population=np.random.uniform(0.1,0.9,100)
-    poolsize=1
+    poolsize=10
     jobs=[]
 
     for a in alphaList:
@@ -1597,7 +1597,7 @@ if __name__ == '__main__':
             # choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
             # population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5
             # writes to failureTest
-            p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 1000, epsilon, a, d))
+            p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 5000, epsilon, a, d))
             jobs.append(p)
             p.start()
 
