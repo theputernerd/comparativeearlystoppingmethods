@@ -426,23 +426,23 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
 
         import csv
         try:
-            with open(f"failureTest/wilson.csv", "a") as f:
+            with open(f"failureTest/wilson.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(wilsonresults)
-            with open(f"failureTest/wilsonC1.csv", "a") as f:
+            with open(f"failureTest/wilsonC1.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(Wcondition1)
-            with open(f"failureTest/wilsonC2.csv", "a") as f:
+            with open(f"failureTest/wilsonC2.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(Wcondition2)
 
-            with open(f"failureTest/bayes.csv", "a") as f:
+            with open(f"failureTest/bayes.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(bayesresults)
-            with open(f"failureTest/bayesC1.csv", "a") as f:
+            with open(f"failureTest/bayesC1.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(Bcondition1)
-            with open(f"failureTest/bayesC2.csv", "a") as f:
+            with open(f"failureTest/bayesC2.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(Bcondition2)
         except:
@@ -1584,7 +1584,7 @@ if __name__ == '__main__':
     mu, sigma = 0.5, 0  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)
     #population=np.random.uniform(0.1,0.9,100)
-    poolsize=9
+    poolsize=1
     jobs=[]
 
     for a in alphaList:
@@ -1600,6 +1600,14 @@ if __name__ == '__main__':
             p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 1000, epsilon, a, d))
             jobs.append(p)
             p.start()
+
+            while len(jobs) >= poolsize:  # this is my pool
+                # check if any are closed.
+                for j in jobs:
+                    if not j.is_alive():
+                        print(f"-removing {p.pid}")
+                        jobs.remove(j)
+                time.sleep(1)
             print(f"(alpha,delta) ({a},{d})")
             print("Getting Data for CoverageTest")
             #coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
