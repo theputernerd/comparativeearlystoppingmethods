@@ -23,7 +23,7 @@ def playOneGame(g, results):
     return results
 
 
-def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01,delta=0.5):
+def accuracyTest(nGames, p1winrate, p2winrate=None, drawRate=None, trials=1, epsilon=0.01, delta=0.5):
     #np.random.seed(None)  # changed Put Outside the loop.
     #seed()
     results=dict()
@@ -199,7 +199,8 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
 
 def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
 
-    s=population.rvs(ngames)
+    #s=population.rvs(ngames)
+    s=np.arange(0.0,1.0,1.0/ngames)
     fig3 = plt.figure(figsize=plt.figaspect(0.5))
     ax3 = fig3.add_subplot(1, 1, 1)
     ##This test will select from a pool of players normally distributed around 0.5
@@ -614,8 +615,9 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
             f.writelines(line+"\n")
             print(line)
 def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
+    s=np.arange(0.0,1.0,1.0/ngames)
 
-    s=population.rvs(ngames)
+    #s=population.rvs(ngames)
     fig3 = plt.figure(figsize=plt.figaspect(0.5))
     ax3 = fig3.add_subplot(1, 1, 1)
     ##This test will select from a pool of players normally distributed around 0.5
@@ -1579,7 +1581,7 @@ if __name__ == '__main__':
     alphaList=[0.05,0.01,0.1,0.02]
     deltaList=[.1,0.2,0.05,0.04]
     #######plt.title(r'$\alpha > \beta$')
-    mu, sigma = 0.5, .2  # mean and standard deviation
+    mu, sigma = 0.5, 0  # mean and standard deviation
     population = get_truncated_normal(mu, sigma, 0,1)
     #population=np.random.uniform(0.1,0.9,100)
     poolsize=9
@@ -1591,6 +1593,14 @@ if __name__ == '__main__':
 
         for d in deltaList:
             print(f"(alpha,delta) ({a},{d})")
+            print("Getting Data for PoolTest")
+            # choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
+            # population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5
+            # writes to failureTest
+            p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 1000, epsilon, a, d))
+            jobs.append(p)
+            p.start()
+            print(f"(alpha,delta) ({a},{d})")
             print("Getting Data for CoverageTest")
             #coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
             #ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5
@@ -1598,14 +1608,7 @@ if __name__ == '__main__':
             p = multiprocessing.Process(target=coverageTest, args=(1000, epsilon, a, d))
             jobs.append(p)
             p.start()
-            print(f"(alpha,delta) ({a},{d})")
-            print("Getting Data for PoolTest")
-            #choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
-            #population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5
-            #writes to failureTest
-            # p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 1000, epsilon, a, d))
-            jobs.append(p)
-            p.start()
+
             print(f"(alpha,delta) ({a},{d})")
             print("Creating ConfusionMatrix")
             #C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
