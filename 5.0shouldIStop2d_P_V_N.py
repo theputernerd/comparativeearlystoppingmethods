@@ -922,10 +922,10 @@ if __name__ == '__main__':
         pass
     #creates the dataset for when all conditions stop for ngames.
 
-    al=[0.1,0.05,0.01]
-    de=[0.1,0.05,0.01,0.02]
+    al=[0.01,0.1,0.05,]
+    de=[0.05,0.1,0.01,0.02]
 
-    ng=[500,1000,2000,3000]
+    ng=[2000,3000]
 
     for ngames in ng:
         for a in al:

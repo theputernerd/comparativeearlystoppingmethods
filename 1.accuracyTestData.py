@@ -1022,7 +1022,7 @@ def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
     bayY=[]
 
     #s=np.arange(0.20,0.8,0.007)
-    s=np.arange(0.1,0.91,0.05)
+    s=np.arange(0.1,0.91,0.01)
     #s=[0.5]
     for p in s:
         p=np.round(p,3) #without this python stores p=0.45 as 0.4499999999 which is not a draw value!!!!. unfair.
@@ -1552,7 +1552,7 @@ def interpretXYZ(x,y,z,pts=1000):
 
 def plotFixedPAB(pab=0.5):
     alpha = numpy.arange(.01, 0.11, 0.01)  # TODO Add more fidelity make incr smaller
-    delta = numpy.arange(.05, 0.22, 0.02)
+    delta = numpy.arange(.05, 0.21, 0.01)
     random.shuffle(alpha)
     random.shuffle(delta)
     zWaccuracy=[]
@@ -1630,6 +1630,7 @@ if __name__ == '__main__':
             print("Getting Data for CoverageTest")
             #coverageTest(ngames=1000, epsilon=epsilon, alpha=a, delta=d)
             #ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5
+            #writes to 1.accuracyforParams
             p = multiprocessing.Process(target=coverageTest, args=(1000, epsilon, a, d))
             jobs.append(p)
             p.start()
@@ -1637,7 +1638,8 @@ if __name__ == '__main__':
             print("Getting Data for PoolTest")
             #choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
             #population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5
-            p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 1000, epsilon, a, d))
+            #writes to failureTest
+            # p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 1000, epsilon, a, d))
             jobs.append(p)
             p.start()
             print(f"(alpha,delta) ({a},{d})")
