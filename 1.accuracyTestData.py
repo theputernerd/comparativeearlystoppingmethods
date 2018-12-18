@@ -197,10 +197,10 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
     return truncnorm(
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
-def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
+def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5,prefix=""):
 
     #s=population.rvs(ngames)
-    s=np.arange(0.0,1.0,1.0/ngames)
+    s=population#np.arange(0.0,1.0,1.0/ngames)
     fig3 = plt.figure(figsize=plt.figaspect(0.5))
     ax3 = fig3.add_subplot(1, 1, 1)
     ##This test will select from a pool of players normally distributed around 0.5
@@ -209,8 +209,8 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
     ax3.set_title("Population distribution for testing prediction")
     ax3.set_ylabel("Quantity")
     ax3.set_xlabel("Probability player A is better than player B")
-    print(f"writing failureTest/populationHist_eps{epsilon}_alpha{alpha}.png")
-    fig3.savefig(f"failureTest/populationHist_eps{epsilon}_alpha{alpha}.png", format='png')
+    print(f"writing failureTest/{prefix}populationHist_eps{epsilon}_alpha{alpha}.png")
+    fig3.savefig(f"failureTest/{prefix}populationHist_eps{epsilon}_alpha{alpha}.png", format='png')
 
     #plt.show()
 
@@ -426,23 +426,23 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
 
         import csv
         try:
-            with open(f"failureTest/wilson.csv", "a",newline="") as f:
+            with open(f"failureTest/{prefix}wilson.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(wilsonresults)
-            with open(f"failureTest/wilsonC1.csv", "a",newline="") as f:
+            with open(f"failureTest/{prefix}wilsonC1.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(Wcondition1)
-            with open(f"failureTest/wilsonC2.csv", "a",newline="") as f:
+            with open(f"failureTest/{prefix}wilsonC2.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(Wcondition2)
 
-            with open(f"failureTest/bayes.csv", "a",newline="") as f:
+            with open(f"failureTest/{prefix}bayes.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(bayesresults)
-            with open(f"failureTest/bayesC1.csv", "a",newline="") as f:
+            with open(f"failureTest/{prefix}bayesC1.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(Bcondition1)
-            with open(f"failureTest/bayesC2.csv", "a",newline="") as f:
+            with open(f"failureTest/{prefix}bayesC2.csv", "a",newline="") as f:
                 wr = csv.writer(f, delimiter=",")
                 wr.writerow(Bcondition2)
         except:
@@ -565,7 +565,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                          bin['Pab==0.5'][2]
         bin['Similar'] = [combinedDrawsA, combinedDrawsB, combinedDrawsC]
 
-    with open(f"failureTest/accuracyTest_eps{epsilon}_alpha_{alpha}_predicMargin={delta}.txt", "w") as f:
+    with open(f"failureTest/{prefix}accuracyTest_eps{epsilon}_alpha_{alpha}_predicMargin={delta}.txt", "w") as f:
 
         line=f"Type\tngames\tAv Games\tnCorrect\t% "
         f.write(line+"\n")
@@ -614,8 +614,8 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
                 line += "|{:<7}|{:<7}|{:<7}|{:<7}".format(0,0,0,0)
             f.writelines(line+"\n")
             print(line)
-def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
-    s=np.arange(0.0,1.0,1.0/ngames)
+def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5,prefix=""):
+    s=population #np.arange(0.0,1.0,1.0/ngames)
 
     #s=population.rvs(ngames)
     fig3 = plt.figure(figsize=plt.figaspect(0.5))
@@ -623,11 +623,11 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
     ##This test will select from a pool of players normally distributed around 0.5
     count, bins, ignored = plt.hist(s, 100, normed=False)
     #plt.plot(bins, 1 / (sigma * np.sqrt(2 * np.pi)) *np.exp( - (bins - mu)**2 / (2 * sigma**2) ),linewidth=2, color='r')
-    ax3.set_title("Population distribution for testing prediction")
+    ax3.set_title(f"{prefix} Population distribution for testing prediction")
     ax3.set_ylabel("Quantity")
     ax3.set_xlabel("Probability player A is better than player B")
-    print(f"writing confusionMatrix/populationHist_alpha{alpha}.png")
-    fig3.savefig(f"confusionMatrix/populationHist_alpha{alpha}_delta{delta}.png", format='png')
+    print(f"writing confusionMatrix/{prefix}populationHist_alpha{alpha}.png")
+    fig3.savefig(f"confusionMatrix/{prefix}populationHist_alpha{alpha}_delta{delta}.png", format='png')
 
     #plt.show()
 
@@ -814,12 +814,12 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
     #f=_eps{epsilon}_alpha_{alpha}_delta={delta}
 
     for cm in CMs:
-        with open(f"confusionMatrix/{cm.name}.csv", 'a', newline='') as f:
+        with open(f"confusionMatrix/{prefix}{cm.name}.csv", 'a', newline='') as f:
             csvwriter=csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             params=[alpha,delta]+cm.allmetrics
             csvwriter.writerow(params)
 
-    with open(f"confusionMatrix/_alpha_{alpha}_delta={delta}.txt", "w") as f:
+    with open(f"confusionMatrix/{prefix}_alpha_{alpha}_delta={delta}.txt", "w") as f:
         for cm in CMs:
             f.write(f"{cm.name} avgames:{cm.av_predict}\n")
             f.writelines(str(cm))
@@ -1582,7 +1582,9 @@ if __name__ == '__main__':
     deltaList=[.1,0.2,0.05,0.04]
     #######plt.title(r'$\alpha > \beta$')
     mu, sigma = 0.5, 0  # mean and standard deviation
-    population = get_truncated_normal(mu, sigma, 0,1)
+    ngames=5000
+    population = np.arange(0.0,1.0,1.0/ngames)#get_truncated_normal(mu, sigma, 0,1)
+    prob=np.full(ngames,0.5) #(0.5,0.5,1.0/ngames)
     #population=np.random.uniform(0.1,0.9,100)
     poolsize=10
     jobs=[]
@@ -1597,7 +1599,13 @@ if __name__ == '__main__':
             # choosefromPoolTest(population, ngames=1000, epsilon=epsilon, alpha=a, delta=d)
             # population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5
             # writes to failureTest
-            p = multiprocessing.Process(target=choosefromPoolTest, args=(population, 5000, epsilon, a, d))
+            p = multiprocessing.Process(target=choosefromPoolTest, args=(population, ngames, epsilon, a, d))
+            jobs.append(p)
+            p.start()
+            #This does the same job but for a fixed p
+            print(f"(alpha,delta) ({a},{d})")
+            print("Getting Data for PoolTest Fixed p=0.5")
+            p = multiprocessing.Process(target=choosefromPoolTest, args=(prob, ngames, epsilon, a, d,f"fixedp{0.5}"))
             jobs.append(p)
             p.start()
 
@@ -1617,6 +1625,14 @@ if __name__ == '__main__':
             jobs.append(p)
             p.start()
 
+            #############################################
+            print(f"(alpha,delta) ({a},{d})")
+            print("Creating ConfusionMatrix Fixed P=0.5")
+            # C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
+            p = multiprocessing.Process(target=C1ConfusionMatrix_fromPoolTest, args=(prob, 5000, epsilon, a, d,f"fixedp{0.5}"))
+            jobs.append(p)
+            p.start()
+            #############################################
             print(f"(alpha,delta) ({a},{d})")
             print("Creating ConfusionMatrix")
             #C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
