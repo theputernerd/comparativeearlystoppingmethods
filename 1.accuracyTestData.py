@@ -1604,7 +1604,7 @@ if __name__ == '__main__':
             #This does the same job but for a fixed p
             print(f"(alpha,delta) ({a},{d})")
             print("Getting Data for PoolTest Fixed p=0.5")
-            prob = np.full(ngames / 3.0, 0.5)  # (0.5,0.5,1.0/ngames)
+            prob = np.full([int(ngames / 3.0)], 0.5)  # (0.5,0.5,1.0/ngames)
             plessthanpointfive = np.arange(0.3, 0.65, ngames * 2.0 / 3.0)
             p = multiprocessing.Process(target=choosefromPoolTest, args=(prob, ngames, epsilon, a, d,f"fixedp{0.5}"))
             jobs.append(p)
@@ -1629,7 +1629,7 @@ if __name__ == '__main__':
             print(f"(alpha,delta) ({a},{d})")
             print("Creating ConfusionMatrix Fixed P=0.5")
             # C1ConfusionMatrix_fromPoolTest(population, ngames=5000, epsilon=epsilon, alpha=a, delta=d)
-            prob = np.full(ngames / 3.0, 0.5)  # (0.5,0.5,1.0/ngames)
+            prob = np.full([int(ngames / 3.0)], 0.5)  # (0.5,0.5,1.0/ngames)
             plessthanpointfive = np.arange(0.3, 0.65, ngames * 2.0 / 3.0)
             p = multiprocessing.Process(target=C1ConfusionMatrix_fromPoolTest, args=(prob, 5000, epsilon, a, d,f"fixedp{0.5}"))
             jobs.append(p)
