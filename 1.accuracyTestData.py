@@ -636,10 +636,10 @@ def C1ConfusionMatrix_fromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0
     wAvGamesToPredic=[]
     bAvGamesToPredic=[]
 
-    Wc1ConfMatrix = ConfusionMatrix(f"Wils C1",predictions=["A>B","B>A"])
+    Wc1ConfMatrix = ConfusionMatrix(f"Wils C1",predictions=["A>B","B>=A"])
     Wc2ConfMatrix = ConfusionMatrix(f"Wils C2",predictions=["Similar","NOT(Similar)"])
     Wcombined = ConfusionMatrix(f"Wils Combined",predictions=["",""])
-    Bc1ConfMatrix = ConfusionMatrix(f"Bayes C1", predictions=["A>B","B>A"])
+    Bc1ConfMatrix = ConfusionMatrix(f"Bayes C1", predictions=["A>B","B>=A"])
     Bc2ConfMatrix = ConfusionMatrix(f"Bayes C2", predictions=["Similar", "NOT(Similar)"])
     Bcombined = ConfusionMatrix(f"Bayes Combined", predictions=["", ""])
     CMs=[Bc1ConfMatrix,Bc2ConfMatrix,Bcombined,Wc1ConfMatrix,Wc2ConfMatrix,Wcombined]
@@ -838,10 +838,10 @@ def getACCfor3d_fixedPAB(ngames,alpha,delta,pab):
         wAvGamesToPredic = []
         bAvGamesToPredic = []
 
-        Wc1ConfMatrix = ConfusionMatrix(f"Wils C1", predictions=["A>B", "B>A"])
+        Wc1ConfMatrix = ConfusionMatrix(f"Wils C1", predictions=["A>B", "B>=A"])
         Wc2ConfMatrix = ConfusionMatrix(f"Wils C2", predictions=["Similar", "NOT(Similar)"])
         Wcombined = ConfusionMatrix(f"Wils Combined", predictions=["", ""])
-        Bc1ConfMatrix = ConfusionMatrix(f"Bayes C1", predictions=["A>B", "B>A"])
+        Bc1ConfMatrix = ConfusionMatrix(f"Bayes C1", predictions=["A>B", "B>=A"])
         Bc2ConfMatrix = ConfusionMatrix(f"Bayes C2", predictions=["Similar", "NOT(Similar)"])
         Bcombined = ConfusionMatrix(f"Bayes Combined", predictions=["", ""])
         CMs = [Bc1ConfMatrix, Bc2ConfMatrix, Bcombined, Wc1ConfMatrix, Wc2ConfMatrix, Wcombined]
