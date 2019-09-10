@@ -31,8 +31,27 @@ filename=f'confusionMatrix/coverageFor3d_pab={p}.csv'
 print(f"Creating 3d plots for {filename}")
 with open(filename, 'rU') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
+    #n#=0
     for row in reader:
-        p,n,af, df, zWaf, zWnf, zBaf, zBnf=row
+        try:
+            p,n,af, df, zWaf, zWnf, zBaf, zBnf=row
+            #n+=1
+        except:
+            print(f"Error, got incorrect data. Skipping.")
+            print(f"nRecords {len(pab)}")
+
+            print(row)
+            continue
+            if row==[]:
+                pass
+            else:
+                print(f"Error, got incorrect data. Skipping.")
+                print(row)
+
+                #raise
+            #print(row)
+            #raise
+        #print(row)
         pab.append(round(float(p),roundTo))
         nf.append(float(n))
         xf.append(round(float(af),roundTo))
@@ -41,7 +60,7 @@ with open(filename, 'rU') as csvfile:
         zWnumf.append(float(zWnf))
         zBaccuracyf.append(float(zBaf))
         zBnumf.append(float(zBnf))
-
+    print(f"nRecords {len(pab)}")
 #xf=[1,2,2,2,2]
 #yf=[4,2,4,2,6]
 #zWaf=[0.11,0.21,0.211,0.99,0.213]

@@ -30,8 +30,17 @@ show=True
 with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
-        p,n,af, df, zWaf, zWnf, zBaf, zBnf=row
-        p=round(float(p),roundTo)
+        try:
+            p,n,af, df, zWaf, zWnf, zBaf, zBnf=row
+            p=round(float(p),roundTo)
+
+        except:
+            print(f"Error, got incorrect data. Skipping.")
+            print(f"nRecords {len(pab)}")
+
+            print(row)
+            continue
+
         pab.append(p)
         if p not in pAB:
             pAB[p]={}
@@ -53,6 +62,7 @@ with open('failureTest/ngamesforPAB.csv', 'rU') as csvfile:
         p[zWnumf].append(float(zWnf))
         p[zBaccuracyf].append(float(zBaf))
         p[zBnumf].append(float(zBnf))
+print(f"nRecords {len(pab)}")
 
 for pab2 in sorted(pAB.keys()):
     pab=pab2

@@ -21,7 +21,7 @@ def playOneGame(g, results):
     return results
 
 
-def testAccuracy(nGames,p1winrate,p2winrate=None,drawRate=None,trials=1,epsilon=0.01,delta=0.5):
+def checkAccuracy(nGames, p1winrate, p2winrate=None, drawRate=None, trials=1, epsilon=0.01, delta=0.5):
     #np.random.seed(None)  # changed Put Outside the loop.
     #seed()
     results=dict()
@@ -186,7 +186,7 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
     return truncnorm(
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
-def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
+def choosefromPoolCheck(population, ngames=5000, epsilon=0.05, alpha=0.05, delta=0.5):
     assert False
     s=population.rvs(ngames)
     fig3 = plt.figure(figsize=plt.figaspect(0.5))
@@ -585,7 +585,7 @@ def choosefromPoolTest(population,ngames=5000, epsilon=0.05, alpha=0.05, delta=0
             f.writelines(line+"\n")
             print(line)
 
-def coverageTest(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
+def coverageCheck(ngames=5000, epsilon=0.00, alpha=0.05, delta=0.5):
     #Iterates over a series of p values and records the coverage for that value.
     assert False
 
@@ -1249,14 +1249,14 @@ import multiprocessing
 if __name__ == '__main__':
     np.random.seed(None)  # changed Put Outside the loop.
     random.seed()
-    pvals=[0.50] #could od other values ,0.05,0.25,0.3,0.4,0.45,0.50
+    pvals=[0.55] #could od other values ,0.05,0.25,0.3,0.4,0.45,0.50
     pvals+=pvals
     try:
         os.mkdir("failureTest")
     except FileExistsError:
         pass
     jobs=[]
-    poolsize=12
+    poolsize=4
     while True:
             for pv in pvals:
                 #res=p.apply_async(SamplesForPAB,pv)

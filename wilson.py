@@ -9,11 +9,16 @@ http://www.ucl.ac.uk/english-usage/staff/sean/resources/binomialpoisson.pdf
 https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
 """
 import scipy.stats as stats
-def wils_int(X,n,alpha,cc=True): ##cc==True means with continuity correction.
+def wils_int(X,n,alpha,cc=True,twosided=False): ##cc==True means with continuity correction.
         #z_calced=abs(stats.norm.ppf((1-alpha/2.0))) #two tailed.
         #global z
         #z = abs(stats.norm.ppf((1 - alpha / 2.0)))  # 1.96 for alpha=0.5
-        z = abs(stats.norm.ppf((1 - alpha)))
+        if twosided:
+            z = abs(stats.norm.ppf((1 - alpha / 2.0)))
+            #print(z)
+        else:
+            z = abs(stats.norm.ppf((1 - alpha)))  #one sided 1.645 alpha=0.5
+            #print(z)
 
         if n==0:
             return 0,1,0.5
