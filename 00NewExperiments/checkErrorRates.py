@@ -298,7 +298,9 @@ def plotProbVn(probvals, nvals,labels=[], ax=None):
 #print(exactMethodAccuracy(p=1,n=6,alpha=0.05,hypothesis=0.5,ndistributions=10000))
 
 
-#wilsLCBAccuracy(p=0.5,n=100,alpha=0.05)
+wilsLCBAccuracy(p=0.5,n=100,alpha=0.05)
+input("Press Enter to continue...")
+
 import csv
 
 def generateNewDataForFindingOutMinNforAccuratePredictions(alpha=0.05,ndistributions=1000,ps=np.arange(1.0,0.51,-0.01),startfrom=1):
@@ -377,12 +379,14 @@ def Plot(theplots):
     fig = plt.figure(figsize=(16.0, 16.0))
     ax = fig.add_subplot(1, 1, 1)
     plotProbVn(xes,yes,legend,ax=ax)
+    fig.savefig("nGamesForType2Error.png")
+    fig.savefig("nGamesForType2Error.eps")
 
     plt.show()
 
 
 def vary_alpha_to_get_confidence(p=0.5, maxTypeError=0.05, target_alpha=0.05, alphastar_start=0.01,
-                                 maxgamelength=2000, nTrials=1000, blocksize=50):
+                                 maxgamelength=2000, nTrials=1000, blocksize=50,verbose=False):
     #Returns how many n to achieve a maximum type 2 error rate of maxType2.
 
     t = PrettyTable(["Target alpha","a*","T1","T2"])
@@ -397,7 +401,8 @@ def vary_alpha_to_get_confidence(p=0.5, maxTypeError=0.05, target_alpha=0.05, al
         t1,t2,ngames=incrementalMethodAccuracy(trueP=p, blockSize=blocksize, target_alpha=target_alpha, nTrials=nTrials, maxgamelength=maxgamelength
                                                , verbose=False,astarmin=a,increment=False)
         t.add_row([f"{target_alpha}", f"{round(a,4)}", f"{round(t1,4)}", f"{round(t2,4)}"])
-        #print(t)
+        if verbose:
+            print(t)
         if p==0.5:
             errortotest=t1
         else:
@@ -411,6 +416,61 @@ def vary_alpha_to_get_confidence(p=0.5, maxTypeError=0.05, target_alpha=0.05, al
 
 ############################## STEP 0. Prove that my code works by solving a fixed problem
 # note there is not enough games to to converge to the confidence so you get high Type2
+"""https://machinelearningmastery.com/statistical-power-and-power-analysis-in-python/
+When interpreting statistical power, we seek experiential setups that have high statistical power.
+Low Statistical Power: Large risk of committing Type II errors, e.g. a false negative.
+High Statistical Power: Small risk of committing Type II errors
+
+Power = 1 - Type II Error
+Pr(True Positive) = 1 - Pr(False Negative)
+ β is usually called type II error and 1−β is called power. https://stats.stackexchange.com/questions/156973/relation-between-power-and-sample-size-in-a-binomial-test
+α = P{type I error}
+= P{reject H0 when H0 is true},
+β = P{type II error}
+= P{fail to reject H0 when H0 is false}.
+https://www.mobt3ath.com/uplode/book/book-43792.pdf
+An upper bound for α is a significance level of the test procedure. Power of
+the test is defined as the probability of correctly rejectingthe null hypothesis
+when the null hypothesis is false, i.e.,
+Power = 1 − β
+= P{reject H0 when H0 is false}.
+With a fixed sample size a typical approach is
+to avoid a type I error but at the same time to decrease a type II error
+so that there is a high chance of correctly detecting a drug effect when
+the drugis indeed effective
+Typically, when the sample size is fixed, α
+decreases as β increases and α increases as β decreases. The only approach
+to decrease both α and β is to increase the sample size. Sample size is
+usually determined by controllingboth type I error (or confidence level)
+and type II error (or power).
+
+Since a type I error is usually considered to be a more important and/or
+serious error which one would like to avoid, a typical approach in hypothesis
+testingis to control α at an acceptable level and try to minimize β by
+choosingan appropriate sample size. In other words, the null hypothesis
+can be tested at pre-determined level (or nominal level) of significance with
+a desired power. This concept for determination of sample size is usually
+referred to as power analysis for sample size determination
+
+p29.. For determination of sample size based on power analysis, the investigator is required to specify the following information. First of all, select
+a significance level at which the chance of wrongly concluding that a difference exists when in fact there is no real difference (type I error) one is
+willingto tolerate. Typically, a 5% level of significance is chosen to reflect
+a 95% confidence regarding the unknown parameter. Secondly, select a desired power at which the chance of correctly detectinga difference when
+the difference truly exists one wishes to achieve. A conventional choice of
+power is either 90% or 80%. Thirdly, specify a clinically meaningful difference. In most clinical trials, the objective is to demonstrate effectiveness
+and safety of a drugunder study as compared to a placebo. Therefore, it
+is important to specify what difference in terms of the primary endpoint is
+considered of clinical or scientifical importance. Denote such a difference by
+. If the investigator will settle for detecting only a large difference, then
+fewer subjects will be needed. If the difference is relatively small, a larger
+study group (i.e., a larger number of subjects) will be needed. Finally, the
+knowledge regarding the standard deviation (i.e., σ) of the primary endpoint considered in the study is also required for sample size determination.
+A very precise method of measurement (i.e., a small σ) will permit detection of any given difference with a much smaller sample size than would be
+required with a less precise measurement.
+
+You can use wilson for confidence testing see https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm
+
+"""
 if False:
     print(f"---------------p=0.50")
     print(f"--- With only 100 games, the hypothesis is rarely rejected, so the Type 1 error is lower than projected")
@@ -443,31 +503,35 @@ print(f"------------------------------------------------------------------------
 ################################STEP 0.1 Generate the selection plot.
 ####TODO: What does the alpha_star plot look like with changing p to obtain the required accuracy
 ALLON=False
-
-if True:
+varyingPType2ErrorPlot=False
+if varyingPType2ErrorPlot:
     print(
         f"-------------------------0.1.Generate the plot of number of games for varying P to give required Type 2 Error rate.")
-    generateNewDataForFindingOutMinNforAccuratePredictions(alpha=0.05,ndistributions=15000,ps=np.arange(1.0,0.51,-0.01),startfrom=1)
+    generateNewDataForFindingOutMinNforAccuratePredictions(alpha=0.01,ndistributions=15000,ps=np.arange(1.0,0.51,-0.01),startfrom=1)
     theplots=load()
     Plot(theplots)
-    maxGames = 2000
+    input("Press Enter to continue...")
+    #maxGames = 2000
 print(f"-------------------------1. Decide on block size, Ntrials,target alpha, and p_min  and use a high maxGames for TYPE 1 Error, .")
-############################# nTrials is for testing accurate of the long term
-blocksize = 100
-print(f"blocksize:{blocksize}")
-maxGames = 5000
-nTrials=1000
-print(f"nTrials:{nTrials}")
-target_alpha=0.05
-print(f"target_alpha:{target_alpha}")
+############################# nTrials is for testing accuracy of the prediction
+print(f"target_alpha:{target_alpha}. This is the errror rate or 1-confidence")
 p_min=0.55
-print(f"p_min:{p_min} This is the value closest to 0.5 that the desired accuracy is required.")
+blocksize = 100
+print(f"blocksize:{blocksize}. How many games to play before checking")
+maxGames = 5000
+target_alpha=0.05
+print(f"p_min:{p_min} This is the value closest to 0.5 that the desired confidence is required.")
+nTrials=1000
+print(f"nTrials:{nTrials}. nTrials is for testing accuracy of the prediction")
+input("Press Enter to continue...")
 
 print(f"-------------------------2. Vary alpha ->(alpha*) with p=0.5 until the required Type 1 error is below target_alpha using the sequential stopping method")
 astarmin=0.008
-if False or ALLON:
-    astarmin=vary_alpha_to_get_confidence(p=0.5, maxTypeError=target_alpha, target_alpha=target_alpha, nTrials=nTrials, maxgamelength=maxGames, blocksize=blocksize)
+getAlphastar=True
+if getAlphastar or ALLON:
+    astarmin=vary_alpha_to_get_confidence(p=0.5, maxTypeError=target_alpha, target_alpha=target_alpha, nTrials=nTrials, maxgamelength=maxGames, blocksize=blocksize,verbose=True)
 print(f"astar:{astarmin}")
+input("Press Enter to continue...")
 #############################   STEP 4. Get maxGames. How many games to have <alpha TYPE 2 Errors for the lowest P I need. use full mthod
 print(f"-------------------------3. "
       f"Run the sequential method for p_min and vary the number of games to obtain the desired Type 2 Error level. Or take it from the plot.")
@@ -476,6 +540,7 @@ maxGames = 1828  # I already know this now. for 0.55 Too many and we increase ch
 if True or ALLON:
     nTrials=nTrials*2
     maxGames = howmanyNforMaxType2(p=round(p_min, 2), maxType2=target_alpha, method=exactMethodAccuracy, alpha=astarmin,startat=1738, ndistributions=nTrials)
+
     ####TODO: Get this sorted for the sequential method!.
     #maxGames = howmanyNforMaxType2SeqMethod(trueP=round(p_min, 2), blockSize=blocksize, maxType2=target_alpha, alpha=astarmin, startat=1738,
     #                                        nTrials=nTrials, verbose=False, maxgamesToTry=maxGames * 2)
@@ -484,6 +549,7 @@ if True or ALLON:
 # print("--------------------------------")
 # maxGames = howmanyNforMaxType2(p=round(p_min, 2), maxType2=target_alpha, method=exactMethodAccuracy, alpha=target_alpha, startat=1300,ndistributions=nTrials)
 print(f"maxGames:{maxGames}")
+input("Press Enter to continue...")
 #############################   STEP 5. Check the performance with the parameters I have.
 print(f"-------------------------4. Final Test ")
 truePs=[0.5,0.55,0.60]
