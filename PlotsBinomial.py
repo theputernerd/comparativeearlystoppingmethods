@@ -9,8 +9,9 @@ x = np.arange(binom.ppf(0.0001, n, p),
               binom.ppf(0.9999, n, p))
 y=binom.pmf(x, n, p)
 lc = binom.ppf(0.05, n, p)/n
-uc = binom.ppf(0.975, n, p)/n
+uc = binom.ppf(0.95, n, p)/n
 print(f"{lc}-{uc}")
+
 lcbx = np.arange(binom.ppf(0.001, n, p),binom.ppf(0.027, n, p))
 lcby=binom.pmf(lcbx, n, p)
 ucbx = np.arange(binom.ppf(0.974, n, p),binom.ppf(0.999, n, p))
