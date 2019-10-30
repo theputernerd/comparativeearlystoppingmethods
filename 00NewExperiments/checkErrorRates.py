@@ -285,8 +285,8 @@ def plotProbVn(probvals, nvals,labels=[], ax=None):
     start, end = ax.get_xlim()
     for idx, _ in enumerate(probvals):
         ax.semilogy(probvals[idx], nvals[idx])
-    ax.set_xlabel("Probability of winning")
-    ax.set_ylabel("Number of games")
+    ax.set_xlabel(r"Probability of winning $p$")
+    ax.set_ylabel(r"Number of games $n$")
 
     ax.legend(labels)
     ax.set_xlim(0.5,1.0)
@@ -297,9 +297,6 @@ def plotProbVn(probvals, nvals,labels=[], ax=None):
     #plt.draw()
 #print(exactMethodAccuracy(p=1,n=6,alpha=0.05,hypothesis=0.5,ndistributions=10000))
 
-
-wilsLCBAccuracy(p=0.5,n=100,alpha=0.05)
-input("Press Enter to continue...")
 
 import csv
 
@@ -358,7 +355,7 @@ def Plot(theplots):
         nes = []
         plotps = []
 
-        legend.append(alpha)
+        legend.append(r"$\beta="+str(alpha)+r"$")
         for value in plotdata.values():
             [p, n, ndistributions,alpha]=value
 
@@ -371,13 +368,16 @@ def Plot(theplots):
         yes.append(y)
         print("Confirm predictions")
         p, n, samples,alpha = plotdata[0.55]
+
         print(f"-----Type2 error should be <0.05, for: p:{p}, n:{n}, alpha:{alpha} ")
         print(exactMethodAccuracy(p, n, alpha, ndistributions=10000))
         print("-------------------------------")
 
 
     fig = plt.figure(figsize=(16.0, 16.0))
+
     ax = fig.add_subplot(1, 1, 1)
+    ax.set_title(r"Min $n$ required for desired Type II error $\beta$")
     plotProbVn(xes,yes,legend,ax=ax)
     fig.savefig("nGamesForType2Error.png")
     fig.savefig("nGamesForType2Error.eps")
@@ -500,10 +500,13 @@ if False:
             print(t1,t2)
             print('---------------------------')
 print(f"---------------------------------------------------------------------------------------------------")
+
+wilsLCBAccuracy(p=0.5,n=100,alpha=0.05)
+input("Press Enter to continue...")
 ################################STEP 0.1 Generate the selection plot.
 ####TODO: What does the alpha_star plot look like with changing p to obtain the required accuracy
 ALLON=False
-varyingPType2ErrorPlot=False
+varyingPType2ErrorPlot=True
 if varyingPType2ErrorPlot:
     print(
         f"-------------------------0.1.Generate the plot of number of games for varying P to give required Type 2 Error rate.")
